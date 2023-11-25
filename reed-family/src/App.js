@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Slideshow from './Slideshow';
 
-const pictureList = [ //TODO: Dynamically add pictures based on back-end
+const pictureList = [ //TODO: Dynamically add pictures based on imgs/Pictures folder
   {id: 1, src: "./imgs/Pictures/FamilyPhoto1.png"},
   {id: 2, src: "./imgs/Pictures/FamilyPhoto2.png"},
   {id: 3, src: "./imgs/Pictures/FamilyPhoto3.png"}
 ];
 
-const recipeList = [ //TODO: Dynamically add recipes based on back-end
+const recipeList = [ //TODO: Dynamically add recipes based on imgs/Recipes folder
   {id: 1, src: "./imgs/Recipes/Recipe1.png"},
   {id: 2, src: "./imgs/Recipes/Recipe2.png"},
   {id: 3, src: "./imgs/Recipes/Recipe3.png"}
