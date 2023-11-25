@@ -27,7 +27,7 @@ function App() {
       <div className="container">
         <div className="row">
           {elementList.map(element => (
-            <div className="col-md-4 mb-4"> {/* Adjust grid column size as needed */}
+            <div className="col-md-4 mb-4" key={element.id}> {/* Adjust grid column size as needed */}
               <HomeElement key={element.id} element={element} />
             </div>
           ))}
@@ -40,10 +40,11 @@ function App() {
 
 function HomeElement({ element }) {
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0); // Initializes currentPictureIndex to 0
-  const timerInterval = 1500; // milliseconds
+  const [opacity, setOpacity] = useState(1); // Initializes opacity to 1, which is fully opaque
+  const timerInterval = 5000; // milliseconds
 
   // useEffect hook runs after every render, and will re-run if element.list changes
-  useEffect(() => { // Sets up an interval that updates currentPictureIndex every 3 seconds. Index resets to 0 when it reaches the end of list, creating a loop
+  /*useEffect(() => { // Sets up an interval that updates currentPictureIndex every 3 seconds. Index resets to 0 when it reaches the end of list, creating a loop
     const timer = setInterval(() => {
       setCurrentPictureIndex(prevIndex => 
         prevIndex === element.list.length - 1 ? 0 : prevIndex + 1
@@ -52,12 +53,28 @@ function HomeElement({ element }) {
 
     return () => clearInterval(timer); // Clean up the interval on component unmount, prevents memory leaks
   }, [element.list]);
+  */
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOpacity(0); // Fade out
+      setTimeout(() => {
+        // Change image and fade in
+        setCurrentPictureIndex(prevIndex =>
+          prevIndex === element.list.length - 1 ? 0 : prevIndex + 1  
+        );
+        setOpacity(1);
+      }, 500); // Half of transition time
+    }, timerInterval);
+
+    return () => clearInterval(interval);
+  }, [element.list]);
 
   const currentPictureSrc = require(`${element.list[currentPictureIndex].src}`);
 
   return (
     <a href={element.link} className="card">
-      <img src={currentPictureSrc} alt="Preview" className="card-img-top" />
+      <img src={currentPictureSrc} alt="Preview" className="card-img-top" style={{ opacity }}/>
       <div className="card-body">
         <h5 className="card-title">{element.name}</h5>
       </div>
