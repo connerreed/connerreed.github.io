@@ -20,9 +20,11 @@ jobs:
 
     - name: Install Dependencies
       run: npm install
+      working-directory: ./reed-family # Updated path
 
     - name: Build
       run: npm run build
+      working-directory: ./reed-family # Updated path
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@4.1.4
