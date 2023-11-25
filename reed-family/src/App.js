@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const pictureList = [
   {id: 1, src: "./imgs/Pictures/FamilyPhoto1.png"},
@@ -23,18 +24,23 @@ function App() {
   return (
     <div className="App">
       <h1>Hello Reed Family!</h1>
-      <div className="HomeElementList">
-        {elementList.map(element => (
-          <HomeElement key={element.id} element={element} />
-        ))}
+      <div className="container">
+        <div className="row">
+          {elementList.map(element => (
+            <div className="col-md-4 mb-4"> {/* Adjust grid column size as needed */}
+              <HomeElement key={element.id} element={element} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
+  
 }
 
 function HomeElement({ element }) {
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0); // Initializes currentPictureIndex to 0
-  const timerInterval = 5000; // milliseconds
+  const timerInterval = 1500; // milliseconds
 
   // useEffect hook runs after every render, and will re-run if element.list changes
   useEffect(() => { // Sets up an interval that updates currentPictureIndex every 3 seconds. Index resets to 0 when it reaches the end of list, creating a loop
@@ -50,13 +56,13 @@ function HomeElement({ element }) {
   const currentPictureSrc = require(`${element.list[currentPictureIndex].src}`);
 
   return (
-    <a href={element.link}>
-      <div className="HomeElement">
-        <img src={currentPictureSrc} alt="Preview" style={{ width: '100px', height: '100px' }} />
-        <h2>{element.name}</h2>
+    <a href={element.link} className="card">
+      <img src={currentPictureSrc} alt="Preview" className="card-img-top" />
+      <div className="card-body">
+        <h5 className="card-title">{element.name}</h5>
       </div>
     </a>
-  );
+  );  
 }
 
 export default App;
