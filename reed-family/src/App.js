@@ -14,10 +14,11 @@ const recipeList = [ //TODO: Dynamically add recipes based on imgs/Recipes folde
   {id: 3, src: "./imgs/Recipes/Recipe3.png"}
 ];
 
-const elementList = [
+/*const elementList = [
   {id: 1, name: "Pictures", link: "#", images: pictureList}, // TODO: add link to picture landing page
   {id: 2, name: "Recipes", link: "#", images: recipeList}, // TODO: add link to recipe landing page
 ];
+*/
 
 
 function App() {
