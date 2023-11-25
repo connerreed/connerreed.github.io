@@ -24,12 +24,14 @@ const recipeList = [ //TODO: Dynamically add recipes based on imgs/Recipes folde
 function App() {
   return (
     <div className="App">
-      <h1>Hello Reed Family!</h1>
+      <div className="header">
+        <h1 id="title">Reed Family Website</h1>
+      </div>
       <div className="container">
         <Slideshow elementList={pictureList}/>
-        <h1>Pictures</h1>
+        <a href="#"><h1>Pictures</h1></a>
         <Slideshow elementList={recipeList}/>
-        <h1>Recipes</h1>
+        <a href="#"><h1>Recipes</h1></a>
       </div>
     </div>
   );
