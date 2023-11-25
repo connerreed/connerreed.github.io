@@ -29,9 +29,9 @@ function App() {
       </div>
       <div className="container">
         <Slideshow elementList={pictureList}/>
-        <a href="#"><h1>Pictures</h1></a>
+        <h1>Pictures</h1>
         <Slideshow elementList={recipeList}/>
-        <a href="#"><h1>Recipes</h1></a>
+        <h1>Recipes</h1>
       </div>
     </div>
   );
