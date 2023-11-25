@@ -1,6 +1,22 @@
+a, a:visited, a:hover, a:active {
+  color: inherit;
+  text-decoration: none;
+}
+
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
 }
+
+.HomeElement img {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.card-img-top {
+  transition: opacity 1s ease-in-out;
+}
+
 
 .App-logo {
   height: 40vmin;
@@ -11,17 +27,6 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
@@ -36,3 +41,50 @@
     transform: rotate(360deg);
   }
 }
+
+.HomeElement {
+  border: 1px solid black;
+  width: 500px;
+  height: 500px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.HomeElementList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 200px; /* Adjust based on your need */
+}
+
+.swipe-img {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease-in-out;
+}
+
+.current {
+  left: 0;
+}
+
+.next {
+  left: 100%; /* Position the next image off-screen to the right */
+}
+
+.slide-left {
+  transform: translateX(-100%);
+}
+
+
