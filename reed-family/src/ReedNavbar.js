@@ -18,9 +18,7 @@ function ReedNavbar() {
 					<Nav.Link href="#recipes">Recipes</Nav.Link>
 				</Nav>
 			</Navbar.Collapse>
-			<Container>
-				<Navbar.Brand href="#home">Welcome Reed Family!</Navbar.Brand>
-			</Container>
+			<Navbar.Brand href="#home">Welcome Reed Family!</Navbar.Brand>
 		</Navbar>
 	);
 }
