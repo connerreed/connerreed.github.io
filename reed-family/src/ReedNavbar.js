@@ -10,9 +10,6 @@ function ReedNavbar() {
 			bg="dark"
 			expand="lg"
 		>
-			<Container>
-				<Navbar.Brand href="#home">Welcome Reed Family!</Navbar.Brand>
-			</Container>
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="mr-auto">
@@ -21,6 +18,9 @@ function ReedNavbar() {
 					<Nav.Link href="#recipes">Recipes</Nav.Link>
 				</Nav>
 			</Navbar.Collapse>
+			<Container>
+				<Navbar.Brand href="#home">Welcome Reed Family!</Navbar.Brand>
+			</Container>
 		</Navbar>
 	);
 }
