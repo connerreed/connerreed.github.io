@@ -28,10 +28,10 @@ function App() {
         <h1 id="title">Reed Family Website</h1>
       </div>
       <div className="container">
-        <Slideshow elementList={pictureList}/>
-        <h1>Pictures</h1>
-        <Slideshow elementList={recipeList}/>
-        <h1>Recipes</h1>
+        <h1 className="slideshowLabel">Pictures</h1>
+        <Slideshow className="slideshow" elementList={pictureList}/>
+        <h1 className="slideshowLabel">Recipes</h1>
+        <Slideshow className="slideshow" elementList={recipeList}/>
       </div>
     </div>
   );

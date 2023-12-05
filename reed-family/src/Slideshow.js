@@ -4,7 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 function Slideshow({elementList}) {
     const interval = 5000; // ms
 
-  return (
+  return ( //TODO: Fix sizing differences of pictures in slideshows
     <Carousel interval={`${interval}`}>
         {elementList.map(element => (
             <Carousel.Item>

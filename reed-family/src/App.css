@@ -37,3 +37,8 @@ a, a:visited, a:hover, a:active {
 .App-link {
   color: #61dafb;
 }
+
+.slideshowLabel {
+  color: rgb(61, 61, 138);
+  margin-top: 20px;
+}
