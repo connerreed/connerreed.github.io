@@ -1,39 +1,40 @@
-a, a:visited, a:hover, a:active {
-  color: inherit;
-  text-decoration: none;
-}
-
-.header {
-  width: 100%;
-  background-color: rgb(61, 61, 138);
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 .App {
-  text-align: center;
-  background-color: #282c34;
-  min-height: 100vh;
+	text-align: center;
+	background-color: #282c34;
+	min-height: 100vh;
+	padding-top: 10vh;
 }
 
 .HomeElement img {
-  transition: opacity 0.5s ease-in-out;
+	transition: opacity 0.5s ease-in-out;
 }
 
 .card-img-top {
-  transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
 }
 
-
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+	height: 40vmin;
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
 }
 
 .App-link {
-  color: #61dafb;
+	color: #61dafb;
+}
+
+.slideshowLabel {
+	color: rgb(61, 61, 138);
+	margin-top: 20px;
 }
