@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.my-navbar {
+    position: relative;
+}
+
+.centered-navbar-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 992px) { /* This breakpoint should match the Navbar's collapse point */
+    .my-navbar {
+        display: flex;
+        justify-content: space-between; /* Adjust as needed */
+    }
+    .centered-navbar-brand {
+        position: static;
+        transform: none;
+        flex-grow: 1;
+        text-align: center; /* Center the brand text */
+    }
+}
