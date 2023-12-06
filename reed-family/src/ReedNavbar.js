@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "./ReedNavbar.css";
 function ReedNavbar() {
 	return (
@@ -8,23 +9,28 @@ function ReedNavbar() {
 			data-bs-theme="dark"
 			bg="dark"
 			expand="lg"
-      className="my-navbar"
+			className="my-navbar"
 		>
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav className="me-auto">
-					<Nav.Link href="#home">Home</Nav.Link>
-					<Nav.Link href="#pictures">Pictures</Nav.Link>
-					<Nav.Link href="#recipes">Recipes</Nav.Link>
+					<Link to="/" className="nav-link">
+						Home
+					</Link>
+					<Link to="/pictures" className="nav-link">
+						Pictures
+					</Link>
+					<Link to="/recipes" className="nav-link">
+						Recipes
+					</Link>
 				</Nav>
 			</Navbar.Collapse>
 
-			<Navbar.Brand
-				href="#home"
-				className="centered-navbar-brand"
-			>
-				Welcome Reed Family!
-			</Navbar.Brand>
+			<Link to="/" className="centered-navbar-brand">
+				<Navbar.Brand className="centered-navbar-brand">
+					Welcome Reed Family!
+				</Navbar.Brand>
+			</Link>
 		</Navbar>
 	);
 }

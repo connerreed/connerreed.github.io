@@ -12,6 +12,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    text-decoration: none;
 }
 
 @media (max-width: 992px) { /* This breakpoint should match the Navbar's collapse point */
