@@ -1,5 +1,6 @@
 import React from "react";
 import Slideshow from "./Slideshow"; // Slideshow component
+import { Link } from "react-router-dom";
 
 const pictureList = [
 	//TODO: Dynamically add pictures based on imgs/Pictures folder
@@ -24,9 +25,13 @@ const recipeList = [
 function Home() {
 	return (
 		<div className="container">
-			<h1 className="slideshowLabel">Pictures</h1>
+			<Link to="/pictures" className="slideshowLink">
+				<h1 className="slideshowLabel">Pictures</h1>
+			</Link>
 			<Slideshow className="slideshow" elementList={pictureList} />
-			<h1 className="slideshowLabel">Recipes</h1>
+            <Link to="/recipes" className="slideshowLink">
+				<h1 className="slideshowLabel">Recipes</h1>
+			</Link>
 			<Slideshow className="slideshow" elementList={recipeList} />
 		</div>
 	);

@@ -6,12 +6,15 @@
 
 .my-navbar {
     position: relative;
+    min-height: 50px;
+    margin-top: 0;
 }
 
 .centered-navbar-brand {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%; /* Added for verticle centering */
+    transform: translate(-50%, -50%); /* Adjusted for both horizontal and vertical centering */
     text-decoration: none;
 }
 
