@@ -1,9 +1,11 @@
 import React from 'react';
+import Gallery from './Gallery';
+import pictureList from './pictureData';
 
 function Pictures() {
     return(
         <div>
-            <h1>Pictures Page</h1>
+            <Gallery elementList={pictureList}/>
         </div>
     );
 }

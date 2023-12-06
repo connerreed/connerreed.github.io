@@ -1,9 +1,11 @@
-import React from "react";
+import React from 'react';
+import Gallery from './Gallery';
+import recipeList from './recipeData';
 
 function Recipes() {
 	return (
 		<div>
-			<h1>Recipes Page</h1>
+			<Gallery elementList={recipeList} />
 		</div>
 	);
 }
