@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Navbar, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
-import "./ReedNavbar.css";
+import React, { useState } from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
+import './ReedNavbar.css';
 function ReedNavbar() {
 	const [expanded, setExpanded] = useState(false); // state to allow for collapse onSelect of navbar links
 
@@ -34,7 +34,7 @@ function ReedNavbar() {
 
 			<Link to="/" className="centered-navbar-brand">
 				<Navbar.Brand className="centered-navbar-brand">
-					Welcome Reed Family!
+					Welcome!
 				</Navbar.Brand>
 			</Link>
 		</Navbar>
