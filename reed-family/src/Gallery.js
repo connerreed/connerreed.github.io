@@ -1,7 +1,7 @@
-import React from 'react';
-import { Container, Row, Col, Card} from 'react-bootstrap';
+import React from "react";
+import { Container, Row, Col, Card, Button} from "react-bootstrap";
 
-function Gallery({elementList}) {
+function Gallery({ elementList }) {
 	return (
 		<Container>
 			<Row>
@@ -12,7 +12,15 @@ function Gallery({elementList}) {
 								variant="top"
 								src={require(`${element.src}`)}
 							/>
-							{/* Additional Card content like title or buttons */}
+							<Card.Footer>
+								<Button
+									variant="primary"
+									href={require(`${element.src}`)}
+									download
+								>
+									Download
+								</Button>
+							</Card.Footer>
 						</Card>
 					</Col>
 				))}
