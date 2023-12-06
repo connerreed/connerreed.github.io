@@ -8,7 +8,6 @@
 	text-align: center;
 	background-color: #282c34;
 	min-height: 100vh;
-	padding-top: 10vh;
 }
 
 .HomeElement img {
@@ -37,4 +36,9 @@
 .slideshowLabel {
 	color: rgb(61, 61, 138);
 	margin-top: 20px;
+}
+
+.slideshowLink {
+	text-decoration: none;
+	width: 50px;
 }
