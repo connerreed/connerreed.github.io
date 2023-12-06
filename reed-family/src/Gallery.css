@@ -1,0 +1,24 @@
+.download-button {
+    position: absolute;
+    right: 10px; /* Adjust as needed */
+    bottom: 10px; /* Adjust as needed */
+    z-index: 10; /* ensures the button appears above the image */
+    
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+    background-color: #282c34;
+    color: white;
+    border: none;
+    /* Additional styling for the button */
+
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: background-solor 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.download-button:hover {
+    background-color: #0056b3; /* Slighly darker shade for hover effect */
+}
