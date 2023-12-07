@@ -22,3 +22,38 @@
 .download-button:hover {
     background-color: #0056b3; /* Slighly darker shade for hover effect */
 }
+
+.custom-modal .modal-dialog {
+    max-width: 80vw; /* Maximum width of the modal */
+    max-height: 80vh; /* Maximum height of the modal */
+    width: auto; /* let image affect modal size */
+    height: auto;
+    margin: auto; /* Center the modal vertically and horizontally */
+    display: flex;
+    align-items: center; /* Align the modal contents vertically */
+    justify-content: center; /* Align the modal contents horizontally */
+}
+
+
+.custom-modal-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%; /* Allow the image to scale up to the width of the modal */
+    max-height: 75vh; /* Allow the image to scale up to a portion of the viewport height */
+    object-fit: contain; /* Maintain aspect ratio without cropping */
+    display: block; /* Remove any extra space below the image */
+    margin: auto; /* Center the image in the modal */
+}
+
+
+.modal-body {
+    padding: 10px;
+    background-color: #282c34;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal .modal-body {
+    padding: 10px; /* Adjust as needed */
+}
