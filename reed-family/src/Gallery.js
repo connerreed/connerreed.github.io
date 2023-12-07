@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Modal } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import "./Gallery.css";
@@ -23,14 +23,14 @@ function Gallery({ elementList }) {
 								variant="top"
 								src={require(`${element.src}`)}
 							/>
-							<a
+							<Button
 								variant="primary"
 								href={require(`${element.src}`)}
 								download
 								className="download-button"
 							>
 								<FontAwesomeIcon icon={faDownload} />
-							</a>
+							</Button>
 						</Card>
 					</Col>
 				))}
