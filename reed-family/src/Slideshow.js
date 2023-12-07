@@ -1,4 +1,7 @@
+import React from "react";
 import Carousel from "react-bootstrap/Carousel";
+import { Container } from "react-bootstrap";
+import "./Slideshow.css"
 
 // Read documentation on React Bootstrap Carousel here: https://react-bootstrap.github.io/components/carousel/
 function Slideshow({ elementList }) {
@@ -6,17 +9,19 @@ function Slideshow({ elementList }) {
 
 	return (
 		//TODO: Fix sizing differences of pictures in slideshows
-		<Carousel interval={`${interval}`}>
-			{elementList.map((element) => (
-				<Carousel.Item>
-					<img
-						className="d-block w-100"
-						src={require(`${element.src}`)}
-						alt="Slide"
-					/>
-				</Carousel.Item>
-			))}
-		</Carousel>
+		<Container>
+			<Carousel interval={`${interval}`} className="custom-slideshow">
+				{elementList.map((element) => (
+					<Carousel.Item key={element.id}>
+						<img
+							className="d-block w-100"
+							src={require(`${element.src}`)}
+							alt="Slide"
+						/>
+					</Carousel.Item>
+				))}
+			</Carousel>
+		</Container>
 	);
 }
 
