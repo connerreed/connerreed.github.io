@@ -18,7 +18,7 @@ function Gallery({ elementList }) {
 			<Row>
 				{elementList.map((element) => (
 					<Col md={4} sm={6} xs={12} key={element.id}>
-						<Card className="position-relative" onClick={() => handleImageClick(element)} style={{cursor: 'pointer'}}>
+						<Card className="position-relative custom-card" onClick={() => handleImageClick(element)}>
 							<Card.Img
 								variant="top"
 								src={require(`${element.src}`)}
