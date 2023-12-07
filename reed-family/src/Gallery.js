@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { Container, Row, Col, Card, Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import {useNavigate} from 'react-router-dom';
 import "./Gallery.css";
 
 function Gallery({ elementList, elementType }) {
 	const [selectedImage, setSelectedImage] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
 	const handleImageClick = (image) => {
 		if (elementType === "pictures") {
 			setSelectedImage(image);
 			setShowModal(true);
 		} else if (elementType === "recipes") {
+            navigate(`/recipes/${image.id}`);
 		}
 	};
 
@@ -27,12 +30,15 @@ function Gallery({ elementList, elementType }) {
 						>
 							<Card.Img
 								variant="top"
-								src={require(`${element.src}`)}
+								src={require(`${element.coverSrc}`)}
 							/>
+                            {elementType === "recipes" && (
+                                <Card.Body>{element.title}</Card.Body>
+                            )}
 							{elementType === "pictures" && (
 								<Button
 									variant="primary"
-									href={require(`${element.src}`)}
+									href={require(`${element.coverSrc}`)}
 									download
 									className="download-button"
 								>
@@ -53,7 +59,7 @@ function Gallery({ elementList, elementType }) {
 				<Modal.Body>
 					{selectedImage && (
 						<img
-							src={require(`${selectedImage.src}`)}
+							src={require(`${selectedImage.coverSrc}`)}
 							alt="Selected"
 							className="img-fluid custom-modal-image"
 						/>
