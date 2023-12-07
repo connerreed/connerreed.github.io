@@ -23,14 +23,14 @@ function Gallery({ elementList }) {
 								variant="top"
 								src={require(`${element.src}`)}
 							/>
-							<Button
+							<a
 								variant="primary"
 								href={require(`${element.src}`)}
 								download
 								className="download-button"
 							>
 								<FontAwesomeIcon icon={faDownload} />
-							</Button>
+							</a>
 						</Card>
 					</Col>
 				))}
