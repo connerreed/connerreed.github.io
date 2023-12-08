@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ReedNavbar from "./ReedNavbar"; // Navbar component
 import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
-import Pictures from './Pictures' // Pictures homepage
+import Pictures from "./Pictures"; // Pictures homepage
+import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
 
 function App() {
 	return (
@@ -13,8 +14,12 @@ function App() {
 			<div className="App">
 				<ReedNavbar />
 				<Routes>
+					<Route
+						path="/recipes/:recipeId"
+						element={<RecipeDetail />}
+					/>
 					<Route path="/recipes" element={<Recipes />} />
-					<Route path="/pictures" element={<Pictures/>} />
+					<Route path="/pictures" element={<Pictures />} />
 					<Route path="/" element={<Home />} />
 				</Routes>
 			</div>

@@ -5,7 +5,7 @@ import recipeList from './recipeData';
 function Recipes() {
 	return (
 		<div>
-			<Gallery elementList={recipeList} />
+			<Gallery elementList={recipeList} elementType="recipes"/>
 		</div>
 	);
 }

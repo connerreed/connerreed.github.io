@@ -5,7 +5,7 @@ import pictureList from './pictureData';
 function Pictures() {
     return(
         <div>
-            <Gallery elementList={pictureList}/>
+            <Gallery elementList={pictureList} elementType="pictures"/>
         </div>
     );
 }
