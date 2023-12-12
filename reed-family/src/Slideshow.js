@@ -15,8 +15,8 @@ function Slideshow({ elementList }) {
 					<Carousel.Item key={element.id}>
 						<img
 							className="d-block w-100"
-							src={require(`${element.coverSrc}`)}
-							alt="Slide"
+							src={element.link}
+							alt={element.name}
 						/>
 					</Carousel.Item>
 				))}

@@ -30,15 +30,15 @@ function Gallery({ elementList, elementType }) {
 						>
 							<Card.Img
 								variant="top"
-								src={require(`${element.coverSrc}`)}
+								src={element.link}
 							/>
                             {elementType === "recipes" && (
-                                <Card.Body>{element.title}</Card.Body>
+                                <Card.Body>{element.name}</Card.Body>
                             )}
 							{elementType === "pictures" && (
 								<Button
 									variant="primary"
-									href={require(`${element.coverSrc}`)}
+									href={element.link}
 									download
 									className="download-button"
 								>
@@ -59,7 +59,7 @@ function Gallery({ elementList, elementType }) {
 				<Modal.Body>
 					{selectedImage && (
 						<img
-							src={require(`${selectedImage.coverSrc}`)}
+							src={selectedImage.link}
 							alt="Selected"
 							className="img-fluid custom-modal-image"
 						/>
