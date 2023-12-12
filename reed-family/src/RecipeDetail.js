@@ -18,7 +18,7 @@ function RecipeDetail({recipeList}) {
 
   return (
     <div>
-        <h1 style={{color: 'white'}}>{recipe.title}</h1>
+        <h1 style={{color: 'white'}}>{recipe.name}</h1>
       {/* Display the cover image */}
       <img src={recipe.link} alt={`Cover of Recipe ${recipeId}`} />
 
