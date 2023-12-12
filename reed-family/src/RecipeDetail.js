@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import recipeList from './recipeData'; // Import your recipe data
 
-function RecipeDetail() {
+function RecipeDetail({recipeList}) {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
 
@@ -20,12 +19,12 @@ function RecipeDetail() {
     <div>
         <h1 style={{color: 'white'}}>{recipe.title}</h1>
       {/* Display the cover image */}
-      <img src={require(`${recipe.coverSrc}`)} alt={`Cover of Recipe ${recipeId}`} />
+      <img src={recipe.link} alt={`Cover of Recipe ${recipeId}`} />
 
-      {/* Display additional recipe images if they exist */}
-      {recipe.additionalImages && recipe.additionalImages.map((image, index) => (
+      {/* TODO: Display additional recipe images if they exist */}
+      {/*recipe.additionalImages && recipe.additionalImages.map((image, index) => (
         <img key={index} src={require(`${image}`)} alt={`Recipe Detail ${index + 1}`} />
-      ))}
+      ))*/}
     </div>
   );
 }

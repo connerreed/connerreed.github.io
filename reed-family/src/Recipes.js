@@ -1,8 +1,7 @@
 import React from 'react';
 import Gallery from './Gallery';
-import recipeList from './recipeData';
 
-function Recipes() {
+function Recipes({recipeList}) {
 	return (
 		<div>
 			<Gallery elementList={recipeList} elementType="recipes"/>

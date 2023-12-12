@@ -1,16 +1,9 @@
 import React from "react";
 import Slideshow from "./Slideshow"; // Slideshow component
 import { Link } from "react-router-dom";
-import pictureList from './pictureData';
-import recipeList from './recipeData';
 
-/*const elementList = [
-  {id: 1, name: "Pictures", link: "#", images: pictureList}, // TODO: add link to picture landing page
-  {id: 2, name: "Recipes", link: "#", images: recipeList}, // TODO: add link to recipe landing page
-];
-*/
+function Home({pictureList, recipeList}) {
 
-function Home() {
 	return (
 		<div className="container">
 			<Link to="/pictures" className="slideshowLink">
