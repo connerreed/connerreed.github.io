@@ -32,10 +32,10 @@ function Gallery({ elementList, elementType }) {
 								variant="top"
 								src={element.link}
 							/>
-                            {elementType === "recipes" && (
-                                <Card.Body>{element.name}</Card.Body>
+                            {elementType === "recipes" && ( // Adds caption for recipe names
+                                <Card.Body style={{borderTop: '1px solid'}}>{element.name}</Card.Body>
                             )}
-							{elementType === "pictures" && (
+							{elementType === "pictures" && ( // Adds download button for pictures (not on mobile)
 								<Button
 									variant="primary"
 									href={element.link}
