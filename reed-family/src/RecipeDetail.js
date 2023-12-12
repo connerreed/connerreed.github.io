@@ -9,7 +9,8 @@ function RecipeDetail({recipeList}) {
     // Find the recipe in the recipeList by id
     const foundRecipe = recipeList.find(r => r.id.toString() === recipeId);
     setRecipe(foundRecipe);
-  }, [recipeId]);
+  }, [recipeId, recipeList]);
+  
 
   if (!recipe) {
     return <div>Loading...</div>;
