@@ -1,22 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.54eff3d5.css",
-    "main.js": "/static/js/main.42d5b0ee.js",
+    "main.js": "/static/js/main.6327852c.js",
     "static/js/787.b74c9638.chunk.js": "/static/js/787.b74c9638.chunk.js",
-    "static/media/Recipe2.png": "/static/media/Recipe2.16c090332294996c4bec.png",
-    "static/media/FamilyPhoto1.png": "/static/media/FamilyPhoto1.f814451ce466b389b3da.png",
-    "static/media/Recipe1.png": "/static/media/Recipe1.c714827bfa93eceeb7d5.png",
-    "static/media/FamilyPhoto3.png": "/static/media/FamilyPhoto3.a0e8af84b65efded29ca.png",
-    "static/media/FamilyPhoto2.png": "/static/media/FamilyPhoto2.3d8a55c7530abacedbfc.png",
-    "static/media/Recipe3.png": "/static/media/Recipe3.9cfa17f420436beb6110.png",
-    "static/media/index.cjs": "/static/media/index.671993152dc0f6e0b17a.cjs",
     "index.html": "/index.html",
     "main.54eff3d5.css.map": "/static/css/main.54eff3d5.css.map",
-    "main.42d5b0ee.js.map": "/static/js/main.42d5b0ee.js.map",
+    "main.6327852c.js.map": "/static/js/main.6327852c.js.map",
     "787.b74c9638.chunk.js.map": "/static/js/787.b74c9638.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.54eff3d5.css",
-    "static/js/main.42d5b0ee.js"
+    "static/js/main.6327852c.js"
   ]
 }
