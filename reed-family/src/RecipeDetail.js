@@ -26,10 +26,9 @@ function RecipeDetail({ recipeList }) {
 				alt={`Cover of Recipe ${recipe.coverImg.name}`}
 			/>
 
-			{/* TODO: Display additional recipe images if they exist */}
-			{/*recipe.additionalImages && recipe.additionalImages.map((image, index) => (
-        <img key={index} src={require(`${image}`)} alt={`Recipe Detail ${index + 1}`} />
-      ))*/}
+			{recipe.descriptionImgs.map((image, index) => (
+        <img key={index} src={image.link} alt={`Recipe Detail Image ${index + 1}`} />
+      ))}
 		</div>
 	);
 }
