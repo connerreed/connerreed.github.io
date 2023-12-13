@@ -53,7 +53,7 @@ function App() {
 				<ReedNavbar />
 				<Routes>
 					<Route
-						path="/recipes/:recipeId"
+						path="/recipes/:recipeFolderName"
 						element={<RecipeDetail recipeList={recipeList}/>}
 					/>
 					<Route path="/recipes" element={<Recipes recipeList={recipeList}/>} />

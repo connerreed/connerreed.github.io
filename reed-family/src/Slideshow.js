@@ -1,10 +1,10 @@
 import React from "react";
 import Carousel from "react-bootstrap/Carousel";
 import { Container } from "react-bootstrap";
-import "./Slideshow.css"
+import "./Slideshow.css";
 
 // Read documentation on React Bootstrap Carousel here: https://react-bootstrap.github.io/components/carousel/
-function Slideshow({ elementList }) {
+function Slideshow({ elementList, elementType }) {
 	const interval = 5000; // ms
 
 	return (
@@ -15,8 +15,8 @@ function Slideshow({ elementList }) {
 					<Carousel.Item key={element.id}>
 						<img
 							className="d-block w-100"
-							src={element.link}
-							alt={element.name}
+							src={elementType === "pictures" ? element.link : element.coverImg.link}
+							alt={elementType === "pictures" ? element.link : element.coverImg.link}
 						/>
 					</Carousel.Item>
 				))}
