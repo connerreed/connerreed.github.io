@@ -9,11 +9,11 @@ function Home({pictureList, recipeList}) {
 			<Link to="/pictures" className="slideshowLink">
 				<h1 className="slideshowLabel">Pictures</h1>
 			</Link>
-			<Slideshow className="slideshow" elementList={pictureList} />
+			<Slideshow className="slideshow" elementList={pictureList} elementType="pictures" />
             <Link to="/recipes" className="slideshowLink">
 				<h1 className="slideshowLabel">Recipes</h1>
 			</Link>
-			<Slideshow className="slideshow" elementList={recipeList} />
+			<Slideshow className="slideshow" elementList={recipeList} elementType="recipes"/>
 		</div>
 	);
 }

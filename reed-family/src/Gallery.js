@@ -15,7 +15,7 @@ function Gallery({ elementList, elementType }) {
 			setSelectedImage(image);
 			setShowModal(true);
 		} else if (elementType === "recipes") {
-            navigate(`/recipes/${image.id}`);
+            navigate(`/recipes/${image.folderName}`);
 		}
 	};
 
@@ -30,10 +30,10 @@ function Gallery({ elementList, elementType }) {
 						>
 							<Card.Img
 								variant="top"
-								src={element.link}
+								src={elementType === "pictures" ? element.link : element.coverImg.link}
 							/>
                             {elementType === "recipes" && ( // Adds caption for recipe names
-                                <Card.Body style={{borderTop: '1px solid'}}>{element.name}</Card.Body>
+                                <Card.Body style={{borderTop: '1px solid'}}>{element.coverImg.name}</Card.Body>
                             )}
 							{elementType === "pictures" && ( // Adds download button for pictures (not on mobile)
 								<Button
