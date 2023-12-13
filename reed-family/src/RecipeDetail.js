@@ -27,7 +27,7 @@ function RecipeDetail({ recipeList }) {
 			/>
 
 			{recipe.descriptionImgs.map((image, index) => (
-        <img key={index} src={image.link} alt={`Recipe Detail Image ${index + 1}`} />
+        <img key={index} src={image.link} alt={`Recipe Detail ${index + 1}`} />
       ))}
 		</div>
 	);
