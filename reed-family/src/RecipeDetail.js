@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import "./RecipeDetail.css";
 
 function RecipeDetail({ recipeList }) {
     const { recipeFolderName } = useParams();
     const [recipe, setRecipe] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         // Find the recipe in the recipeList by id
