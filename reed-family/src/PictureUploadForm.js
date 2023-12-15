@@ -18,7 +18,7 @@ function PictureUploadForm() {
 
         try {
             const response = await fetch(
-                "https://localhost:3001/upload/pictures",
+                "https://reed-family-backend-b01b489ec3fe.herokuapp.com/upload/pictures",
                 {
                     method: "POST",
                     body: formData,
