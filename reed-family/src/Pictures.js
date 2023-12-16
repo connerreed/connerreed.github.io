@@ -1,11 +1,11 @@
 import React from 'react';
 import Gallery from './Gallery';
-import PictureUploadForm from './PictureUploadForm';
+import UploadForm from './UploadForm';
 
 function Pictures({pictureList}) {
     return(
         <div style={{position: 'relative'}}>
-            <PictureUploadForm style={{top: '0', left: '0'}}/>
+            <UploadForm formType="pictures"/>
             <Gallery elementList={pictureList} elementType="pictures"/>
         </div>
     );
