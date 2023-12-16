@@ -5,7 +5,7 @@ function UploadForm({ formType }) {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [recipeName, setRecipeName] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
-    const developMode = true;
+    const developMode = false;
 
     const handleFileChange = (event) => {
         setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
