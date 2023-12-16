@@ -5,6 +5,7 @@ function UploadForm({ formType }) {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [recipeName, setRecipeName] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const developMode = true;
 
     const handleFileChange = (event) => {
         setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
@@ -29,7 +30,7 @@ function UploadForm({ formType }) {
 
         try {
             const response = await fetch(
-                `https://reed-family-backend-b01b489ec3fe.herokuapp.com/upload/${formType}`,
+                developMode ? `http://localhost:3001/upload/${formType}` : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/upload/${formType}`,
                 {
                     method: "POST",
                     body: formData,
@@ -50,6 +51,7 @@ function UploadForm({ formType }) {
             }
         } catch (error) {
             console.error("Upload error:", error);
+            setSuccessMessage("Failed to upload: " + error.message);
         }
     };
 
