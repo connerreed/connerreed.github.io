@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes,
-} from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import ReedNavbar from "./ReedNavbar"; // Navbar component
 import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
@@ -54,7 +50,7 @@ function App() {
     }, []);
 
     return (
-        <Router>
+        <HashRouter>
             <div className="App">
                 <ReedNavbar />
                 <Routes>
@@ -81,7 +77,7 @@ function App() {
                     />
                 </Routes>
             </div>
-        </Router>
+        </HashRouter>
     );
 }
 
