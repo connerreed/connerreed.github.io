@@ -41,10 +41,18 @@ function UploadForm({ formType }) {
     const [recipeName, setRecipeName] = useState("");
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const developMode = false;
+    const developMode = false; // Set to true if running locally, false if running on Heroku
 
     const handleFileChange = (event) => {
-        setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
+        const files = Array.from(event.target.files).filter(file => 
+            file.type.match('image.*') // Filter out non-image files
+        );
+
+        if (files.length !== event.target.files.length) {
+            alert("Only image files are allowed.");
+        }
+
+        setSelectedFiles([...selectedFiles, ...files]);
     };
 
     const handleRecipeNameChange = (event) => {
