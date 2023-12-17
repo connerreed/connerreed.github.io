@@ -4,7 +4,7 @@ import UploadForm from './UploadForm';
 
 function Recipes({recipeList}) {
 	return (
-		<div>
+		<div style={{position: 'relative'}}>
 			<UploadForm formType="recipes"/>
 			<Gallery elementList={recipeList} elementType="recipes"/>
 		</div>
