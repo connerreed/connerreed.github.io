@@ -41,7 +41,7 @@ function UploadForm({ formType }) {
     const [recipeName, setRecipeName] = useState("");
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const developMode = false; // Set to true if running locally, false if running on Heroku
+    const developMode = true; // Set to true if running locally, false if running on Heroku
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files).filter(file => 
@@ -89,7 +89,7 @@ function UploadForm({ formType }) {
                 setMessage("Failed to upload: " + errorData.message);
             }
         } catch (error) {
-            setMessage("Failed to upload: " + error.message);
+            setMessage("Failed to upload: " + error.message || "An unknown error occurred.");
         }
     };
 
