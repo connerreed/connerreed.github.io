@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
@@ -7,52 +7,11 @@ import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
 import Pictures from "./Pictures"; // Pictures homepage
 import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
-import developMode from "./developMode";
-
-async function fetchPictureList() {
-    try {
-        const response = await fetch(
-            developMode
-                ? "http://localhost:3001/api/pictures"
-                : "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/pictures"
-        );
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Fetch error:", error);
-        return [];
-    }
-}
-
-async function fetchRecipeList() {
-    try {
-        const response = await fetch(
-            developMode
-                ? "http://localhost:3001/api/recipes"
-                : "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/recipes"
-        );
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Fetch error:", error);
-        return [];
-    }
-}
 
 function App() {
-    const [pictureList, setPictureList] = useState([]);
-    const [recipeList, setRecipeList] = useState([]);
 
-    useEffect(() => {
-        fetchPictureList().then((data) => setPictureList(data));
-        fetchRecipeList().then((data) => setRecipeList(data));
-    }, []);
+    const recipeList = [];
+    const pictureList = [];
 
     return (
         <HashRouter>

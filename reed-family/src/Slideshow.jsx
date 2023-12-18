@@ -1,39 +1,57 @@
-import React from "react";
-import Carousel from "react-bootstrap/Carousel";
-import { Container } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Carousel } from "react-bootstrap";
 import "./Slideshow.css";
+import developMode from "./developMode";
 
-function shuffleArray(array) {
-	for(let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]] // Swap elements
-	}
-	return array;
-}
 
-// Read documentation on React Bootstrap Carousel here: https://react-bootstrap.github.io/components/carousel/
-function Slideshow({ elementList, elementType }) {
-	const interval = 5000; // ms
-	const maxItemsToShow = 10;
-	const shuffledItems = shuffleArray([...elementList]); // Create a shuffled copy
-	const itemsToShow = shuffledItems.slice(0, maxItemsToShow);
+function Slideshow({ elementType }) {
+    const [elementList, setElementList] = useState([]); // State to store the fetched list of elements
+    const interval = 5000; // ms
 
-	return (
-		//TODO: Fix sizing differences of pictures in slideshows
-		<Container>
-			<Carousel interval={`${interval}`} className="custom-slideshow">
-				{itemsToShow.map((element) => (
-					<Carousel.Item key={element.id}>
-						<img
-							className="d-block w-100"
-							src={elementType === "pictures" ? element.link : element.coverImg.link}
-							alt={elementType === "pictures" ? element.link : element.coverImg.link}
-						/>
-					</Carousel.Item>
-				))}
-			</Carousel>
-		</Container>
-	);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch(
+                    developMode
+                        ? `http://localhost:3001/api/items?type=${elementType}&slideshow`
+                        : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/items?type=${elementType}&slideshow`
+                );
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setElementList(data); // Update the state with the fetched data
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        fetchData();
+    }, [elementType]);
+
+    return (
+        <Container>
+            <Carousel interval={interval} className="custom-slideshow">
+                {elementList.map((element) => (
+                    <Carousel.Item key={element.id}>
+                        <img
+                            className="d-block w-100"
+                            src={
+                                elementType === "pictures"
+                                    ? element.link
+                                    : element.coverImg.link
+                            }
+                            alt={
+                                elementType === "pictures"
+                                    ? element.name
+                                    : element.coverImg.name
+                            }
+                        />
+                    </Carousel.Item>
+                ))}
+            </Carousel>
+        </Container>
+    );
 }
 
 export default Slideshow;
