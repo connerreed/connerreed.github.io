@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import developMode from "./developMode";
 
 function CustomDropdown({ label, children, isOpen, setIsOpen }) {
     const toggleRef = useRef(null);
@@ -48,7 +49,6 @@ function UploadForm({ formType }) {
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [authorName, setAuthorName] = useState(""); // New state for author's name
-    const developMode = false; // Set to true if running locally, false if running on Heroku
 
     const handleAuthorNameChange = (event) => {
         setAuthorName(event.target.value);

@@ -7,11 +7,14 @@ import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
 import Pictures from "./Pictures"; // Pictures homepage
 import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
+import developMode from "./developMode";
 
 async function fetchPictureList() {
     try {
         const response = await fetch(
-            "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/pictures"
+            developMode
+                ? "http://localhost:3001/api/pictures"
+                : "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/pictures"
         );
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -27,7 +30,9 @@ async function fetchPictureList() {
 async function fetchRecipeList() {
     try {
         const response = await fetch(
-            "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/recipes"
+            developMode
+                ? "http://localhost:3001/api/recipes"
+                : "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/recipes"
         );
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
