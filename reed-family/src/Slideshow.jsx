@@ -3,9 +3,10 @@ import { Container, Carousel } from "react-bootstrap";
 import "./Slideshow.css";
 import developMode from "./developMode";
 
-
 function Slideshow({ elementType }) {
     const [elementList, setElementList] = useState([]); // State to store the fetched list of elements
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const interval = 5000; // ms
 
     useEffect(() => {
@@ -21,13 +22,32 @@ function Slideshow({ elementType }) {
                 }
                 const data = await response.json();
                 setElementList(data); // Update the state with the fetched data
+                setIsLoading(false);
             } catch (error) {
                 console.error("Fetch error:", error);
+                setError(error);
+                setIsLoading(false);
             }
         }
 
         fetchData();
     }, [elementType]);
+
+    if (isLoading) {
+        return <div style={{ color: "white" }}>Loading...</div>;
+    }
+
+    if (error) {
+        return (
+            <div style={{ color: "white" }}>
+                Error loading slideshow: {error.message}
+            </div>
+        );
+    }
+
+    if (!elementList) {
+        return <div style={{ color: "white" }}>No elements found</div>;
+    }
 
     return (
         <Container>
