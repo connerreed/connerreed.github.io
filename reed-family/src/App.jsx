@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
@@ -7,11 +7,38 @@ import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
 import Pictures from "./Pictures"; // Pictures homepage
 import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
+import developMode from "./developMode";
 
 function App() {
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [error, setError] = useState(null);
 
-    const recipeList = [];
-    const pictureList = [];
+    useEffect(() => {
+        async function initialize() {
+            try {
+                const response = await fetch(
+                    developMode
+                        ? "http://localhost:3001/api/initialize"
+                        : "https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/initialize"
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to initialize data");
+                }
+                setIsInitialized(true);
+            } catch (error) {
+                setError(error.message);
+            }
+        }
+        initialize();
+    }, []);
+
+    if (error) {
+        return <div style={{ color: "white" }}>Error: {error}</div>;
+    }
+
+    if (!isInitialized) {
+        return <div style={{ color: "white" }}>Loading...</div>;
+    }
 
     return (
         <HashRouter>
@@ -20,25 +47,11 @@ function App() {
                 <Routes>
                     <Route
                         path="/recipes/:recipeFolderName"
-                        element={<RecipeDetail recipeList={recipeList} />}
+                        element={<RecipeDetail />}
                     />
-                    <Route
-                        path="/recipes"
-                        element={<Recipes recipeList={recipeList} />}
-                    />
-                    <Route
-                        path="/pictures"
-                        element={<Pictures pictureList={pictureList} />}
-                    />
-                    <Route
-                        path="/"
-                        element={
-                            <Home
-                                pictureList={pictureList}
-                                recipeList={recipeList}
-                            />
-                        }
-                    />
+                    <Route path="/recipes" element={<Recipes />} />
+                    <Route path="/pictures" element={<Pictures />} />
+                    <Route path="/" element={<Home />} />
                 </Routes>
             </div>
         </HashRouter>
