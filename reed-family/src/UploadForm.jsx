@@ -98,10 +98,10 @@ function UploadForm({ formType }) {
                 setTimeout(() => {
                     // Force reload the page after showing the success message for 3 seconds
                     window.location.reload();
-                });
+                }, 3000);
             } else {
-                const errorData = await response.json();
-                setMessage("Failed to upload: " + errorData.message);
+                const errorMessage = await response.text();
+                throw new Error(errorMessage);
             }
         } catch (error) {
             setMessage(
