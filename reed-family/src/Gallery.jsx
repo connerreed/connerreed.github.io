@@ -133,12 +133,17 @@ function Gallery({ elementType }) {
                 </Modal.Body>
             </Modal>
             {currentPage !== 1 && (
-                <button onClick={handlePrevious} disabled={currentPage === 1}>
+                <button
+                    class="page-control-button"
+                    onClick={handlePrevious}
+                    disabled={currentPage === 1}
+                >
                     Previous Page
                 </button>
             )}
             {currentPage !== maxPageNumber && (
                 <button
+                    class="page-control-button"
                     onClick={handleNext}
                     disabled={currentPage === maxPageNumber}
                 >

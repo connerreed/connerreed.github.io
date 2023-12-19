@@ -1,3 +1,8 @@
+.page-control-button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .download-button {
     position: absolute;
     right: 10px; /* Adjust as needed */
