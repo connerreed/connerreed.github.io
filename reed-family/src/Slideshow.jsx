@@ -53,7 +53,7 @@ function Slideshow({ elementType }) {
         <Container>
             <Carousel interval={interval} className="custom-slideshow">
                 {elementList.map((element) => (
-                    <Carousel.Item key={element.id}>
+                    <Carousel.Item style={{color: 'white'}} key={element.id}>
                         <img
                             className="d-block w-100"
                             src={
