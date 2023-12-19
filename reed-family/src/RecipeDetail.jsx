@@ -1,21 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./RecipeDetail.css";
+import developMode from "./developMode";
 
-function RecipeDetail({ recipeList }) {
+function RecipeDetail() {
     const { recipeFolderName } = useParams();
     const [recipe, setRecipe] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         // Find the recipe in the recipeList by id
-        const foundRecipe = recipeList.find(
-            (r) => r.folderName === recipeFolderName
+        async function fetchRecipe() {
+            const recipeName = encodeURIComponent(recipeFolderName);
+            try {
+                const url = developMode
+                    ? `http://localhost:3001/api/recipes?name=${recipeName}`
+                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/recipes?name=${recipeName}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setRecipe(data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching recipe:", error);
+                setError(error);
+                setIsLoading(false);
+            }
+        }
+        fetchRecipe();
+    }, [recipeFolderName]);
+
+    if (isLoading) {
+        return <div style={{ color: "white" }}>Loading...</div>;
+    }
+
+    if (error) {
+        return (
+            <div style={{ color: "white" }}>
+                Error loading recipe: {error.message}
+            </div>
         );
-        setRecipe(foundRecipe);
-    }, [recipeFolderName, recipeList]);
+    }
 
     if (!recipe) {
-        return <div>Loading...</div>;
+        return <div style={{ color: "white" }}>Recipe not found</div>;
     }
 
     return (
@@ -27,13 +58,13 @@ function RecipeDetail({ recipeList }) {
                 alt={`Cover of Recipe ${recipe.coverImg.name}`}
             />
 
-			<h1>Instructions</h1>
+            <h1>Instructions</h1>
             {recipe.descriptionImgs.map((image, index) => (
                 <img
                     key={index}
                     src={image.link}
                     alt={`Recipe Detail ${index + 1}`}
-					className="detail-img"
+                    className="detail-img"
                 />
             ))}
         </div>

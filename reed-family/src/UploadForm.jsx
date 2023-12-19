@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import developMode from "./developMode";
 
 function CustomDropdown({ label, children, isOpen, setIsOpen }) {
     const toggleRef = useRef(null);
@@ -48,7 +49,6 @@ function UploadForm({ formType }) {
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [authorName, setAuthorName] = useState(""); // New state for author's name
-    const developMode = false; // Set to true if running locally, false if running on Heroku
 
     const handleAuthorNameChange = (event) => {
         setAuthorName(event.target.value);
@@ -88,16 +88,17 @@ function UploadForm({ formType }) {
         try {
             const response = await fetch(
                 developMode
-                    ? `http://localhost:3001/upload/${formType}`
-                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/upload/${formType}`,
+                    ? `http://localhost:3001/api/upload/?type=${formType}`
+                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/upload/?type=${formType}`,
                 { method: "POST", body: formData }
             );
 
             if (response.ok) {
                 setMessage("Files uploaded successfully!");
-                setSelectedFiles([]);
-                setRecipeName("");
-                setTimeout(() => setMessage(""), 3000);
+                setTimeout(() => {
+                    // Force reload the page after showing the success message for 3 seconds
+                    window.location.reload();
+                });
             } else {
                 const errorData = await response.json();
                 setMessage("Failed to upload: " + errorData.message);
