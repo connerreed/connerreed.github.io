@@ -54,7 +54,7 @@ function RecipeDetail() {
             <h1>{recipe.coverImg.name}</h1>
             {/* Display the cover image */}
             <img
-                src={recipe.coverImg.link}
+                src={`data:${recipe.coverImg.mimeType};base64,${recipe.coverImg.image}`}
                 alt={`Cover of Recipe ${recipe.coverImg.name}`}
             />
 
@@ -62,7 +62,7 @@ function RecipeDetail() {
             {recipe.descriptionImgs.map((image, index) => (
                 <img
                     key={index}
-                    src={image.link}
+                    src={`data:${image.mimeType};base64,${image.image}`}
                     alt={`Recipe Detail ${index + 1}`}
                     className="detail-img"
                 />

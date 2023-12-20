@@ -53,13 +53,13 @@ function Slideshow({ elementType }) {
         <Container>
             <Carousel interval={interval} className="custom-slideshow">
                 {elementList.map((element) => (
-                    <Carousel.Item style={{color: 'white'}} key={element.id}>
+                    <Carousel.Item style={{ color: "white" }} key={element.id}>
                         <img
                             className="d-block w-100"
                             src={
                                 elementType === "pictures"
-                                    ? element.link
-                                    : element.coverImg.link
+                                    ? `data:${element.mimeType};base64,${element.image}`
+                                    : `data:${element.coverImg.mimeType};base64,${element.coverImg.image}`
                             }
                             alt={
                                 elementType === "pictures"
