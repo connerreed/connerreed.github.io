@@ -2,6 +2,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	color: white;
 }
 
 .App {
@@ -29,14 +30,6 @@
 	}
 }
 
-.App-link {
-	color: #61dafb;
-}
-
-.slideshowLabel {
-	color: rgb(61, 61, 138);
-	margin-top: 20px;
-}
 
 .slideshowLink {
 	text-decoration: none;
