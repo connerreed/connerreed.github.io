@@ -8,10 +8,11 @@ import developMode from "./developMode";
 
 function Gallery({ elementType }) {
     const [elementList, setElementList] = useState([]);
+    const [cachedPages, setCachedPages] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
+    const [maxPageNumber, setMaxPageNumber] = useState(1);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [maxPageNumber, setMaxPageNumber] = useState(1); // New state for max page number [1
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,25 +36,36 @@ function Gallery({ elementType }) {
     }, [elementType]);
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await fetch(
-                    developMode
-                        ? `http://localhost:3001/api/items?type=${elementType}&page=${currentPage}`
-                        : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/items?type=${elementType}&page=${currentPage}`
-                );
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!cachedPages[currentPage]) {
+            async function fetchData() {
+                try {
+                    const response = await fetch(
+                        developMode
+                            ? `http://localhost:3001/api/items?type=${elementType}&page=${currentPage}`
+                            : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/items?type=${elementType}&page=${currentPage}`
+                    );
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP error! Status: ${response.status}`
+                        );
+                    }
+                    const data = await response.json();
+                    setCachedPages((prev) => ({
+                        ...prev,
+                        [currentPage]: data,
+                    }));
+                    setElementList(data);
+                } catch (error) {
+                    console.error("Fetch error:", error);
                 }
-                const data = await response.json();
-                setElementList(data); // Update the state with the fetched data
-            } catch (error) {
-                console.error("Fetch error:", error);
             }
-        }
 
-        fetchData();
-    }, [elementType, currentPage]); // Re-run the effect whenever the type or page number changes
+            fetchData();
+        } else {
+            // Load from cache
+            setElementList(cachedPages[currentPage]);
+        }
+    }, [elementType, currentPage, cachedPages]);
 
     const handleImageClick = (image) => {
         if (elementType === "pictures") {
@@ -66,45 +78,48 @@ function Gallery({ elementType }) {
 
     const handlePrevious = () => {
         if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+            setCurrentPage((prev) => prev - 1);
         }
     };
 
     const handleNext = () => {
         if (currentPage < maxPageNumber) {
-            setCurrentPage(currentPage + 1);
+            setCurrentPage((prev) => prev + 1);
         }
     };
 
     return (
         <Container>
             <Row>
-                {elementList.map((element) => (
-                    <Col md={4} sm={6} xs={12} key={element.id}>
+                {elementList.map((image) => (
+                    <Col md={4} sm={6} xs={12} key={image.id}>
                         <Card
                             className="position-relative custom-card"
-                            onClick={() => handleImageClick(element)}
+                            onClick={() => handleImageClick(image)}
                         >
                             <Card.Img
                                 variant="top"
                                 src={
                                     elementType === "pictures"
-                                        ? element.link
-                                        : element.coverImg.link
+                                        ? `data:${image.mimeType};base64,${image.image}`
+                                        : `data:${image.coverImg.mimeType};base64,${image.coverImg.image}`
+                                }
+                                alt={
+                                    elementType === "pictures"
+                                        ? image.name
+                                        : image.coverImg.name
                                 }
                             />
-                            {elementType === "recipes" && ( // Adds caption for recipe names
+                            {elementType === "recipes" && (
                                 <Card.Body style={{ borderTop: "1px solid" }}>
-                                    <>
-                                        <div>{element.coverImg.name}</div>
-                                        <div>By: {element.coverImg.author}</div>
-                                    </>
+                                    <div>{image.coverImg.name}</div>
+                                    <div>By: {image.coverImg.author}</div>
                                 </Card.Body>
                             )}
-                            {elementType === "pictures" && ( // Adds download button for pictures (not on mobile)
+                            {elementType === "pictures" && (
                                 <Button
                                     variant="primary"
-                                    href={element.link}
+                                    href={image.link}
                                     download
                                     className="download-button"
                                 >
@@ -125,8 +140,9 @@ function Gallery({ elementType }) {
                 <Modal.Body>
                     {selectedImage && (
                         <img
-                            src={selectedImage.link}
-                            alt="Selected"
+                            style={{ color: "white" }}
+                            src={`data:${selectedImage.mimeType};base64,${selectedImage.image}`}
+                            alt={`Selected: ${selectedImage.name}`}
                             className="img-fluid custom-modal-image"
                         />
                     )}
@@ -134,19 +150,14 @@ function Gallery({ elementType }) {
             </Modal>
             {currentPage !== 1 && (
                 <button
-                    class="page-control-button"
+                    className="page-control-button"
                     onClick={handlePrevious}
-                    disabled={currentPage === 1}
                 >
                     Previous Page
                 </button>
             )}
             {currentPage !== maxPageNumber && (
-                <button
-                    class="page-control-button"
-                    onClick={handleNext}
-                    disabled={currentPage === maxPageNumber}
-                >
+                <button className="page-control-button" onClick={handleNext}>
                     Next Page
                 </button>
             )}
