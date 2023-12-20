@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import "./Gallery.css";
 import developMode from "./developMode";
 
-function Gallery({ elementType }) {
+function Gallery({ elementType, familySelection }) {
+    const [loading, setLoading] = useState(true);
     const [elementList, setElementList] = useState([]);
     const [cachedPages, setCachedPages] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +38,7 @@ function Gallery({ elementType }) {
 
     useEffect(() => {
         if (!cachedPages[currentPage]) {
+            setLoading(true);
             async function fetchData() {
                 try {
                     const response = await fetch(
@@ -61,6 +63,7 @@ function Gallery({ elementType }) {
             }
 
             fetchData();
+            setLoading(false);
         } else {
             // Load from cache
             setElementList(cachedPages[currentPage]);
@@ -88,6 +91,10 @@ function Gallery({ elementType }) {
         }
     };
 
+    if (loading) {
+        return <div style={{ color: "white" }}>Loading...</div>;
+    }
+
     return (
         <Container>
             <Row>
@@ -111,9 +118,9 @@ function Gallery({ elementType }) {
                                 }
                             />
                             {elementType === "recipes" && (
-                                <Card.Body style={{ borderTop: "1px solid" }}>
-                                    <div>{image.coverImg.name}</div>
-                                    <div>By: {image.coverImg.author}</div>
+                                <Card.Body style={{ borderTop: "1px solid"}}>
+                                    <div className="recipe-img-label">{image.coverImg.name}</div>
+                                    <div className="recipe-img-label">By: {image.coverImg.author}</div>
                                 </Card.Body>
                             )}
                             {elementType === "pictures" && (

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import developMode from "./developMode";
 
-function CustomDropdown({ label, children, isOpen, setIsOpen }) {
+function CustomDropdown({ label, children, isOpen, setIsOpen, familySelection }) {
     const toggleRef = useRef(null);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
@@ -43,7 +43,7 @@ function CustomDropdown({ label, children, isOpen, setIsOpen }) {
     );
 }
 
-function UploadForm({ formType }) {
+function UploadForm({ formType, familySelection }) {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [recipeName, setRecipeName] = useState("");
     const [message, setMessage] = useState("");
@@ -88,8 +88,8 @@ function UploadForm({ formType }) {
         try {
             const response = await fetch(
                 developMode
-                    ? `http://localhost:3001/api/upload/?type=${formType}`
-                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/upload/?type=${formType}`,
+                    ? `http://localhost:3001/api/upload/?type=${formType}&family=${familySelection}`
+                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/upload/?type=${formType}&family=${familySelection}`,
                 { method: "POST", body: formData }
             );
 
@@ -117,6 +117,7 @@ function UploadForm({ formType }) {
                 label={formType === "pictures" ? "Add Pictures" : "Add Recipes"}
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
+                familySelection={familySelection}
             >
                 <form onSubmit={handleSubmit} style={{ padding: "10px" }}>
                     {formType === "recipes" && (

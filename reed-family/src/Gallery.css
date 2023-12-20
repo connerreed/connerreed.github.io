@@ -1,14 +1,34 @@
 .page-control-button {
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-right: 5px;
+    color: white;
+    background-color: #3a3f47;
+    cursor: pointer;
+    border: 2px solid #4a4f57;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.page-control-button:hover {
+    background-color: #4a4f57;
+    color: white;
+    border-color: #5a5f67;
+}
+
+.recipe-img-label {
+    color: black;
+    
 }
 
 .download-button {
     position: absolute;
-    right: 10px; /* Adjust as needed */
-    bottom: 10px; /* Adjust as needed */
-    z-index: 10; /* ensures the button appears above the image */
-    
+    right: 10px;
+    /* Adjust as needed */
+    bottom: 10px;
+    /* Adjust as needed */
+    z-index: 10;
+    /* ensures the button appears above the image */
+
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     line-height: 1.5;
@@ -21,33 +41,46 @@
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
-    transition: background-solor 0.3s ease; /* Smooth transition for hover effect */
+    transition: background-solor 0.3s ease;
+    /* Smooth transition for hover effect */
 }
 
 .download-button:hover {
-    background-color: #0056b3; /* Slighly darker shade for hover effect */
+    background-color: #0056b3;
+    /* Slighly darker shade for hover effect */
 }
 
 .custom-modal .modal-dialog {
-    max-width: 80vw; /* Maximum width of the modal */
-    max-height: 80vh; /* Maximum height of the modal */
-    width: auto; /* let image affect modal size */
+    max-width: 80vw;
+    /* Maximum width of the modal */
+    max-height: 80vh;
+    /* Maximum height of the modal */
+    width: auto;
+    /* let image affect modal size */
     height: auto;
-    margin: auto; /* Center the modal vertically and horizontally */
+    margin: auto;
+    /* Center the modal vertically and horizontally */
     display: flex;
-    align-items: center; /* Align the modal contents vertically */
-    justify-content: center; /* Align the modal contents horizontally */
+    align-items: center;
+    /* Align the modal contents vertically */
+    justify-content: center;
+    /* Align the modal contents horizontally */
 }
 
 
 .custom-modal-image {
     width: 100%;
     height: auto;
-    max-width: 100%; /* Allow the image to scale up to the width of the modal */
-    max-height: 75vh; /* Allow the image to scale up to a portion of the viewport height */
-    object-fit: contain; /* Maintain aspect ratio without cropping */
-    display: block; /* Remove any extra space below the image */
-    margin: auto; /* Center the image in the modal */
+    max-width: 100%;
+    /* Allow the image to scale up to the width of the modal */
+    max-height: 75vh;
+    /* Allow the image to scale up to a portion of the viewport height */
+    object-fit: contain;
+    /* Maintain aspect ratio without cropping */
+    display: block;
+    /* Remove any extra space below the image */
+    margin: auto;
+    /* Center the image in the modal */
 }
 
 
@@ -60,12 +93,14 @@
 }
 
 .custom-modal .modal-body {
-    padding: 10px; /* Adjust as needed */
+    padding: 10px;
+    /* Adjust as needed */
 }
 
 .custom-card {
     margin-top: 10px;
 }
+
 
 @media (max-width: 767px) {
     .download-button {

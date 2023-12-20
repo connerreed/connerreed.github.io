@@ -7,6 +7,8 @@ import Recipes from "./Recipes"; // Recipes homepage
 import Home from "./Home"; // Homepage
 import Pictures from "./Pictures"; // Pictures homepage
 import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
+import FamilySelection from "./FamilySelection"; // Family Selection page
+import PictureDetail from "./PictureDetail"; // Picture Detail page
 
 function App() {
     return (
@@ -18,9 +20,11 @@ function App() {
                         path="/recipes/:recipeFolderName"
                         element={<RecipeDetail />}
                     />
+                    <Route path="/pictures:pictureId" element={<PictureDetail/>}/>
                     <Route path="/recipes" element={<Recipes />} />
                     <Route path="/pictures" element={<Pictures />} />
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<FamilySelection />} />
+                    <Route path="/home" element={<Home />} />
                 </Routes>
             </div>
         </HashRouter>
