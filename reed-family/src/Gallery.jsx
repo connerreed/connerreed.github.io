@@ -148,7 +148,7 @@ function Gallery({ elementType, familySelection }) {
                     {selectedImage && (
                         <img
                             style={{ color: "white" }}
-                            src={`data:${selectedImage.mimeType};base64,${selectedImage.image}`}
+                            src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${selectedImage.name}`}
                             alt={`Selected: ${selectedImage.name}`}
                             className="img-fluid custom-modal-image"
                         />
