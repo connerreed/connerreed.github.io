@@ -51,10 +51,10 @@ function RecipeDetail() {
 
     return (
         <div>
-            <h1>{recipe.coverImg.name}</h1>
+            <h1>{recipe.coverImg.name.replace(/_/g, ' ').replace(/\.[^.]+$/, '')}</h1>
             {/* Display the cover image */}
             <img
-                src={`data:${recipe.coverImg.mimeType};base64,${recipe.coverImg.image}`}
+                src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${recipe.coverImg.name}`}
                 alt={`Cover of Recipe ${recipe.coverImg.name}`}
             />
 
@@ -62,7 +62,7 @@ function RecipeDetail() {
             {recipe.descriptionImgs.map((image, index) => (
                 <img
                     key={index}
-                    src={`data:${image.mimeType};base64,${image.image}`}
+                    src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.name}`}
                     alt={`Recipe Detail ${index + 1}`}
                     className="detail-img"
                 />

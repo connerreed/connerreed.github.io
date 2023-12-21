@@ -61,8 +61,8 @@ function Slideshow({ elementType }) {
                             className="d-block w-100"
                             src={
                                 elementType === "pictures"
-                                    ? `data:${element.mimeType};base64,${element.image}`
-                                    : `data:${element.coverImg.mimeType};base64,${element.coverImg.image}`
+                                    ? `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${element.name}`
+                                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${element.coverImg.name}`
                             }
                             alt={
                                 elementType === "pictures"
