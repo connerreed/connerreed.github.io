@@ -108,8 +108,8 @@ function Gallery({ elementType, familySelection }) {
                                 variant="top"
                                 src={
                                     elementType === "pictures"
-                                        ? `data:${image.mimeType};base64,${image.image}`
-                                        : `data:${image.coverImg.mimeType};base64,${image.coverImg.image}`
+                                    ? `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.name}`
+                                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.coverImg.name}`
                                 }
                                 alt={
                                     elementType === "pictures"
@@ -119,7 +119,7 @@ function Gallery({ elementType, familySelection }) {
                             />
                             {elementType === "recipes" && (
                                 <Card.Body style={{ borderTop: "1px solid"}}>
-                                    <div className="recipe-img-label">{image.coverImg.name}</div>
+                                    <div className="recipe-img-label">{image.coverImg.name.replace(/_/g, ' ').replace(/\.[^.]+$/, '')}</div>
                                     <div className="recipe-img-label">By: {image.coverImg.author}</div>
                                 </Card.Body>
                             )}

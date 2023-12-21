@@ -7,16 +7,16 @@ function CustomDropdown({ label, children, isOpen, setIsOpen, familySelection })
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     return (
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "relative"}}>
             <button
                 ref={toggleRef}
                 onClick={toggleDropdown}
                 style={{
                     backgroundColor: "#28a745",
-                    color: "white",
                     padding: "10px 15px",
                     border: "none",
                     borderRadius: "5px",
+                    color: 'white'
                 }}
             >
                 {`${label} ↓`}
@@ -62,9 +62,10 @@ function UploadForm({ formType, familySelection }) {
         if (files.length !== event.target.files.length) {
             alert("Only image files are allowed.");
         }
-
+    
         setSelectedFiles([...selectedFiles, ...files]);
     };
+    
 
     const handleRecipeNameChange = (event) => {
         setRecipeName(event.target.value);
@@ -75,14 +76,19 @@ function UploadForm({ formType, familySelection }) {
         setMessage("Uploading... Please wait.");
         setIsOpen(false); // Close the dropdown
 
+        const sanitizedRecipeName = recipeName.replace(/\s+/g, '_');
+        const sanitizedAuthorName = authorName.replace(/\s+/g, '_');
+
         const formData = new FormData();
         selectedFiles.forEach((file) => {
-            formData.append("files", file);
+            const sanitizedFileName = file.name.replace(/\s+/g, '_');
+            const sanitizedFile = new File([file], sanitizedFileName, { type: file.type });
+            formData.append("files", sanitizedFile);
         });
 
         if (formType === "recipes") {
-            formData.append("recipeName", recipeName);
-            formData.append("authorName", authorName);
+            formData.append("recipeName", sanitizedRecipeName);
+            formData.append("authorName", sanitizedAuthorName);
         }
 
         try {
@@ -112,7 +118,7 @@ function UploadForm({ formType, familySelection }) {
     };
 
     return (
-        <div style={{ marginTop: "10px", textAlign: "center" }}>
+        <div style={{ marginTop: "10px", textAlign: "center", color: 'black' }}>
             <CustomDropdown
                 label={formType === "pictures" ? "Add Pictures" : "Add Recipes"}
                 isOpen={isOpen}
@@ -125,7 +131,7 @@ function UploadForm({ formType, familySelection }) {
                             <div style={{ marginBottom: "10px" }}>
                                 <label
                                     htmlFor="recipeName"
-                                    style={{ marginRight: "5px" }}
+                                    style={{ marginRight: "5px"}}
                                 >
                                     Recipe Name:
                                 </label>
@@ -139,7 +145,7 @@ function UploadForm({ formType, familySelection }) {
                             <div style={{ marginBottom: "10px" }}>
                                 <label
                                     htmlFor="authorName"
-                                    style={{ marginRight: "5px" }}
+                                    style={{ marginRight: "5px"}}
                                 >
                                     Your Name:
                                 </label>
@@ -165,14 +171,14 @@ function UploadForm({ formType, familySelection }) {
                             onClick={() =>
                                 document.getElementById("fileInput").click()
                             }
-                            style={{ marginBottom: "10px" }}
+                            style={{ marginBottom: "10px"}}
                         >
                             Add Picture(s)
                         </button>
                         <input
                             type="file"
                             id="fileInput"
-                            style={{ display: "none" }}
+                            style={{ display: "none"}}
                             onChange={handleFileChange}
                             multiple
                         />
