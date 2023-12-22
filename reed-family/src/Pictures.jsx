@@ -8,6 +8,7 @@ function Pictures({ pictureList }) {
     const familySelection = location.state?.familySelection;
     return (
         <div style={{ position: "relative" }}>
+            
             <UploadForm formType="pictures" familySelection={familySelection} />
             <Gallery
                 elementList={pictureList}

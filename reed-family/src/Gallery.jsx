@@ -7,6 +7,9 @@ import "./Gallery.css";
 import developMode from "./developMode";
 
 function Gallery({ elementType, familySelection }) {
+    const hostURL = developMode
+        ? "http://localhost:3001"
+        : "https://reed-family-backend-b01b489ec3fe.herokuapp.com";
     const [loading, setLoading] = useState(true);
     const [elementList, setElementList] = useState([]);
     const [cachedPages, setCachedPages] = useState({});
@@ -19,9 +22,7 @@ function Gallery({ elementType, familySelection }) {
     useEffect(() => {
         async function fetchMaxPageNumber() {
             try {
-                const url = developMode
-                    ? `http://localhost:3001/api/itemCount?type=${elementType}`
-                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/itemCount?type=${elementType}`;
+                const url = `${hostURL}/api/itemCount?type=${elementType}`;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,7 +35,7 @@ function Gallery({ elementType, familySelection }) {
         }
 
         fetchMaxPageNumber();
-    }, [elementType]);
+    }, [elementType, hostURL]);
 
     useEffect(() => {
         if (!cachedPages[currentPage]) {
@@ -42,9 +43,7 @@ function Gallery({ elementType, familySelection }) {
             async function fetchData() {
                 try {
                     const response = await fetch(
-                        developMode
-                            ? `http://localhost:3001/api/items?type=${elementType}&page=${currentPage}`
-                            : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/items?type=${elementType}&page=${currentPage}`
+                        `${hostURL}/api/items?type=${elementType}&page=${currentPage}`
                     );
                     if (!response.ok) {
                         throw new Error(
@@ -68,7 +67,7 @@ function Gallery({ elementType, familySelection }) {
             // Load from cache
             setElementList(cachedPages[currentPage]);
         }
-    }, [elementType, currentPage, cachedPages]);
+    }, [elementType, currentPage, cachedPages, hostURL]);
 
     const handleImageClick = (image) => {
         if (elementType === "pictures") {
@@ -108,8 +107,8 @@ function Gallery({ elementType, familySelection }) {
                                 variant="top"
                                 src={
                                     elementType === "pictures"
-                                    ? `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.name}`
-                                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.coverImg.name}`
+                                        ? `${hostURL}/image/${image.name}`
+                                        : `${hostURL}/image/${image.coverImg.name}`
                                 }
                                 alt={
                                     elementType === "pictures"
@@ -117,10 +116,16 @@ function Gallery({ elementType, familySelection }) {
                                         : image.coverImg.name
                                 }
                             />
-                            {elementType === "recipes" && (
-                                <Card.Body style={{ borderTop: "1px solid"}}>
-                                    <div className="recipe-img-label">{image.coverImg.name.replace(/_/g, ' ').replace(/\.[^.]+$/, '')}</div>
-                                    <div className="recipe-img-label">By: {image.coverImg.author}</div>
+                            {elementType === "recipes" && image !== null && (
+                                <Card.Body style={{ borderTop: "1px solid" }}>
+                                    <div className="recipe-img-label">
+                                        {image.coverImg.name
+                                            .replace(/_/g, " ")
+                                            .replace(/\.[^.]+$/, "")}
+                                    </div>
+                                    <div className="recipe-img-label">
+                                        By: {image.coverImg.author.replace(/_/g, " ")}
+                                    </div>
                                 </Card.Body>
                             )}
                             {elementType === "pictures" && (
@@ -148,7 +153,7 @@ function Gallery({ elementType, familySelection }) {
                     {selectedImage && (
                         <img
                             style={{ color: "white" }}
-                            src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${selectedImage.name}`}
+                            src={`${hostURL}/image/${selectedImage.name}`}
                             alt={`Selected: ${selectedImage.name}`}
                             className="img-fluid custom-modal-image"
                         />

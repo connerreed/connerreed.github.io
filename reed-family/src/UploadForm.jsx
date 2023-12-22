@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import developMode from "./developMode";
 
-function CustomDropdown({ label, children, isOpen, setIsOpen, familySelection }) {
+function CustomDropdown({ label, children, isOpen, setIsOpen }) {
     const toggleRef = useRef(null);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     return (
-        <div style={{ position: "relative"}}>
+        <div style={{ position: "relative" }}>
             <button
                 ref={toggleRef}
                 onClick={toggleDropdown}
@@ -16,7 +16,7 @@ function CustomDropdown({ label, children, isOpen, setIsOpen, familySelection })
                     padding: "10px 15px",
                     border: "none",
                     borderRadius: "5px",
-                    color: 'white'
+                    color: "white",
                 }}
             >
                 {`${label} ↓`}
@@ -44,11 +44,19 @@ function CustomDropdown({ label, children, isOpen, setIsOpen, familySelection })
 }
 
 function UploadForm({ formType, familySelection }) {
+    const hostURL = developMode
+        ? "http://localhost:3001"
+        : "https://reed-family-backend-b01b489ec3fe.herokuapp.com";
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [recipeName, setRecipeName] = useState("");
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [authorName, setAuthorName] = useState(""); // New state for author's name
+    const [selectedFamily, setSelectedFamily] = useState(familySelection);
+
+    const handleFamilyChange = (event) => {
+        setSelectedFamily(event.target.value);
+    };
 
     const handleAuthorNameChange = (event) => {
         setAuthorName(event.target.value);
@@ -62,10 +70,9 @@ function UploadForm({ formType, familySelection }) {
         if (files.length !== event.target.files.length) {
             alert("Only image files are allowed.");
         }
-    
+
         setSelectedFiles([...selectedFiles, ...files]);
     };
-    
 
     const handleRecipeNameChange = (event) => {
         setRecipeName(event.target.value);
@@ -76,13 +83,15 @@ function UploadForm({ formType, familySelection }) {
         setMessage("Uploading... Please wait.");
         setIsOpen(false); // Close the dropdown
 
-        const sanitizedRecipeName = recipeName.replace(/\s+/g, '_');
-        const sanitizedAuthorName = authorName.replace(/\s+/g, '_');
+        const sanitizedRecipeName = recipeName.replace(/\s+/g, "_");
+        const sanitizedAuthorName = authorName.replace(/\s+/g, "_");
 
         const formData = new FormData();
         selectedFiles.forEach((file) => {
-            const sanitizedFileName = file.name.replace(/\s+/g, '_');
-            const sanitizedFile = new File([file], sanitizedFileName, { type: file.type });
+            const sanitizedFileName = file.name.replace(/\s+/g, "_");
+            const sanitizedFile = new File([file], sanitizedFileName, {
+                type: file.type,
+            });
             formData.append("files", sanitizedFile);
         });
 
@@ -93,9 +102,7 @@ function UploadForm({ formType, familySelection }) {
 
         try {
             const response = await fetch(
-                developMode
-                    ? `http://localhost:3001/api/upload/?type=${formType}&family=${familySelection}`
-                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/upload/?type=${formType}&family=${familySelection}`,
+                `${hostURL}/api/upload/?type=${formType}&family=${selectedFamily}`,
                 { method: "POST", body: formData }
             );
 
@@ -118,20 +125,40 @@ function UploadForm({ formType, familySelection }) {
     };
 
     return (
-        <div style={{ marginTop: "10px", textAlign: "center", color: 'black' }}>
+        <div style={{ marginTop: "10px", textAlign: "center", color: "black" }}>
             <CustomDropdown
                 label={formType === "pictures" ? "Add Pictures" : "Add Recipes"}
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
-                familySelection={familySelection}
             >
                 <form onSubmit={handleSubmit} style={{ padding: "10px" }}>
+                    {/* Family dropdown */}
+                    <div style={{ marginBottom: "10px" }}>
+                        <label
+                            htmlFor="familySelection"
+                            style={{ marginRight: "5px" }}
+                        >
+                            Family:
+                        </label>
+                        <select
+                            id="familySelection"
+                            value={selectedFamily}
+                            onChange={handleFamilyChange}
+                        >
+                            <option value="Lemonade">Lemonade</option>
+                            <option value="Lance & Ricque">
+                                Lance & Ricque
+                            </option>
+                            <option value="Mike & Lisa">Mike & Lisa</option>
+                            <option value="Lance & Kelly">Lance & Kelly</option>
+                        </select>
+                    </div>
                     {formType === "recipes" && (
                         <>
                             <div style={{ marginBottom: "10px" }}>
                                 <label
                                     htmlFor="recipeName"
-                                    style={{ marginRight: "5px"}}
+                                    style={{ marginRight: "5px" }}
                                 >
                                     Recipe Name:
                                 </label>
@@ -145,7 +172,7 @@ function UploadForm({ formType, familySelection }) {
                             <div style={{ marginBottom: "10px" }}>
                                 <label
                                     htmlFor="authorName"
-                                    style={{ marginRight: "5px"}}
+                                    style={{ marginRight: "5px" }}
                                 >
                                     Your Name:
                                 </label>
@@ -171,14 +198,14 @@ function UploadForm({ formType, familySelection }) {
                             onClick={() =>
                                 document.getElementById("fileInput").click()
                             }
-                            style={{ marginBottom: "10px"}}
+                            style={{ marginBottom: "10px" }}
                         >
                             Add Picture(s)
                         </button>
                         <input
                             type="file"
                             id="fileInput"
-                            style={{ display: "none"}}
+                            style={{ display: "none" }}
                             onChange={handleFileChange}
                             multiple
                         />

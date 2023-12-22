@@ -5,6 +5,9 @@ import "./Slideshow.css";
 import developMode from "./developMode";
 
 function Slideshow({ elementType }) {
+    const hostURL = developMode
+        ? "http://localhost:3001"
+        : "https://reed-family-backend-b01b489ec3fe.herokuapp.com";
     const [elementList, setElementList] = useState([]); // State to store the fetched list of elements
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,9 +19,7 @@ function Slideshow({ elementType }) {
         async function fetchData() {
             try {
                 const response = await fetch(
-                    developMode
-                        ? `http://localhost:3001/api/items?type=${elementType}&family=${familySelection}&slideshow`
-                        : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/items?type=${elementType}&family=${familySelection}&slideshow`
+                    `${hostURL}/api/items?type=${elementType}&family=${familySelection}&slideshow`
                 );
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,7 +35,7 @@ function Slideshow({ elementType }) {
         }
 
         fetchData();
-    }, [elementType, familySelection]);
+    }, [elementType, familySelection, hostURL]);
 
     if (isLoading) {
         return <div style={{ color: "white" }}>Loading...</div>;
@@ -59,11 +60,7 @@ function Slideshow({ elementType }) {
                     <Carousel.Item style={{ color: "white" }} key={element.id}>
                         <img
                             className="d-block w-100"
-                            src={
-                                elementType === "pictures"
-                                    ? `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${element.name}`
-                                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${element.coverImg.name}`
-                            }
+                            src={elementType === "pictures" ? `${hostURL}/image/${element.name}` : `${hostURL}/image/${element.coverImg.name}`}
                             alt={
                                 elementType === "pictures"
                                     ? element.name
