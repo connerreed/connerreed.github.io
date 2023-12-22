@@ -1,2 +1,2 @@
-const developMode = false; // true means fetch from heroku, false means fetch from localhost
+const developMode = false; // true means fetch from localhost, false means fetch from heroku
 export default developMode;

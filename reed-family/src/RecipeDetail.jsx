@@ -4,6 +4,9 @@ import "./RecipeDetail.css";
 import developMode from "./developMode";
 
 function RecipeDetail() {
+    const hostURL = developMode
+        ? "http://localhost:3001"
+        : "https://reed-family-backend-b01b489ec3fe.herokuapp.com";
     const { recipeFolderName } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -14,9 +17,7 @@ function RecipeDetail() {
         async function fetchRecipe() {
             const recipeName = encodeURIComponent(recipeFolderName);
             try {
-                const url = developMode
-                    ? `http://localhost:3001/api/recipes?name=${recipeName}`
-                    : `https://reed-family-backend-b01b489ec3fe.herokuapp.com/api/recipes?name=${recipeName}`;
+                const url = `${hostURL}/api/recipes?name=${recipeName}`;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,7 +32,7 @@ function RecipeDetail() {
             }
         }
         fetchRecipe();
-    }, [recipeFolderName]);
+    }, [recipeFolderName, hostURL]);
 
     if (isLoading) {
         return <div style={{ color: "white" }}>Loading...</div>;
@@ -51,10 +52,14 @@ function RecipeDetail() {
 
     return (
         <div>
-            <h1>{recipe.coverImg.name.replace(/_/g, ' ').replace(/\.[^.]+$/, '')}</h1>
+            <h1>
+                {recipe.coverImg.name
+                    .replace(/_/g, " ")
+                    .replace(/\.[^.]+$/, "")}
+            </h1>
             {/* Display the cover image */}
             <img
-                src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${recipe.coverImg.name}`}
+                src={`${hostURL}/image/${recipe.coverImg.name}`}
                 alt={`Cover of Recipe ${recipe.coverImg.name}`}
             />
 
@@ -62,7 +67,7 @@ function RecipeDetail() {
             {recipe.descriptionImgs.map((image, index) => (
                 <img
                     key={index}
-                    src={`https://reed-family-backend-b01b489ec3fe.herokuapp.com/image/${image.name}`}
+                    src={`${hostURL}/image/${image.name}`}
                     alt={`Recipe Detail ${index + 1}`}
                     className="detail-img"
                 />
