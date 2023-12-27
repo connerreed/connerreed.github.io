@@ -1,0 +1,34 @@
+.formContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.formElement {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+#foldersToAddTo {
+    overflow-y: scroll; /* Show vertical scrollbar */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: blue gray; /* For Firefox: thumb and track color */
+}
+
+/* For Webkit browsers like Chrome, Safari */
+#foldersToAddTo::-webkit-scrollbar {
+    width: 12px; /* width of the entire scrollbar */
+}
+
+#foldersToAddTo::-webkit-scrollbar-track {
+    background: gray; /* color of the tracking area */
+}
+
+#foldersToAddTo::-webkit-scrollbar-thumb {
+    background-color: #282c34; /* color of the scroll thumb */
+    border-radius: 20px; /* roundness of the scroll thumb */
+    border: 3px solid gray; /* creates padding around scroll thumb */
+}
