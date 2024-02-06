@@ -25,6 +25,7 @@ function RecipeUploadForm() {
 	const [currentImageLink, setCurrentImageLink] = useState(""); // TODO: add implementation to api call for generated image
 
 	const handleSubmit = async (event) => {
+		// TODO: handle previewImage file transfer to backend (either generated image or user uploaded file)
 		event.preventDefault(); // ensures form submission is handled by this function instead of the default way: being handled by HTML
 		if (!validateForm()) return;
 		console.log("Recipe Name: ", recipeName);
@@ -56,7 +57,17 @@ function RecipeUploadForm() {
 		}
 	};
 
-	const handleGeneratedImageGrab = (recipeName) => {
+	const generateImage = () => {
+		if (
+			recipeName !== "" && // don't generate image if recipeName field is blank (TODO: fix cases where recipeName is gibberish or whitespace)
+			generatedImageLoaded !== true // don't generate image if there's already an image generated (that's what the regenerate button is for)
+		) {
+			handleGeneratedImageGrab();
+		}
+	};
+
+	const handleGeneratedImageGrab = () => {
+		// TODO: use recipeName state for name of image search
 		setGeneratedImageLoaded(false); // image requested and is loading
 		// set currentImageLink to something
 		setCurrentImageLink(
@@ -104,13 +115,11 @@ function RecipeUploadForm() {
 								setRecipeName(e.target.value);
 								setGeneratedImageLoaded(null);
 							}}
-							onBlur={(e) => {
+							onBlur={() => {
 								// when someone clicks off of this field
-								if (
-									e.target.value !== "" && // don't generate image if recipeName field is blank (TODO: fix cases where recipeName is gibberish or whitespace)
-									generatedImageLoaded !== true // don't generate image if there's already an image generated (that's what the regenerate button is for)
-								)
-									handleGeneratedImageGrab(e.target.value);
+								if (previewImageType === "generatedImage")
+									// don't generate if previewImageType === "ownImage"
+									generateImage();
 							}}
 						/>
 					</div>
@@ -120,7 +129,7 @@ function RecipeUploadForm() {
 							id="uploaderName"
 							value={uploaderName}
 							type="text"
-							placeholder="Your name"
+							placeholder="Your Name"
 							required
 							onChange={(e) => setUploaderName(e.target.value)}
 						/>
@@ -262,9 +271,10 @@ function RecipeUploadForm() {
 								name="previewImageType"
 								value="generatedImage"
 								checked={previewImageType === "generatedImage"}
-								onChange={() =>
-									setPreviewImageType("generatedImage")
-								}
+								onChange={() => {
+									setPreviewImageType("generatedImage");
+									generateImage();
+								}}
 							/>
 						</div>
 					</div>
