@@ -10,6 +10,7 @@ import RecipeDetail from "./RecipeDetail"; // Recipe Detail page
 import FamilySelection from "./FamilySelection"; // Family Selection page
 import PictureDetail from "./PictureDetail"; // Picture Detail page
 import RecipeUploadForm from "./RecipeUploadForm";
+import PictureUploadForm from "./PictureUploadForm";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/" element={<FamilySelection />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/recipeUploadForm" element={<RecipeUploadForm />} />
+                    <Route path="/pictureUploadForm" element={<PictureUploadForm />} />
                 </Routes>
             </div>
         </HashRouter>
