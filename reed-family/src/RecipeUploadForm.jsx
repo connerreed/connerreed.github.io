@@ -16,13 +16,14 @@ function RecipeUploadForm() {
 	const [recipeAuthor, setRecipeAuthor] = useState("");
 	const [mealType, setMealType] = useState("Dinner");
 	const [uploaderMadeRecipe, setUploaderMadeRecipe] = useState(true);
-	const [addToFolder, setAddToFolder] = useState(false);
+	const [addToFolderSelected, setAddToFolderSelected] = useState(false);
 	const [selectedFolders, setSelectedFolders] = useState([]);
 	const [submitted, setSubmitted] = useState(false);
-	const [previewImageType, setPreviewImageType] = useState("generatedImage");
+	const [previewImageType, setPreviewImageType] = useState("generatedImage"); // ownImage || generatedImage
 	// For generatedImageLoaded: null = no image request, false = image requested and is loading, true = image requested and has loaded
 	const [generatedImageLoaded, setGeneratedImageLoaded] = useState(null); // TODO: add loading implementation to api call for generated image
-	const [currentImageLink, setCurrentImageLink] = useState(""); // TODO: add implementation to api call for generated image
+	const [currentGeneratedImageLink, setCurrentGeneratedImageLink] = useState(""); // TODO: add implementation to api call for generated image
+	const [inputFile, setInputFile] = useState(null); // State for user uploaded file
 
 	const handleSubmit = async (event) => {
 		// TODO: handle previewImage file transfer to backend (either generated image or user uploaded file)
@@ -33,12 +34,17 @@ function RecipeUploadForm() {
 		if (!uploaderMadeRecipe) console.log("Recipe Author: ", recipeAuthor);
 		console.log("Meal Type: ", mealType);
 		console.log("Made Recipe: ", uploaderMadeRecipe);
-		if (addToFolder) console.log("Selected Folders: ", selectedFolders);
+		if (addToFolderSelected)
+			console.log("Selected Folders: ", selectedFolders);
 		setSubmitted(true);
+		if (previewImageType === "ownImage")
+			console.log("Uploaded file name: ", inputFile);
+		else
+			console.log("Generated file link: ", currentGeneratedImageLink)
 	};
 
 	const validateForm = () => {
-		if (addToFolder && selectedFolders.length === 0) {
+		if (addToFolderSelected && selectedFolders.length === 0) {
 			alert("Please select at least one folder to add the recipe to.");
 			return false;
 		}
@@ -70,7 +76,7 @@ function RecipeUploadForm() {
 		// TODO: use recipeName state for name of image search
 		setGeneratedImageLoaded(false); // image requested and is loading
 		// set currentImageLink to something
-		setCurrentImageLink(
+		setCurrentGeneratedImageLink(
 			"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH4TP-O3KE3_sLs1sbH_uNo4vBnwEccSbOGeIfOm2-R17Ezi_QN_g0p4D7tR56ihTU96k&usqp=CAU"
 		); // stock lasagna picture for testing
 		setTimeout(() => setGeneratedImageLoaded(true), 2000); // image has been grabbed, turn off loading
@@ -83,6 +89,10 @@ function RecipeUploadForm() {
 		setTimeout(() => setGeneratedImageLoaded(true), 2000);
 	};
 
+	const handleFileChange = (event) => {
+		setInputFile(event.target.files[0]);
+	};
+
 	if (submitted)
 		return (
 			<div>
@@ -92,8 +102,14 @@ function RecipeUploadForm() {
 					<div>Recipe Author: {recipeAuthor}</div>
 				)}
 				<div>Meal Type: {mealType}</div>
-				{addToFolder && (
+				{addToFolderSelected && (
 					<div>Selected Folders: {selectedFolders.join(", ")}</div>
+				)}
+				{previewImageType === "ownImage" && (
+					<div>Uploaded image name: {inputFile.name}</div>
+				)}
+				{previewImageType === "generatedImage" && (
+					<div>Generated image link: {currentGeneratedImageLink}</div>
 				)}
 			</div>
 		);
@@ -183,11 +199,13 @@ function RecipeUploadForm() {
 						<input
 							id="addToFolder"
 							type="checkbox"
-							checked={addToFolder}
-							onChange={(e) => setAddToFolder(e.target.checked)}
+							checked={addToFolderSelected}
+							onChange={(e) =>
+								setAddToFolderSelected(e.target.checked)
+							}
 						/>
 					</div>
-					{addToFolder && (
+					{addToFolderSelected && (
 						<div className="formElement">
 							<div>Choose Folders:</div>
 							<div
@@ -239,7 +257,12 @@ function RecipeUploadForm() {
 						</div>
 						<div className="imageInput">
 							{previewImageType === "ownImage" && (
-								<input type="file" accept="image/*" />
+								<input
+									type="file"
+									onChange={handleFileChange}
+									accept="image/*"
+									required
+								/>
 							)}
 							{previewImageType === "generatedImage" && (
 								<>
@@ -249,7 +272,7 @@ function RecipeUploadForm() {
 									{generatedImageLoaded && (
 										<div>
 											<img
-												src={currentImageLink}
+												src={currentGeneratedImageLink}
 												alt="generated preview"
 											/>
 											<button
