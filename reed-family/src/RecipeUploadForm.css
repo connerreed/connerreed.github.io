@@ -1,0 +1,92 @@
+.formContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.formTitle {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.form {
+    width: 300px;
+}
+
+.formElement {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.imageInput {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px; /* Adjust based on typical image size */
+    width: 100%;
+}
+
+.imageInput img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+.imageInput input {
+    width: 75%;
+}
+
+#foldersToAddTo {
+    overflow-y: scroll;
+    /* Show vertical scrollbar */
+    scrollbar-width: thin;
+    /* For Firefox */
+    scrollbar-color: #282c34 gray;
+    /* For Firefox: thumb and track color */
+}
+
+/* For Webkit browsers like Chrome, Safari */
+#foldersToAddTo::-webkit-scrollbar {
+    width: 12px;
+    /* width of the entire scrollbar */
+}
+
+#foldersToAddTo::-webkit-scrollbar-track {
+    background: gray;
+    /* color of the tracking area */
+}
+
+#foldersToAddTo::-webkit-scrollbar-thumb {
+    background-color: #282c34;
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+    border: 3px solid gray;
+    /* creates padding around scroll thumb */
+}
+
+.scrollableCheckboxList {
+    max-height: 200px;
+    /* May need to adjust */
+    overflow-y: auto;
+    border: 1px solid white;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.folderListItem {
+    margin-bottom: 15px;
+}
+
+.imageInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px; /* Adjust based on size of largest element */
+    width: 100%;
+    overflow: hidden;
+}

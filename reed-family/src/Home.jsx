@@ -36,13 +36,13 @@ function Home() {
         return <div style={{ color: "white" }}>Loading...</div>;
     }
     return (
-        <div className="container">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: '10px', marginTop: '20px' }}>
             <Link
                 to="/pictures"
-                className="slideshowLink"
+                style={{ textDecoration: "none" }}
                 state={{ familySelection: familySelection }}
             >
-                <h1 className="slideshowLabel">Pictures</h1>
+                <h1 className="slideshow-label">Pictures</h1>
                 <Slideshow
                     className="slideshow"
                     elementType="pictures"
@@ -51,10 +51,10 @@ function Home() {
             </Link>
             <Link
                 to="/recipes"
-                className="slideshowLink"
+                style={{ textDecoration: "none" }}
                 state={{ familySelection: familySelection }}
             >
-                <h1 className="slideshowLabel">Recipes</h1>
+                <h1 className="slideshow-label">Recipes</h1>
                 <Slideshow
                     className="slideshow"
                     elementType="recipes"
