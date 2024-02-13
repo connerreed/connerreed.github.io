@@ -100,9 +100,9 @@ function RecipeUploadForm() {
 
 	return (
 		<>
-			<h1>Recipe Upload Form</h1>
+			<h1 class="formTitle">Recipe Upload Form</h1>
 			<div className="formContainer">
-				<form onSubmit={handleSubmit}>
+				<form class="form" onSubmit={handleSubmit}>
 					<div className="formElement">
 						<label htmlFor="recipeName">Recipe Name:</label>
 						<input
@@ -175,7 +175,7 @@ function RecipeUploadForm() {
 							<option value="Dinner">Dinner</option>
 							<option value="Dessert">Dessert</option>
 							<option value="Snack">Snack</option>
-							<option value="Other">Other</option>
+							<option value="Misc">Misc</option>
 						</select>
 					</div>
 					<div className="formElement">
@@ -239,27 +239,29 @@ function RecipeUploadForm() {
 						</div>
 						<div className="imageInput">
 							{previewImageType === "ownImage" && (
-								<input type="file" accept="image/*" /> // accept any image files
+								<input type="file" accept="image/*" />
 							)}
-							{previewImageType === "generatedImage" &&
-								generatedImageLoaded === false && ( // image request sent to API and is loading
-									<div>Loading...</div>
-								)}
-							{previewImageType === "generatedImage" && // image response received, display image
-								generatedImageLoaded && (
-									<div>
-										<img
-											src={currentImageLink}
-											alt="generated preview"
-										/>
-										<button // button to regenerate image to something else if the current image isn't desired
-											type="button"
-											onClick={regenerateImage}
-										>
-											Regenerate Image
-										</button>
-									</div>
-								)}
+							{previewImageType === "generatedImage" && (
+								<>
+									{generatedImageLoaded === false && (
+										<div>Loading...</div>
+									)}
+									{generatedImageLoaded && (
+										<div>
+											<img
+												src={currentImageLink}
+												alt="generated preview"
+											/>
+											<button
+												type="button"
+												onClick={regenerateImage}
+											>
+												Regenerate Image
+											</button>
+										</div>
+									)}
+								</>
+							)}
 						</div>
 						<div>
 							<label htmlFor="generatedImage">
