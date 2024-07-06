@@ -2,14 +2,20 @@ import os
 from rest_framework import serializers
 from .models import (FamilyMember, Recipe, RecipeContentImage, MealType, Picture, Video, Comment,
                      RecipeAlbum, MediaAlbum)
+from django.contrib.auth.models import User
 
 class RecipeContentImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeContentImage
         fields = ['id', 'image']
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['recipe_title'] = instance.recipe.title  # Adding the recipe title to the representation
+        return representation
+
 class RecipeSerializer(serializers.ModelSerializer):
-    images = RecipeContentImageSerializer(many=True, write_only=True)
+    images = RecipeContentImageSerializer(many=True, read_only=True)  # Ensure images are included in the response
     mealType = serializers.SlugRelatedField(slug_field='name', queryset=MealType.objects.all(), many=True)
 
     class Meta:
@@ -22,7 +28,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         for image_data in images_data:
             RecipeContentImage.objects.create(recipe=recipe, **image_data)
         return recipe
-    
+
     def update(self, instance, validated_data):
         images_data = validated_data.pop('images')
         instance.title = validated_data.get('title', instance.title)
@@ -40,16 +46,40 @@ class RecipeSerializer(serializers.ModelSerializer):
             RecipeContentImage.objects.create(recipe=instance, **image_data)
 
         return instance
+
     
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']  # or any other fields you want to include
+
 class PictureSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Picture
         fields = '__all__'
+        depth = 1
 
 class VideoSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     class Meta:
         model = Video
-        fields = '__all__'
+        fields = ['id', 'video', 'user', 'title']
+        depth = 1
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        validated_data['user'] = request.user
+        return super().create(validated_data)
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.thumbnail:
+            request = self.context.get('request')
+            thumbnail_url = request.build_absolute_uri(instance.thumbnail.url)
+            representation['thumbnail'] = thumbnail_url
+        return representation
 
     def validate_video(self, value):
         ext = os.path.splitext(value.name)[1]

@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete, post_save
+import imageio
 
 
 class MealType(models.Model):
@@ -31,6 +32,8 @@ class RecipeContentImage(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='images/recipecontent/')
 
+    def str(self):
+        return self.recipe.title
 
 class Picture(models.Model):
     image = models.ImageField(upload_to='images/pictures/')
@@ -47,12 +50,28 @@ class Picture(models.Model):
 class Video(models.Model):
     video = models.FileField(upload_to='videos/')
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='videos')
+    title = models.CharField(max_length=100, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='images/videothumbnails/', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.video and not self.thumbnail:
+            self.generate_thumbnail()
+
+    def generate_thumbnail(self):
+        video_path = self.video.path
+        thumbnail_path = os.path.join('media/images/videothumbnails/', f'{self.pk}.jpg')
+        reader = imageio.get_reader(video_path)
+        frame = reader.get_data(1)  # Get the second frame of the video
+        imageio.imwrite(thumbnail_path, frame)
+        self.thumbnail = thumbnail_path.replace('media/', '')
+        self.save()
 
     def delete(self, *args, **kwargs):
-        # Delete the video from the file system
-        if self.video:
-            if os.path.isfile(self.video.path):
-                os.remove(self.video.path)
+        if self.video and os.path.isfile(self.video.path):
+            os.remove(self.video.path)
+        if self.thumbnail and os.path.isfile(self.thumbnail.path):
+            os.remove(self.thumbnail.path)
         super().delete(*args, **kwargs)
 
 
