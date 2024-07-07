@@ -1,19 +1,21 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/CustomNavbar.css"; // Import custom CSS
 import ReedFamilyIcon from "../imgs/ReedFamilyIcon.png"; // Import image
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useAuth } from "./AuthContext";
 
 function CustomNavbar() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { authToken } = useAuth();
 
-    const showBackButton = !/^\/(recipes|pictures|videos|)$/.test( // Everything besides the navigation pages
+    const showBackButton = !/^\/(recipes|pictures|videos|login|register|profile|)$/.test( // Everything besides the navigation pages
         location.pathname
     );
 
@@ -47,7 +49,7 @@ function CustomNavbar() {
                         </LinkContainer>
                     </Nav>
                     <Nav>
-                        <LinkContainer to="/login">
+                        <LinkContainer to={authToken ? "/profile" : "/login"}>
                             <Nav.Link>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -59,11 +61,6 @@ function CustomNavbar() {
                                 >
                                     <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
                                 </svg>
-                            </Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to="/register">
-                            <Nav.Link>
-                                Register
                             </Nav.Link>
                         </LinkContainer>
                     </Nav>

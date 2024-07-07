@@ -35,7 +35,7 @@ const VideoGallery = () => {
             setLoading(false);
         };
         fetchVideos();
-    }, []);
+    }, [authToken]);
 
     if (loading) {
         return (

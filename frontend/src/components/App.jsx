@@ -1,21 +1,23 @@
+// App.jsx
 import React from "react";
-import "./css/App.css";
+import "../css/App.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import CustomNavbar from "./components/CustomNavbar";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import PictureGallery from "./components/PictureGallery";
-import Picture from "./components/Picture";
-import NewPictureForm from "./components/NewPictureForm";
-import RecipeGallery from "./components/RecipeGallery";
-import Recipe from "./components/Recipe";
-import NewRecipeForm from "./components/NewRecipeForm";
-import VideoGallery from "./components/VideoGallery";
-import Video from "./components/Video";
-import NewVideoForm from "./components/NewVideoForm";
+import CustomNavbar from "./CustomNavbar";
+import Home from "./Home";
+import Login from "./Login";
+import Register from "./Register";
+import Profile from "./Profile"; // Import Profile component
+import PictureGallery from "./PictureGallery";
+import Picture from "./Picture";
+import NewPictureForm from "./NewPictureForm";
+import RecipeGallery from "./RecipeGallery";
+import Recipe from "./Recipe";
+import NewRecipeForm from "./NewRecipeForm";
+import VideoGallery from "./VideoGallery";
+import Video from "./Video";
+import NewVideoForm from "./NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./AuthContext";
 
 function App() {
     return (
@@ -52,6 +54,7 @@ function App() {
                             />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
+                            <Route path="/profile" element={<Profile />} />
                         </Routes>
                     </div>
                 </div>

@@ -159,9 +159,35 @@ REST_FRAMEWORK = {
 }
 
 # DJOSER settings
+#AUTH_USER_MODEL = 'content.CustomUser'
+
 DJOSER = {
-    'USER_ID_FIELD': 'username',
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'content.serializers.UserCreateSerializer',
+        'user': 'content.serializers.UserSerializer',
+        'current_user': 'content.serializers.UserSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    },
+    'USER_ID_FIELD': 'id',
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'SET_PASSWORD_RETYPE': True,
+    'SET_USERNAME_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'USERNAME_RESET_CONFIRM_RETYPE': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': False,
+    'CREATE_SESSION_ON_LOGIN': False,
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
