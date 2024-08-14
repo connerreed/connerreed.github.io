@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,10 +48,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'content',
     'debug_toolbar',
     'corsheaders',
+    'content',
 ]
+
+AUTH_USER_MODEL = 'content.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +72,8 @@ INTERNAL_IPS = [
 ]
 
 ROOT_URLCONF = 'familywebsite.urls'
+
+
 
 TEMPLATES = [
     {
@@ -159,7 +162,6 @@ REST_FRAMEWORK = {
 }
 
 # DJOSER settings
-#AUTH_USER_MODEL = 'content.CustomUser'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -193,4 +195,3 @@ AUTHENTICATION_BACKENDS = (
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
-

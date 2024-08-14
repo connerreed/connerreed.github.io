@@ -3,10 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 
-def validate_unique_email(value, user_id=None):
+def validate_unique_email(value):
     User = get_user_model()
-    user_query_set = User.objects.filter(email=value)
-    if user_id:
-        user_query_set = user_query_set.exclude(id=user_id)
-    if user_query_set.exists():
+    if User.objects.filter(email=value).exists():
         raise ValidationError(_('User with this email already exists'), code='unique')

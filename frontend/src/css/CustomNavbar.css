@@ -9,7 +9,7 @@
 }
 
 .navbar-scroll::-webkit-scrollbar-track {
-    background: #343a40; /* Match the background of the navbar */
+    background: #343a40; /* Match the background of the navbar
 }
 
 .navbar-scroll::-webkit-scrollbar-thumb {

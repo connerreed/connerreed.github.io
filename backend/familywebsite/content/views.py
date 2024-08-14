@@ -1,11 +1,23 @@
 from rest_framework import generics
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
 from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum, MediaAlbum)
 from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSerializer, VideoSerializer,
-                          CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+                          CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Create your views here.
+#User = get_user_model()
+
+class UserThemeUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
 class FamilyMemberListCreateView(generics.ListCreateAPIView):
     queryset = FamilyMember.objects.all()
     serializer_class = FamilyMemberSerializer

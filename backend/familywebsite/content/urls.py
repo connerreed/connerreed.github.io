@@ -16,4 +16,5 @@ urlpatterns = [
     path('recipealbums/<int:pk>/', views.RecipeAlbumRetrieveUpdateDestroyView.as_view(), name='recipealbum-retrieve-update-destroy'),
     path('mediaalbums/', views.MediaAlbumListCreateView.as_view(), name='mediaalbum-list-create'),
     path('mediaalbums/<int:pk>/', views.MediaAlbumRetrieveUpdateDestroyView.as_view(), name='mediaalbum-retrieve-update-destroy'),
+    path('user/theme/', views.UserThemeUpdateView.as_view(), name='user-theme-update'),
 ]

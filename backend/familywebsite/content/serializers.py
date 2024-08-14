@@ -2,13 +2,19 @@ import os
 from rest_framework import serializers
 from .models import (FamilyMember, Recipe, RecipeContentImage, MealType, Picture, Video, Comment,
                      RecipeAlbum, MediaAlbum)
-from django.contrib.auth import get_user_model
+#from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
 from .validators import validate_unique_email
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
 
-User = get_user_model()
+#User = get_user_model()
+
+class UserSerializer(BaseUserSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
 
 class RecipeContentImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,12 +27,14 @@ class RecipeContentImageSerializer(serializers.ModelSerializer):
         return representation
 
 class RecipeSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
     images = RecipeContentImageSerializer(many=True, read_only=True)  # Ensure images are included in the response
     mealType = serializers.SlugRelatedField(slug_field='name', queryset=MealType.objects.all(), many=True)
 
     class Meta:
         model = Recipe
         fields = ['id', 'title', 'description', 'user', 'recipeAuthor', 'mealType', 'featured', 'thumbnail', 'images']
+        depth = 1
 
     def create(self, validated_data):
         images_data = validated_data.pop('images')
@@ -53,12 +61,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         return instance
 
-    
-
-class UserSerializer(BaseUserSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta:
@@ -66,12 +68,6 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         fields = ['id', 'email', 'password', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
-    def validate_email(self, value):
-        try:
-            validate_unique_email(value)
-        except DjangoValidationError as e:
-            raise DRFValidationError(e.message)
-        return value
 
 class PictureSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

@@ -23,9 +23,7 @@ function CustomNavbar() {
         <>
             <Navbar
                 fixed="top"
-                bg="dark"
-                variant="dark"
-                className="navbar-dark"
+                style={{ borderBottom: '3px solid #dee2e6', backgroundColor: 'white'}}
             >
                 <Container>
                     <img
