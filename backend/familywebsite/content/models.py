@@ -66,7 +66,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return self.first_name
      
      def __str__(self):
-         return self.email
+         return self.get_full_name()
      
 
 User = get_user_model()

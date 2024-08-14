@@ -25,7 +25,7 @@ class CustomUserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'prefers_dark_mode')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                         'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login',)}),  # Removed 'date_joined'
