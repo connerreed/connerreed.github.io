@@ -1,4 +1,3 @@
-// App.jsx
 import React from "react";
 import "../css/App.css";
 import { HashRouter, Route, Routes } from "react-router-dom";
@@ -18,63 +17,46 @@ import Video from "./Video";
 import NewVideoForm from "./NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./AuthContext";
-import { ThemeProvider } from "./ThemeContext";
+import { ThemeProvider, useTheme } from "./ThemeContext";
+
+function AppContent() {
+    const { prefersDarkMode } = useTheme();
+
+    return (
+        <div
+            className={`App ${prefersDarkMode ? "DarkMode" : "LightMode"}`}
+        >
+            <CustomNavbar />
+            <div className="content p-0">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/recipes" element={<RecipeGallery />} />
+                    <Route path="/recipes/:id" element={<Recipe />} />
+                    <Route path="/recipes/new" element={<NewRecipeForm />} />
+                    <Route path="/pictures" element={<PictureGallery />} />
+                    <Route path="/pictures/:id" element={<Picture />} />
+                    <Route path="/pictures/new" element={<NewPictureForm />} />
+                    <Route path="/videos" element={<VideoGallery />} />
+                    <Route path="/videos/:id" element={<Video />} />
+                    <Route path="/videos/new" element={<NewVideoForm />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Routes>
+            </div>
+        </div>
+    );
+}
 
 function App() {
     return (
-        <AuthProvider>
-            <ThemeProvider>
+        <ThemeProvider>
+            <AuthProvider>
                 <HashRouter>
-                    <div className="App">
-                        <CustomNavbar />
-                        <div className="content p-0">
-                            <Routes>
-                                <Route path="/" element={<Home />} />
-                                <Route
-                                    path="/recipes"
-                                    element={<RecipeGallery />}
-                                />
-                                <Route
-                                    path="/recipes/:id"
-                                    element={<Recipe />}
-                                />
-                                <Route
-                                    path="/recipes/new"
-                                    element={<NewRecipeForm />}
-                                />
-                                <Route
-                                    path="/pictures"
-                                    element={<PictureGallery />}
-                                />
-                                <Route
-                                    path="/pictures/:id"
-                                    element={<Picture />}
-                                />
-                                <Route
-                                    path="/pictures/new"
-                                    element={<NewPictureForm />}
-                                />
-                                <Route
-                                    path="/videos"
-                                    element={<VideoGallery />}
-                                />
-                                <Route path="/videos/:id" element={<Video />} />
-                                <Route
-                                    path="/videos/new"
-                                    element={<NewVideoForm />}
-                                />
-                                <Route path="/login" element={<Login />} />
-                                <Route
-                                    path="/register"
-                                    element={<Register />}
-                                />
-                                <Route path="/profile" element={<Profile />} />
-                            </Routes>
-                        </div>
-                    </div>
+                    <AppContent />
                 </HashRouter>
-            </ThemeProvider>
-        </AuthProvider>
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

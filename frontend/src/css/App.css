@@ -2,14 +2,24 @@
   /*text-align: center;
   background-color: #121212;
   color: white;
+  background-color: #e7e7f0;
   */
-  background-color: #f8f9fa;
   min-height: 100vh;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.DarkMode {
+  background-color: #121212;
+  color: white;
+}
+
+.LightMode {
+  background-color: #e7e7f0;
+  color: black;
 }
 
 @media (prefers-reduced-motion: no-preference) {

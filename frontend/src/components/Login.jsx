@@ -42,7 +42,7 @@ const Login = () => {
             if (error.response) {
                 setError(
                     "Login failed: " +
-                        (error.response.data.detail || "Invalid credentials")
+                        (error.response.data.non_field_errors || "Invalid credentials")
                 );
             } else if (error.request) {
                 setError("Login failed: No response from server");

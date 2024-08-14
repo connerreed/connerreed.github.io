@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useTheme } from "./ThemeContext";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
-
+    const { prefersDarkMode, setPrefersDarkMode } = useTheme();
     const login = (token) => {
         setAuthToken(token);
         localStorage.setItem("authToken", token);
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setAuthToken(null);
         localStorage.removeItem("authToken");
+        setPrefersDarkMode(false);
     };
 
     useEffect(() => {

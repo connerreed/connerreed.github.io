@@ -1,35 +1,37 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 import axios from 'axios';
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ( { children } ) => {
-    const [theme, setTheme] = useState('light');
+    const [prefersDarkMode, setPrefersDarkMode] = useState(false);
 
     const toggleTheme = () => {
-        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+        setPrefersDarkMode(!prefersDarkMode);
 
         // Save then new theme preference to the server
-        axios.put('http://', { theme: theme })
+        axios.put('http://', { prefers_dark_mode: prefersDarkMode })
             .catch(error => {
                 console.error('Error saving theme: ', error);
             });
     };
 
-    useEffect(() => {
+    /*useEffect(() => {
         // Fetch the user's theme preference from the server
         axios.get('http://')
             .then(response => {
-                setTheme(response.data.theme);
+                setTheme(response.data.prefers_dark_mode);
             })
             .catch(error => {
                 console.error('Error fetching theme: ', error);
             });
-    }, []);
+    }, []); */
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ prefersDarkMode, setPrefersDarkMode }}>
             {children}
         </ThemeContext.Provider>
     );
 };
+
+export const useTheme = () => useContext(ThemeContext);
