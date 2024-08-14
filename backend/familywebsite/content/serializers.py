@@ -3,18 +3,19 @@ from rest_framework import serializers
 from .models import (FamilyMember, Recipe, RecipeContentImage, MealType, Picture, Video, Comment,
                      RecipeAlbum, MediaAlbum)
 #from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
-from .validators import validate_unique_email
+#from .validators import validate_unique_email
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.contrib.auth import get_user_model
 
-#User = get_user_model()
+User = get_user_model()
 
 class UserSerializer(BaseUserSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
+        fields = ['id', 'email', 'first_name', 'last_name', 'prefers_dark_mode', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
 
 class RecipeContentImageSerializer(serializers.ModelSerializer):
     class Meta:

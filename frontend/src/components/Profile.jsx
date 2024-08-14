@@ -52,7 +52,7 @@ const Profile = () => {
     if (!user) {
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
-                <p>Loading user data...</p>
+                <p>Something went wrong when loading user data...</p>
             </Container>
         );
     }
