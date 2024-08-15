@@ -1,20 +1,9 @@
-import React, { createContext, useState, useEffect, useContext } from 'react'
-import axios from 'axios';
+import React, { createContext, useState, useContext } from 'react'
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ( { children } ) => {
-    const [prefersDarkMode, setPrefersDarkMode] = useState(false);
-
-    const toggleTheme = () => {
-        setPrefersDarkMode(!prefersDarkMode);
-
-        // Save then new theme preference to the server
-        axios.put('http://', { prefers_dark_mode: prefersDarkMode })
-            .catch(error => {
-                console.error('Error saving theme: ', error);
-            });
-    };
+    const [darkMode, setDarkMode] = useState(false);
 
     /*useEffect(() => {
         // Fetch the user's theme preference from the server
@@ -28,7 +17,7 @@ export const ThemeProvider = ( { children } ) => {
     }, []); */
 
     return (
-        <ThemeContext.Provider value={{ prefersDarkMode, setPrefersDarkMode }}>
+        <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
             {children}
         </ThemeContext.Provider>
     );

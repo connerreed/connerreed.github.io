@@ -20,14 +20,14 @@ import { AuthProvider } from "./AuthContext";
 import { ThemeProvider, useTheme } from "./ThemeContext";
 
 function AppContent() {
-    const { prefersDarkMode } = useTheme();
+    const { darkMode } = useTheme();
 
     return (
-        <div
-            className={`App ${prefersDarkMode ? "DarkMode" : "LightMode"}`}
-        >
-            <CustomNavbar />
-            <div className="content p-0">
+        <div className={`App ${darkMode ? "DarkMode" : "LightMode"}`}>
+            <div>
+                <CustomNavbar />
+            </div>
+            <div>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/recipes" element={<RecipeGallery />} />

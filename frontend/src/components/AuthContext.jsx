@@ -1,11 +1,15 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useTheme } from "./ThemeContext";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
-    const { prefersDarkMode, setPrefersDarkMode } = useTheme();
+    const [authToken, setAuthToken] = useState(
+        localStorage.getItem("authToken")
+    );
+    const [userData, setUserData] = useState(null);
+    const { setDarkMode } = useTheme();
     const login = (token) => {
         setAuthToken(token);
         localStorage.setItem("authToken", token);
@@ -14,15 +18,33 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setAuthToken(null);
         localStorage.removeItem("authToken");
-        setPrefersDarkMode(false);
+        setDarkMode(false);
+        setUserData(null);
     };
 
+    const updateUser = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                "http://127.0.0.1:8000/auth/users/me/",
+                {
+                    headers: { Authorization: `Token ${authToken}` },
+                }
+            );
+            setDarkMode(response.data.prefers_dark_mode);
+            setUserData(response.data);
+        } catch (error) {
+            console.error("User fetch error: ", error);
+        }
+    }, [authToken, setDarkMode]);
+
     useEffect(() => {
-        // Optionally, add any side effects here
-    }, [authToken]);
+        if (authToken) {
+            updateUser();
+        }
+    }, [authToken, updateUser]);
 
     return (
-        <AuthContext.Provider value={{ authToken, login, logout }}>
+        <AuthContext.Provider value={{ authToken, login, logout, userData, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

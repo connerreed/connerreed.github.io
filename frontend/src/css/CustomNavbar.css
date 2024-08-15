@@ -1,6 +1,7 @@
 .navbar-scroll {
     overflow-x: auto;
     white-space: nowrap;
+    flex-grow: 1;
 }
 
 /* WebKit-based browsers */
@@ -9,7 +10,7 @@
 }
 
 .navbar-scroll::-webkit-scrollbar-track {
-    background: #343a40; /* Match the background of the navbar
+    background: #343a40; /* Match the background of the navbar */
 }
 
 .navbar-scroll::-webkit-scrollbar-thumb {
@@ -34,8 +35,14 @@
 
 .navbar {
     overflow: visible; /* Ensure navbar does not clip the dropdown */
+    width: 100%
+}
+
+.navbar .nav-link {
+    display: inline-block;
 }
 
 .navbar .dropdown-menu {
     position: absolute;
+    background-color: #dee2e6c7;
 }

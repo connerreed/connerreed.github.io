@@ -5,6 +5,8 @@
   background-color: #e7e7f0;
   */
   min-height: 100vh;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .App-logo {
@@ -13,7 +15,7 @@
 }
 
 .DarkMode {
-  background-color: #121212;
+  background-color: #121212d8;
   color: white;
 }
 

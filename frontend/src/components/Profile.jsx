@@ -1,21 +1,20 @@
-// Profile.jsx
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+//import React, { useState, useEffect } from "react";
+//import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useTheme } from "./ThemeContext";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Spinner from "react-bootstrap/Spinner";
+//import Spinner from "react-bootstrap/Spinner";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-    const { authToken, logout } = useAuth();
-    const { prefersDarkMode, setPrefersDarkMode } = useTheme();
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const { logout, userData } = useAuth();
+    const { darkMode, setDarkMode } = useTheme();
+    //const [user, setUser] = useState(null);
+    //const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    /*useEffect(() => {
         const fetchUser = async () => {
             setLoading(true);
             try {
@@ -34,6 +33,7 @@ const Profile = () => {
             fetchUser();
         }
     }, [authToken]);
+    */
 
     const handleLogout = () => {
         logout();
@@ -41,7 +41,7 @@ const Profile = () => {
         navigate("/login");
     };
 
-    if (loading) {
+    /*if (loading) {
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
                 <Spinner animation="border" role="status">
@@ -50,8 +50,9 @@ const Profile = () => {
             </Container>
         );
     }
+    */
 
-    if (!user) {
+    if (!userData) {
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
                 <p>Something went wrong when loading user data...</p>
@@ -60,15 +61,15 @@ const Profile = () => {
     }
 
     return (
-        <Container>
-            <h1>{user.first_name} {user.last_name}</h1>
-            <p>Email: {user.email}</p>
+        <div>
+            <h1>{userData.first_name} {userData.last_name}</h1>
+            <p>Email: {userData.email}</p>
             <Button onClick={handleLogout}>Logout</Button>
             <Button onClick={() => {
-                setPrefersDarkMode(!prefersDarkMode)
+                setDarkMode(!darkMode)
                 //alert(prefersDarkMode)
             }}>Toggle Dark Mode</Button>
-        </Container>
+        </div>
     );
 };
 
