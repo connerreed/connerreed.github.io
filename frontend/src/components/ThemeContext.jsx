@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext } from 'react'
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ( { children } ) => {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState((localStorage.getItem('darkMode') === 'true') || false);
 
     /*useEffect(() => {
         // Fetch the user's theme preference from the server

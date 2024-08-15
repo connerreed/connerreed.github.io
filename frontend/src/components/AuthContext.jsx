@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
                 }
             );
             setDarkMode(response.data.prefers_dark_mode);
+            localStorage.setItem("darkMode", response.data.prefers_dark_mode);
             setUserData(response.data);
         } catch (error) {
             console.error("User fetch error: ", error);
