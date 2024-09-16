@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
-import { useAuth } from './AuthContext';
+import { useAuth } from "./AuthContext";
 
 const Pictures = () => {
     const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ const Pictures = () => {
         );
     }
 
-    if (pictureList.length === 0) {
+    /*if (pictureList.length === 0) {
         return (
             <Container
                 className="d-flex justify-content-center align-items-center"
@@ -59,6 +59,7 @@ const Pictures = () => {
             </Container>
         );
     }
+    */
 
     return (
         <Container>
@@ -89,6 +90,13 @@ const Pictures = () => {
                     </Button>
                 </Col>
             </Row>
+            {pictureList.length === 0 && (
+                    <Row className="mt-5">
+                        <Col className="text-center mb-2 mb-md-0">
+                            <h1>No Pictures Found</h1>
+                        </Col>
+                    </Row>
+                )}
             <Row>
                 {pictureList.map((picture) => (
                     <Col key={picture.id} md={4} className="mb-4">
