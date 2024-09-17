@@ -1,20 +1,12 @@
-import React, { createContext, useState, useContext } from 'react'
-
+import React, { createContext, useState, useContext, useEffect } from 'react'
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ( { children } ) => {
     const [darkMode, setDarkMode] = useState((localStorage.getItem('darkMode') === 'true') || false);
 
-    /*useEffect(() => {
-        // Fetch the user's theme preference from the server
-        axios.get('http://')
-            .then(response => {
-                setTheme(response.data.prefers_dark_mode);
-            })
-            .catch(error => {
-                console.error('Error fetching theme: ', error);
-            });
-    }, []); */
+    useEffect(() => {
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
 
     return (
         <ThemeContext.Provider value={{ darkMode, setDarkMode }}>

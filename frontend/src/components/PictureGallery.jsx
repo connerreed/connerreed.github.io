@@ -4,20 +4,27 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
-import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 import { useAuth } from "./AuthContext";
+import useFetchData from "../hooks/useFetchData";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
 const Pictures = () => {
-    const [loading, setLoading] = useState(true);
-    const [pictureList, setPictureList] = useState([]);
-    const url = "http://127.0.0.1:8000/api/pictures/";
+    //const [loading, setLoading] = useState(true);
+    //const [error, setError] = useState("");
+    //const [pictureList, setPictureList] = useState([]);
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
     const navigate = useNavigate();
     const { authToken } = useAuth();
+    const { data: pictureList, loading, error } = useFetchData(
+        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        authToken
+    )
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const fetchPictures = async () => {
+        /*const fetchPictures = async () => {
             setLoading(true);
             try {
                 const picturesResponse = await fetch(url);
@@ -30,36 +37,25 @@ const Pictures = () => {
                 setPictureList(pictures);
             } catch (error) {
                 console.error("Error fetching pictures", error);
+                setError(error.message);
             }
             setLoading(false);
         };
         fetchPictures();
-    }, [authToken]);
+        */
+    }, [authToken, url]);
 
-    if (loading) {
+    if (loading) return <Loading />;
+
+    if (error) return <ErrorMessage message={error} />;
+
+    if (!pictureList || pictureList.length === 0) {
         return (
-            <Container
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "100vh" }}
-            >
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
+            <Container className="text-center mt-5">
+                <h1>No Pictures Found</h1>
             </Container>
         );
     }
-
-    /*if (pictureList.length === 0) {
-        return (
-            <Container
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "100vh" }}
-            >
-                <h1>No pictures found</h1>
-            </Container>
-        );
-    }
-    */
 
     return (
         <Container>
@@ -90,13 +86,6 @@ const Pictures = () => {
                     </Button>
                 </Col>
             </Row>
-            {pictureList.length === 0 && (
-                    <Row className="mt-5">
-                        <Col className="text-center mb-2 mb-md-0">
-                            <h1>No Pictures Found</h1>
-                        </Col>
-                    </Row>
-                )}
             <Row>
                 {pictureList.map((picture) => (
                     <Col key={picture.id} md={4} className="mb-4">

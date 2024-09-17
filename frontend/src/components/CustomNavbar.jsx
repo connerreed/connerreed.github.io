@@ -8,6 +8,7 @@ import ReedFamilyIcon from "../imgs/ReedFamilyIcon.png"; // Import image
 import Button from "react-bootstrap/Button";
 import { useAuth } from "./AuthContext";
 import { useTheme } from "./ThemeContext";
+import ProfileIcon from "./ProfileIcon";
 
 function CustomNavbar() {
     const location = useLocation();
@@ -15,11 +16,10 @@ function CustomNavbar() {
     const { authToken } = useAuth();
     const { darkMode } = useTheme();
 
-    const showBackButton =
-        !/^\/(recipes|pictures|videos|login|profile|)$/.test(
-            // Everything besides the navigation pages
-            location.pathname
-        );
+    const showBackButton = !/^\/(recipes|pictures|videos|login|profile|)$/.test(
+        // Everything besides the navigation pages
+        location.pathname
+    );
 
     return (
         <Container fluid>
@@ -27,15 +27,12 @@ function CustomNavbar() {
                 <Navbar
                     variant={darkMode ? "dark" : "light"}
                     style={{
-                        //borderBottom: `2px solid ${
-                        //    prefersDarkMode ? "gray" : "gray"
-                        //}`,
                         backgroundColor: "inherit",
                         color: darkMode ? "white" : "black",
                         width: "100%",
                     }}
                 >
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand onClick={() => navigate("/")}>
                         <img
                             src={ReedFamilyIcon}
                             alt="Reed Family Icon"
@@ -100,6 +97,7 @@ function CustomNavbar() {
                         </Nav>
                     </Col>
                     */}
+                    <ProfileIcon />
                 </Navbar>
             </Row>
             {showBackButton && (

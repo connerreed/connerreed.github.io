@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const updateUser = useCallback(async () => {
         try {
             const response = await axios.get(
-                "http://127.0.0.1:8000/auth/users/me/",
+                `${process.env.REACT_APP_API_BASE_URL}/auth/users/me/`,
                 {
                     headers: { Authorization: `Token ${authToken}` },
                 }
@@ -34,9 +34,13 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("darkMode", response.data.prefers_dark_mode);
             setUserData(response.data);
         } catch (error) {
-            console.error("User fetch error: ", error);
+            if (error.response && error.response.status === 401) {
+                logout();
+            } else {
+                console.error("User fetch error: ", error);
+            }
         }
-    }, [authToken, setDarkMode]);
+    }, [authToken, setDarkMode, logout]);
 
     useEffect(() => {
         if (authToken) {

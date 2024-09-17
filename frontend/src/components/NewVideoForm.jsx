@@ -7,6 +7,8 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
 const NewVideoForm = () => {
     const [title, setTitle] = useState("");
@@ -14,6 +16,8 @@ const NewVideoForm = () => {
     const [fileError, setFileError] = useState("");
     const { authToken } = useAuth();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -38,12 +42,15 @@ const NewVideoForm = () => {
             return;
         }
 
+        setLoading(true);
+        setError("");
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("video", videoFile);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/videos/", {
+            const response = await fetch(`${process.env.REACT_APP_BASE_API_URL}/api/videos/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Token ${authToken}`
@@ -60,8 +67,12 @@ const NewVideoForm = () => {
         } catch (error) {
             alert("Failed to submit form\n" + error.message);
             console.error("Error submitting form", error);
+        } finally {
+            setLoading(false);
         }
     }
+
+    if (loading) return <Loading />;
 
     return (
         <Container>
@@ -70,6 +81,7 @@ const NewVideoForm = () => {
                     <h1>New Video Form</h1>
                 </Col>
                 <Col xs={12} md={6}>
+                    {error && <ErrorMessage message={error} />}
                     <Form onSubmit={submitForm}>
                         <Form.Group className="mb-4">
                             <Form.Label>Title</Form.Label>

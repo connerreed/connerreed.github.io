@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import Spinner from "react-bootstrap/Spinner";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
 const Picture = () => {
     const { id } = useParams();
     const [picture, setPicture] = useState(null);
     const [loading, setLoading] = useState(true);
-    const url = `http://127.0.0.1:8000/api/pictures/${id}/`;
+    const url = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/${id}/`;
     useEffect(() => {
         window.scrollTo(0, 0);
         const fetchPicture = async () => {
@@ -30,15 +31,9 @@ const Picture = () => {
         fetchPicture();
     }, [id, url]);
 
-    if (loading) {
-        return (
-            <Container className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Container>
-        );
-    }
+    if (loading) return <Loading />;
+
+    if (!picture) return <ErrorMessage message="Picture not found" />;
 
     return (
         <Container className="w-50 mt-5">

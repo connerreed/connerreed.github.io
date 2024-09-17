@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-
 import { Form, Button, Container } from "react-bootstrap";
-//import { useAuth } from "./AuthContext";
+import { useAuth } from "./AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
 const NewPictureForm = () => {
-    //const { authToken, userData } = useAuth();
+    const { authToken } = useAuth();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [newPictures, setNewPictures] = useState([]);
-    const url = "http://127.0.0.1:8000";
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -17,6 +21,7 @@ const NewPictureForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError("");
 
         if (newPictures.length === 0) {
             setError("No pictures selected.");
@@ -24,28 +29,40 @@ const NewPictureForm = () => {
             return;
         }
 
-        console.log(newPictures);
+        const formData = new FormData();
+        Array.from(newPictures).forEach((file) => {
+            formData.append("images", file);
+        });
 
-        setLoading(false);
+        try {
+            await axios.post(`${API_BASE_URL}/api/pictures/`, formData, {
+                headers: {
+                    Authorization: `Token ${authToken}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            navigate("/pictures");
+        } catch (error) {
+            setError("Failed to upload pictures.");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    if (loading) return <Loading />;
 
     return (
         <>
-            {loading && <p>Loading...</p>}
-            {error && <p>Error: {error.message}</p>}
             <h1 className="text-center">New Pictures</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="w-50 mt-3" onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                        {//<Form.Label>Add Pictures</Form.Label>
-                        }
+                    {error && <ErrorMessage message={error} />}
+                    <Form.Group className="mb-3">
                         <Form.Control
                             type="file"
                             accept="image/*"
-                            value={newPictures}
-                            onChange={(e) => {
-                                setNewPictures(e.target.value);
-                            }}
+                            onChange={(e) => setNewPictures(e.target.files)}
                             multiple
                             required
                         />
