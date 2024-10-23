@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+// Strict mode renders everything twice, trying to catch any poorly written components and their bugs
 root.render(
   <React.StrictMode>
     <App />
