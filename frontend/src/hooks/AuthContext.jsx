@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("authToken", token);
     };
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setAuthToken(null);
         localStorage.removeItem("authToken");
         setDarkMode(false);
         setUserData(null);
-    };
+    }, [setDarkMode]);
 
     const updateUser = useCallback(async () => {
         try {

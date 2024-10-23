@@ -1,10 +1,8 @@
-//import React, { useState, useEffect } from "react";
-//import axios from "axios";
-import { useAuth } from "./AuthContext";
-import { useTheme } from "./ThemeContext";
+import React from "react";
+import { useAuth } from "../hooks/AuthContext";
+import { useTheme } from "../hooks/ThemeContext";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-//import Spinner from "react-bootstrap/Spinner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -23,13 +21,13 @@ const Profile = () => {
                 `${process.env.REACT_APP_API_BASE_URL}/auth/users/me/`,
                 { prefers_dark_mode: !darkMode },
                 {
-                  headers: { Authorization: `Token ${authToken}` },
+                    headers: { Authorization: `Token ${authToken}` },
                 }
-              );
-        } catch(error) {
+            );
+        } catch (error) {
             console.error("Failed to update dark mode preference: ", error);
         }
-    }
+    };
 
     /*useEffect(() => {
         const fetchUser = async () => {
@@ -79,7 +77,9 @@ const Profile = () => {
 
     return (
         <div>
-            <h1>{userData.first_name} {userData.last_name}</h1>
+            <h1>
+                {userData.first_name} {userData.last_name}
+            </h1>
             <p>Email: {userData.email}</p>
             <Button onClick={handleLogout}>Logout</Button>
             <Button onClick={toggleDarkMode}>Toggle Dark Mode</Button>

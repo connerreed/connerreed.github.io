@@ -1,7 +1,7 @@
-import React from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { useAuth } from './AuthContext';
-import { Nav } from 'react-bootstrap';
+import React from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { useAuth } from "../hooks/AuthContext";
+import { Nav } from "react-bootstrap";
 
 const ProfileIcon = () => {
     const { authToken } = useAuth();
@@ -12,6 +12,6 @@ const ProfileIcon = () => {
             </Nav.Link>
         </LinkContainer>
     );
-}
+};
 
 export default ProfileIcon;

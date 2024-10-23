@@ -1,7 +1,6 @@
-// NewVideoForm.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from './AuthContext';
+import { useAuth } from "../hooks/AuthContext";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -25,7 +24,12 @@ const NewVideoForm = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        const validVideoTypes = ["video/mp4", "video/avi", "video/mkv", "video/mov"];
+        const validVideoTypes = [
+            "video/mp4",
+            "video/avi",
+            "video/mkv",
+            "video/mov",
+        ];
         if (file && validVideoTypes.includes(file.type)) {
             setVideoFile(file);
             setFileError("");
@@ -36,7 +40,7 @@ const NewVideoForm = () => {
     };
 
     const submitForm = async (e) => {
-        e.preventDefault();  // Prevent the form from submitting the default way
+        e.preventDefault(); // Prevent the form from submitting the default way
         if (!videoFile) {
             setFileError("Please upload a valid video file.");
             return;
@@ -50,13 +54,16 @@ const NewVideoForm = () => {
         formData.append("video", videoFile);
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_BASE_API_URL}/api/videos/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Token ${authToken}`
-                },
-                body: formData
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_BASE_API_URL}/api/videos/`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
+                    body: formData,
+                }
+            );
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -70,7 +77,7 @@ const NewVideoForm = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     if (loading) return <Loading />;
 
@@ -103,9 +110,7 @@ const NewVideoForm = () => {
                                 required
                             />
                             {fileError && (
-                                <div className="text-danger">
-                                    {fileError}
-                                </div>
+                                <div className="text-danger">{fileError}</div>
                             )}
                         </Form.Group>
                         <Button variant="success" type="submit">

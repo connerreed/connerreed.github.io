@@ -4,10 +4,10 @@ import { LinkContainer } from "react-router-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/CustomNavbar.css"; // Import custom CSS
-import ReedFamilyIcon from "../imgs/ReedFamilyIcon.png"; // Import image
+import ReedFamilyIcon from "../imgs/ReedFamilyIcon.png";
 import Button from "react-bootstrap/Button";
-import { useAuth } from "./AuthContext";
-import { useTheme } from "./ThemeContext";
+import { useAuth } from "../hooks/AuthContext";
+import { useTheme } from "../hooks/ThemeContext";
 import ProfileIcon from "./ProfileIcon";
 
 function CustomNavbar() {

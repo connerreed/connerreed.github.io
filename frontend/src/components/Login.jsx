@@ -1,7 +1,6 @@
-// Login.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../hooks/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
 import Loading from './Loading';

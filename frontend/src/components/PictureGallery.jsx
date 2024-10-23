@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../hooks/AuthContext";
 import useFetchData from "../hooks/useFetchData";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
@@ -17,10 +17,14 @@ const Pictures = () => {
     const url = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
     const navigate = useNavigate();
     const { authToken } = useAuth();
-    const { data: pictureList, loading, error } = useFetchData(
+    const {
+        data: pictureList,
+        loading,
+        error,
+    } = useFetchData(
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
-    )
+    );
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -88,7 +92,7 @@ const Pictures = () => {
             </Row>
             <Row>
                 {pictureList.map((picture) => (
-                    <Col key={picture.id} md={4} className="mb-4">
+                    <Col key={picture.id} lg={6} xs={12} className="mb-4">
                         <Link
                             to={`/pictures/${picture.id}`}
                             style={{ textDecoration: "none" }}

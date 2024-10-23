@@ -16,8 +16,8 @@ import VideoGallery from "./components/VideoGallery";
 import Video from "./components/Video";
 import NewVideoForm from "./components/NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AuthProvider } from "./components/AuthContext";
-import { ThemeProvider, useTheme } from "./components/ThemeContext";
+import { AuthProvider } from "./hooks/AuthContext";
+import { ThemeProvider, useTheme } from "./hooks/ThemeContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
