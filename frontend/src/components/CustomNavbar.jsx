@@ -1,14 +1,12 @@
 import React from "react";
-import { Navbar, Nav, Container, Row, Col } from "react-bootstrap";
+import { Navbar, Nav, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/CustomNavbar.css"; // Import custom CSS
-import ReedFamilyIcon from "../imgs/ReedFamilyIcon.png";
 import Button from "react-bootstrap/Button";
 import { useAuth } from "../hooks/AuthContext";
 import { useTheme } from "../hooks/ThemeContext";
-import ProfileIcon from "./ProfileIcon";
+//import ProfileIcon from "./ProfileIcon";
 
 function CustomNavbar() {
     const location = useLocation();
@@ -21,85 +19,52 @@ function CustomNavbar() {
         location.pathname
     );
 
+    // TODO: Make elements in the navbar collapse one by one
+
     return (
-        <Container fluid>
-            <Row>
-                <Navbar
-                    variant={darkMode ? "dark" : "light"}
-                    style={{
-                        backgroundColor: "inherit",
-                        color: darkMode ? "white" : "black",
-                        width: "100%",
-                    }}
-                >
-                    <Navbar.Brand onClick={() => navigate("/")}>
-                        <img
-                            src={ReedFamilyIcon}
-                            alt="Reed Family Icon"
-                            className="navbar-logo"
-                            style={{ height: "40px", width: "auto" }}
-                        />
-                    </Navbar.Brand>
-
-                    <Nav className="w-100">
-                        <Col className="d-flex justify-content-center">
-                            <LinkContainer to="/">
-                                <Nav.Link>Home</Nav.Link>
-                            </LinkContainer>
-                            <LinkContainer to="/recipes">
-                                <Nav.Link>Recipes</Nav.Link>
-                            </LinkContainer>
-                            <LinkContainer to="/pictures">
-                                <Nav.Link>Pictures</Nav.Link>
-                            </LinkContainer>
-                            <LinkContainer to="/videos">
-                                <Nav.Link>Videos</Nav.Link>
-                            </LinkContainer>
-                        </Col>
-                        <Col md={"auto"}>
-                            <LinkContainer
-                                to={authToken ? "/profile" : "/login"}
+        <>
+            <Navbar
+                expand="lg"
+                variant={darkMode ? "dark" : "light"}
+                className="navbar-container"
+            >
+                <Navbar.Brand onClick={() => navigate("/")}>
+                    <h1 className="navbar-title">Reed Family</h1>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="ms-auto"/>
+                <Nav className="ms-auto profile-container">
+                    <LinkContainer to={authToken ? "/profile" : "/login"}>
+                        <Nav.Link>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                className="bi bi-person"
+                                viewBox="0 0 16 16"
                             >
-                                <Nav.Link>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        className="bi bi-person"
-                                        viewBox="0 0 16 16"
-                                    >
-                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
-                                    </svg>
-                                </Nav.Link>
-                            </LinkContainer>
-                        </Col>
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                            </svg>
+                        </Nav.Link>
+                    </LinkContainer>
+                </Nav>
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto navbar-elements">
+                        <LinkContainer to="/">
+                            <Nav.Link>Home</Nav.Link>
+                        </LinkContainer>
+                        <LinkContainer to="/recipes">
+                            <Nav.Link>Recipes</Nav.Link>
+                        </LinkContainer>
+                        <LinkContainer to="/pictures">
+                            <Nav.Link>Pictures</Nav.Link>
+                        </LinkContainer>
+                        <LinkContainer to="/videos">
+                            <Nav.Link>Videos</Nav.Link>
+                        </LinkContainer>
                     </Nav>
-
-                    {/*<Col>
-                        <Nav className="justify-content-end">
-                            <LinkContainer
-                                to={authToken ? "/profile" : "/login"}
-                            >
-                                <Nav.Link>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        className="bi bi-person"
-                                        viewBox="0 0 16 16"
-                                    >
-                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
-                                    </svg>
-                                </Nav.Link>
-                            </LinkContainer>
-                        </Nav>
-                    </Col>
-                    */}
-                    <ProfileIcon />
-                </Navbar>
-            </Row>
+                </Navbar.Collapse>
+            </Navbar>
             {showBackButton && (
                 <Row>
                     <Col>
@@ -126,7 +91,7 @@ function CustomNavbar() {
                     </Col>
                 </Row>
             )}
-        </Container>
+        </>
     );
 }
 

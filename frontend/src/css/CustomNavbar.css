@@ -1,48 +1,25 @@
-.navbar-scroll {
-    overflow-x: auto;
-    white-space: nowrap;
-    flex-grow: 1;
+.navbar-container {
+    width: 100%;
 }
 
-/* WebKit-based browsers */
-.navbar-scroll::-webkit-scrollbar {
-    height: 8px; /* Adjust the height of the scrollbar */
+.navbar-title {
+    font-size: 1.5rem;
+    cursor: pointer;
 }
 
-.navbar-scroll::-webkit-scrollbar-track {
-    background: #343a40; /* Match the background of the navbar */
+@media (max-width: 768px) {
+    .navbar-title {
+        font-size: 1.2rem;
+    }
 }
 
-.navbar-scroll::-webkit-scrollbar-thumb {
-    background: #495057; /* A slightly lighter shade for the thumb */
-    border-radius: 4px; /* Rounded corners for the scrollbar thumb */
+.navbar-elements .nav-link {
+    margin-right: 1rem;
 }
 
-.navbar-scroll::-webkit-scrollbar-thumb:hover {
-    background: #adb5bd; /* Lighter shade on hover */
-}
-
-/* Firefox */
-.navbar-scroll {
-    scrollbar-color: #495057 #343a40; /* Thumb color and track color */
-    scrollbar-width: thin; /* Make the scrollbar thinner */
-}
-
-/* Generic styles */
-.navbar-scroll .nav-link {
-    display: inline-block;
-}
-
-.navbar {
-    overflow: visible; /* Ensure navbar does not clip the dropdown */
-    width: 100%
-}
-
-.navbar .nav-link {
-    display: inline-block;
-}
-
-.navbar .dropdown-menu {
-    position: absolute;
-    background-color: #dee2e6c7;
+/* Optional: Center the navbar elements on smaller screens */
+@media (max-width: 768px) {
+    .navbar-elements {
+        text-align: center;
+    }
 }
