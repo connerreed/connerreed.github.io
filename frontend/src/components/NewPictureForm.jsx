@@ -31,7 +31,7 @@ const NewPictureForm = () => {
 
         const formData = new FormData();
         Array.from(newPictures).forEach((file) => {
-            formData.append("images", file);
+            formData.append("image", file);
         });
 
         try {

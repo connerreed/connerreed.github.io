@@ -43,6 +43,9 @@ class PictureListCreateView(generics.ListCreateAPIView):
     serializer_class = PictureSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  # Automatically assign the authenticated user
+
 class PictureRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Picture.objects.all()
     serializer_class = PictureSerializer
