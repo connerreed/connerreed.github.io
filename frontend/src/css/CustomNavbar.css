@@ -1,25 +1,42 @@
 .navbar-container {
+    display: flex;
+    align-items: center;
     width: 100%;
 }
 
 .navbar-title {
-    font-size: 1.5rem;
+    font-size: 2rem; /* Increase title size */
     cursor: pointer;
+    margin: 0;
+    padding: 0 1rem;
 }
 
-@media (max-width: 768px) {
-    .navbar-title {
-        font-size: 1.2rem;
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    margin: 0 auto; /* Center the nav elements */
+}
+
+.navbar-element .nav-link {
+    font-size: 1.2rem; /* Increase font size of nav links */
+    padding: 0 1.5rem;  /* Increase spacing between nav links */
+}
+
+.profile-container {
+    margin-left: auto;
+}
+
+.navbar-toggler {
+    margin-left: 1rem;
+}
+
+@media (max-width: 991px) {
+    .navbar-nav {
+        flex-direction: column;
+        align-items: center;
     }
-}
 
-.navbar-elements .nav-link {
-    margin-right: 1rem;
-}
-
-/* Optional: Center the navbar elements on smaller screens */
-@media (max-width: 768px) {
-    .navbar-elements {
-        text-align: center;
+    .navbar-element .nav-link {
+        padding: 0.5rem 0; /* Adjust spacing for mobile */
     }
 }
