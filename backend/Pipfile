@@ -10,6 +10,11 @@ djoser = "*"
 pillow = "*"
 django-debug-toolbar = "*"
 mysqlclient = "*"
+django-cors-headers = "*"
+imageio = "*"
+django-mssql-backend = "*"
+mssql-django = "*"
+python-decouple = "*"
 
 [dev-packages]
 
