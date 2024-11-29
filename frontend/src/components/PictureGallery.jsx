@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -9,17 +9,25 @@ import { useAuth } from "../hooks/AuthContext";
 import useFetchData from "../hooks/useFetchData";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
+//import Modal from "react-bootstrap/Modal";
+
+import ConfirmModal from "./ConfirmModal";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Pictures = () => {
-    //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState("");
     //const [pictureList, setPictureList] = useState([]);
-    const url = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
+    const [showModal, setShowModal] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
+    const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
+    
     const navigate = useNavigate();
-    const { authToken } = useAuth();
+    const { authToken, userData } = useAuth();
     const {
         data: pictureList,
-        loading,
+        isLoading,
         error,
     } = useFetchData(
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
@@ -27,42 +35,55 @@ const Pictures = () => {
     );
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        /*const fetchPictures = async () => {
-            setLoading(true);
-            try {
-                const picturesResponse = await fetch(url);
-                if (!picturesResponse.ok) {
-                    throw new Error(
-                        `Failed to fetch pictures: $response.status`
-                    );
+        if (!isLoading && pictureList) {
+            setDataFetched(true);
+        }
+    }, [isLoading, pictureList]);
+
+    const confirmDelete = () => {
+        handleDelete(pictureIdToDelete);
+        handleCloseModal();
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            console.log("Delete picture with id:", id);
+            const response = await fetch(
+                `${process.env.REACT_APP_API_BASE_URL}/api/pictures/${id}/`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Token ${authToken}`,
+                    },
                 }
-                const pictures = await picturesResponse.json();
-                setPictureList(pictures);
-            } catch (error) {
-                console.error("Error fetching pictures", error);
-                setError(error.message);
+            );
+            if (response.ok) {
+                console.log("Deleted picture with id:", id);
+                //setPictureList(pictureList.filter((picture) => picture.id !== id));
+            } else {
+                throw new Error(`Failed to delete picture with id: ${id}\n
+                Response: ${response.statusText}`);
             }
-            setLoading(false);
-        };
-        fetchPictures();
-        */
-    }, [authToken, url]);
+        } catch (error) {
+            //setError("Failed to delete picture");
+            console.error(error);
+        }
+    };
 
-    if (loading) return <Loading />;
+    const handleShowModal = (id) => {
+        setPictureIdToDelete(id);
+        setShowModal(true);
+    };
 
-    if (error) return <ErrorMessage message={error} />;
+    const handleCloseModal = () => {
+        setPictureIdToDelete(null);
+        setShowModal(false);
+    };
 
-    if (!pictureList || pictureList.length === 0) {
-        return (
-            <Container className="text-center mt-5">
-                <h1>No Pictures Found</h1>
-            </Container>
-        );
-    }
 
     return (
         <Container>
+            {error && <ErrorMessage message={error} />}
             <Row className="align-items-center mb-4">
                 <Col className="d-flex justify-content-start mb-2 mb-md-0">
                     {/* Empty column to maintain spacing */}
@@ -91,28 +112,66 @@ const Pictures = () => {
                 </Col>
             </Row>
             <Row>
-                {pictureList.map((picture) => (
-                    <Col key={picture.id} lg={6} xs={12} className="mb-4">
-                        <Link
-                            to={`/pictures/${picture.id}`}
-                            style={{ textDecoration: "none" }}
+                {/* Content Area */}
+                {!dataFetched && <Loading />}
+                {dataFetched && pictureList && pictureList.length === 0 && (
+                    <h1>No Pictures Found</h1>
+                )}
+                {pictureList &&
+                    pictureList.length > 0 &&
+                    pictureList.map((picture) => (
+                        <Col
+                            key={picture.id}
+                            lg={4}
+                            xs={12}
+                            className="mb-4 d-flex align-items-end"
                         >
                             <Card bg="secondary">
-                                <Card.Img variant="top" src={picture.image} />
-                                <Card.Body>
-                                    <Card.Title>
+                                <Link
+                                    to={`/pictures/${picture.id}`}
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <Card.Img
+                                        variant="top"
+                                        src={picture.image}
+                                    />
+                                </Link>
+                                <Card.Body className="d-flex justify-content-between align-items-center">
+                                    <Card.Title className="mb-0">
                                         Uploaded by:
                                         <br />
                                         {picture.user.first_name +
                                             " " +
                                             picture.user.last_name}
                                     </Card.Title>
+                                    {userData &&
+                                        (userData.is_superuser ||
+                                            userData.id ===
+                                                picture.user.id) && (
+                                            <Button
+                                                variant="dark"
+                                                onClick={() =>
+                                                    // Add popup asking for confirmation
+                                                    handleShowModal(picture.id)
+                                                }
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faTrash}
+                                                />
+                                            </Button>
+                                        )}
                                 </Card.Body>
                             </Card>
-                        </Link>
-                    </Col>
-                ))}
+                        </Col>
+                    ))}
             </Row>
+
+            <ConfirmModal
+                show={showModal}
+                onClose={handleCloseModal}
+                onCancel={handleCloseModal}
+                onConfirm={confirmDelete}
+            />
         </Container>
     );
 };
