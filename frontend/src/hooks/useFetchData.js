@@ -7,33 +7,27 @@ const useFetchData = (url, authToken = null) => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        let isMounted = true;
+        refreshData();
+    }, [url, authToken]);
+
+    const refreshData = () => {
         setLoading(true);
         axios
             .get(url, {
                 headers: authToken ? { Authorization: `Token ${authToken}` } : {},
             })
             .then((response) => {
-                if (isMounted) {
-                    setData(response.data);
-                }
+                setData(response.data);
             })
             .catch((error) => {
-                if (isMounted) {
-                    setError(error.message);
-                }
+                setError(error.message);
             })
             .finally(() => {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             });
-        return () => {
-            isMounted = false;
-        };
-    }, [url, authToken]);
+    }
 
-    return { data, loading, error };
+    return { data, loading, error, refreshData };
 }
 
 export default useFetchData;

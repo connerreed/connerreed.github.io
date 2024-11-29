@@ -7,6 +7,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useAuth } from "../hooks/AuthContext";
 import useFetchData from "../hooks/useFetchData";
+import useDeleteData from "../hooks/useDeleteData";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
 //import Modal from "react-bootstrap/Modal";
@@ -17,57 +18,75 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Pictures = () => {
-    //const [error, setError] = useState("");
-    //const [pictureList, setPictureList] = useState([]);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [dataFetched, setDataFetched] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
-    
+
     const navigate = useNavigate();
     const { authToken, userData } = useAuth();
     const {
         data: pictureList,
-        isLoading,
-        error,
+        loading: fetchLoading,
+        error: fetchError,
+        refreshData: refreshPictures,
     } = useFetchData(
+        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        authToken
+    );
+    const {
+        loading: deleteLoading,
+        error: deleteError,
+        handleDelete,
+    } = useDeleteData(
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
     );
 
     useEffect(() => {
-        if (!isLoading && pictureList) {
-            setDataFetched(true);
+        if (error) {
+            const timer = setTimeout(() => {
+                setError("");
+            }, 5000);
+            return () => clearTimeout(timer);
         }
-    }, [isLoading, pictureList]);
+    }, [error]);
+
+    useEffect(() => {
+        if (fetchLoading || deleteLoading) {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, [fetchLoading, deleteLoading]);
+
+    useEffect(() => {
+        if (!fetchLoading && !deleteLoading && pictureList) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+    }, [fetchLoading, deleteLoading, pictureList]);
+
+    useEffect(() => {
+        if (fetchError) {
+            setError(fetchError);
+        }
+    }, [fetchError]);
+
+    useEffect(() => {
+        if (deleteError) {
+            setError(deleteError);
+        }
+    }, [deleteError]);
 
     const confirmDelete = () => {
         handleDelete(pictureIdToDelete);
         handleCloseModal();
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            console.log("Delete picture with id:", id);
-            const response = await fetch(
-                `${process.env.REACT_APP_API_BASE_URL}/api/pictures/${id}/`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Token ${authToken}`,
-                    },
-                }
-            );
-            if (response.ok) {
-                console.log("Deleted picture with id:", id);
-                //setPictureList(pictureList.filter((picture) => picture.id !== id));
-            } else {
-                throw new Error(`Failed to delete picture with id: ${id}\n
-                Response: ${response.statusText}`);
-            }
-        } catch (error) {
-            //setError("Failed to delete picture");
-            console.error(error);
-        }
+        // wait for the delete to complete before refreshing the data
+        setTimeout(() => {
+            refreshPictures();
+        }, 500);
     };
 
     const handleShowModal = (id) => {
@@ -79,7 +98,6 @@ const Pictures = () => {
         setPictureIdToDelete(null);
         setShowModal(false);
     };
-
 
     return (
         <Container>
@@ -113,8 +131,8 @@ const Pictures = () => {
             </Row>
             <Row>
                 {/* Content Area */}
-                {!dataFetched && <Loading />}
-                {dataFetched && pictureList && pictureList.length === 0 && (
+                {loading && <Loading />}
+                {!loading && pictureList.length === 0 && (
                     <h1>No Pictures Found</h1>
                 )}
                 {pictureList &&
