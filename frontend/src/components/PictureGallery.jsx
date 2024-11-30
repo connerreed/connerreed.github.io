@@ -55,18 +55,15 @@ const Pictures = () => {
     useEffect(() => {
         if (fetchLoading || deleteLoading) {
             setLoading(true);
-        } else {
-            setLoading(false);
         }
     }, [fetchLoading, deleteLoading]);
 
     useEffect(() => {
-        if (!fetchLoading && !deleteLoading && pictureList) {
+        const dataLoaded = loading && pictureList;
+        if (dataLoaded) {
             setLoading(false);
-        } else {
-            setLoading(true);
         }
-    }, [fetchLoading, deleteLoading, pictureList]);
+    }, [loading, pictureList]);
 
     useEffect(() => {
         if (fetchError) {
@@ -79,6 +76,13 @@ const Pictures = () => {
             setError(deleteError);
         }
     }, [deleteError]);
+
+    /*useEffect(() => {
+        if (fetchError || deleteError) {
+            setError(fetchError || deleteError);
+        }
+    }, [fetchError, deleteError]);
+    */
 
     const confirmDelete = () => {
         handleDelete(pictureIdToDelete);
@@ -131,11 +135,14 @@ const Pictures = () => {
             </Row>
             <Row>
                 {/* Content Area */}
-                {loading && <Loading />}
-                {!loading && pictureList.length === 0 && (
-                    <h1>No Pictures Found</h1>
+                {!fetchError && loading && <Loading />}
+                {(fetchError || (!loading && pictureList.length === 0)) && (
+                    <div className="d-flex justify-content-center">
+                        <h1>No Pictures Found</h1>
+                    </div>
                 )}
-                {pictureList &&
+                {!fetchError &&
+                    pictureList &&
                     pictureList.length > 0 &&
                     pictureList.map((picture) => (
                         <Col
