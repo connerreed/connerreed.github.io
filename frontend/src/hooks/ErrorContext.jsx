@@ -5,6 +5,7 @@ import {
     useCallback,
     useEffect,
 } from "react";
+import { v4 as uuidv4 } from "uuid";
 import ErrorMessage from "../components/ErrorMessage";
 import { useLocation } from "react-router-dom";
 import "../css/ErrorContext.css";
@@ -13,32 +14,36 @@ const ErrorContext = createContext();
 
 export const ErrorProvider = ({ children }) => {
     const [errorList, setErrorList] = useState([]);
-
     const location = useLocation();
 
     useEffect(() => {
         setErrorList([]);
     }, [location]);
 
-    const addError = useCallback((message) => {
-        setErrorList((prevErrorList) => [...prevErrorList, message]);
+    useEffect(() => {
+        setErrorList([]);
     }, []);
 
-    const dismissError = useCallback((index) => {
-        setErrorList((prevErrorList) =>
-            prevErrorList.filter((_, i) => i !== index)
-        );
+    const addError = useCallback((message) => {
+        const id = uuidv4();
+        setErrorList((prevErrorList) => [...prevErrorList, { id, message }]);
+    }, []);
+
+    const dismissError = useCallback((id) => {
+        setErrorList((prevErrorList) => {
+            return prevErrorList.filter((error) => error.id !== id);
+        });
     }, []);
 
     return (
         <ErrorContext.Provider value={{ addError }}>
             {errorList.length > 0 && (
                 <div className="error-container">
-                    {errorList.map((message, index) => (
+                    {errorList.map((error) => (
                         <ErrorMessage
-                            key={index}
-                            message={message}
-                            onClose={() => dismissError(index)}
+                            key={error.id}
+                            message={error.message}
+                            onClose={() => dismissError(error.id)}
                         />
                     ))}
                 </div>

@@ -22,8 +22,22 @@ const useFetchData = (url, authToken = null) => {
                 setData(response.data);
             })
             .catch((error) => {
-                addError("Here's a new error message!");
-                setError(error.message);
+                let errorMessage = "Error: ";
+                if (error.response.status === 404) {
+                    errorMessage += "Could not find item(s)";
+                } else if (error.response.status === 403) {
+                    errorMessage += "Forbidden";
+                } else if (error.response.status === 401) {
+                    errorMessage += "Unauthorized";
+                } else if (error.response.status === 400) {
+                    errorMessage += "Bad Request";
+                } else if (error.response.status === 500) {
+                    errorMessage += "Internal Server Error";
+                } else {
+                    errorMessage += "An error occurred";
+                }
+                addError(errorMessage);
+                setError(errorMessage);
             })
             .finally(() => {
                 setLoading(false);
