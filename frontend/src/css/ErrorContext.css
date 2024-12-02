@@ -1,0 +1,8 @@
+.error-container {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width:max-content;
+    z-index: 1000;
+    text-align: center;
+}

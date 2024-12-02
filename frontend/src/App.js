@@ -18,6 +18,7 @@ import NewVideoForm from "./components/NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./hooks/AuthContext";
 import { ThemeProvider, useTheme } from "./hooks/ThemeContext";
+import { ErrorProvider } from "./hooks/ErrorContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
@@ -28,55 +29,57 @@ function AppContent() {
             <div>
                 <CustomNavbar />
             </div>
-            <div>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    
-                    {/* Public Routes */}
-                    <Route path="/recipes" element={<RecipeGallery />} />
-                    <Route path="/recipes/:id" element={<Recipe />} />
-                    <Route path="/pictures" element={<PictureGallery />} />
-                    <Route path="/pictures/:id" element={<Picture />} />
-                    <Route path="/videos" element={<VideoGallery />} />
-                    <Route path="/videos/:id" element={<Video />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+            <ErrorProvider>
+                <div>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
 
-                    {/* Protected Routes */}
-                    <Route
-                        path="/recipes/new"
-                        element={
-                            <ProtectedRoute>
-                                <NewRecipeForm />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/pictures/new"
-                        element={
-                            <ProtectedRoute>
-                                <NewPictureForm />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/videos/new"
-                        element={
-                            <ProtectedRoute>
-                                <NewVideoForm />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/profile"
-                        element={
-                            <ProtectedRoute>
-                                <Profile />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </div>
+                        {/* Public Routes */}
+                        <Route path="/recipes" element={<RecipeGallery />} />
+                        <Route path="/recipes/:id" element={<Recipe />} />
+                        <Route path="/pictures" element={<PictureGallery />} />
+                        <Route path="/pictures/:id" element={<Picture />} />
+                        <Route path="/videos" element={<VideoGallery />} />
+                        <Route path="/videos/:id" element={<Video />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+
+                        {/* Protected Routes */}
+                        <Route
+                            path="/recipes/new"
+                            element={
+                                <ProtectedRoute>
+                                    <NewRecipeForm />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/pictures/new"
+                            element={
+                                <ProtectedRoute>
+                                    <NewPictureForm />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/videos/new"
+                            element={
+                                <ProtectedRoute>
+                                    <NewVideoForm />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <ProtectedRoute>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </div>
+            </ErrorProvider>
         </div>
     );
 }

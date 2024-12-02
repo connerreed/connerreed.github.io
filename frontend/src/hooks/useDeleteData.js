@@ -5,6 +5,8 @@ import axios from "axios";
 const useDeleteData = (url, authToken = null) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    // TODO: Push errors to ErrorContext instead of using local state
+    // TODO: Remove error state from this hook
 
     const handleDelete = async (id) => {
         setError("");

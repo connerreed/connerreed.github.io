@@ -10,14 +10,14 @@ import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-//import Modal from "react-bootstrap/Modal";
 
 import ConfirmModal from "./ConfirmModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-const Pictures = () => {
+const PictureGallery = () => {
+    //TODO: Remove error state from this component (ErrorContext will handle errors)
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -31,19 +31,20 @@ const Pictures = () => {
         error: fetchError,
         refreshData: refreshPictures,
     } = useFetchData(
-        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/FIXME`,
         authToken
     );
     const {
         loading: deleteLoading,
         error: deleteError,
-        handleDelete,
+        handleDelete: deletePicture,
     } = useDeleteData(
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
     );
 
     useEffect(() => {
+        // TODO: Add styling to show progress bar decreasing 
         if (error) {
             const timer = setTimeout(() => {
                 setError("");
@@ -65,11 +66,12 @@ const Pictures = () => {
         }
     }, [loading, pictureList]);
 
-    useEffect(() => {
-        if (fetchError) {
-            setError(fetchError);
-        }
-    }, [fetchError]);
+
+    // useEffect(() => {
+    //     if (fetchError) {
+    //         setError(fetchError);
+    //     }
+    // }, [fetchError]);
 
     useEffect(() => {
         if (deleteError) {
@@ -77,20 +79,21 @@ const Pictures = () => {
         }
     }, [deleteError]);
 
-    /*useEffect(() => {
-        if (fetchError || deleteError) {
-            setError(fetchError || deleteError);
-        }
-    }, [fetchError, deleteError]);
-    */
+    // useEffect(() => {
+    //     if (fetchError || deleteError) {
+    //         setError(fetchError || deleteError);
+    //     }
+    // }, [fetchError, deleteError]);
+    
 
-    const confirmDelete = () => {
-        handleDelete(pictureIdToDelete);
+    const confirmDelete = async () => {
+        await deletePicture(pictureIdToDelete);
         handleCloseModal();
         // wait for the delete to complete before refreshing the data
         setTimeout(() => {
             refreshPictures();
-        }, 500);
+        }, 1000);
+        // refreshPictures();
     };
 
     const handleShowModal = (id) => {
@@ -201,4 +204,4 @@ const Pictures = () => {
     );
 };
 
-export default Pictures;
+export default PictureGallery;
