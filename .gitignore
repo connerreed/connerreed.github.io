@@ -25,5 +25,6 @@ frontend/yarn-error.log*
 # Ignore media folder
 /backend/familywebsite/media
 
+# Ignore environment variables
 frontend/.env
 backend/.env

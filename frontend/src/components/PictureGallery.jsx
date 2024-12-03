@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -9,7 +9,6 @@ import { useAuth } from "../hooks/AuthContext";
 import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
 import Loading from "./Loading";
-import ErrorMessage from "./ErrorMessage";
 
 import ConfirmModal from "./ConfirmModal";
 
@@ -17,9 +16,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const PictureGallery = () => {
-    //TODO: Remove error state from this component (ErrorContext will handle errors)
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
 
@@ -27,64 +23,17 @@ const PictureGallery = () => {
     const { authToken, userData } = useAuth();
     const {
         data: pictureList,
-        loading: fetchLoading,
-        error: fetchError,
+        loading,
         refreshData: refreshPictures,
     } = useFetchData(
-        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/FIXME`,
-        authToken
-    );
-    const {
-        loading: deleteLoading,
-        error: deleteError,
-        handleDelete: deletePicture,
-    } = useDeleteData(
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
     );
-
-    useEffect(() => {
-        // TODO: Add styling to show progress bar decreasing 
-        if (error) {
-            const timer = setTimeout(() => {
-                setError("");
-            }, 5000);
-            return () => clearTimeout(timer);
-        }
-    }, [error]);
-
-    useEffect(() => {
-        if (fetchLoading || deleteLoading) {
-            setLoading(true);
-        }
-    }, [fetchLoading, deleteLoading]);
-
-    useEffect(() => {
-        const dataLoaded = loading && pictureList;
-        if (dataLoaded) {
-            setLoading(false);
-        }
-    }, [loading, pictureList]);
-
-
-    // useEffect(() => {
-    //     if (fetchError) {
-    //         setError(fetchError);
-    //     }
-    // }, [fetchError]);
-
-    useEffect(() => {
-        if (deleteError) {
-            setError(deleteError);
-        }
-    }, [deleteError]);
-
-    // useEffect(() => {
-    //     if (fetchError || deleteError) {
-    //         setError(fetchError || deleteError);
-    //     }
-    // }, [fetchError, deleteError]);
-    
+    const {handleDelete: deletePicture } =
+        useDeleteData(
+            `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+            authToken
+        );
 
     const confirmDelete = async () => {
         await deletePicture(pictureIdToDelete);
@@ -92,8 +41,7 @@ const PictureGallery = () => {
         // wait for the delete to complete before refreshing the data
         setTimeout(() => {
             refreshPictures();
-        }, 1000);
-        // refreshPictures();
+        }, 500);
     };
 
     const handleShowModal = (id) => {
@@ -108,7 +56,6 @@ const PictureGallery = () => {
 
     return (
         <Container>
-            {error && <ErrorMessage message={error} />}
             <Row className="align-items-center mb-4">
                 <Col className="d-flex justify-content-start mb-2 mb-md-0">
                     {/* Empty column to maintain spacing */}
@@ -138,15 +85,13 @@ const PictureGallery = () => {
             </Row>
             <Row>
                 {/* Content Area */}
-                {!fetchError && loading && <Loading />}
-                {(fetchError || (!loading && pictureList.length === 0)) && (
+                {loading && <Loading />}
+                {!loading && (!pictureList || pictureList.length === 0) && (
                     <div className="d-flex justify-content-center">
                         <h1>No Pictures Found</h1>
                     </div>
                 )}
-                {!fetchError &&
-                    pictureList &&
-                    pictureList.length > 0 &&
+                {pictureList?.length > 0 &&
                     pictureList.map((picture) => (
                         <Col
                             key={picture.id}

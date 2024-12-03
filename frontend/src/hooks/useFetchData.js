@@ -3,10 +3,8 @@ import axios from "axios";
 import { useError } from "./ErrorContext";
 
 const useFetchData = (url, authToken = null) => {
-    // TODO: If components don't need error state, remove it from this hook
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const { addError } = useError();
 
     const refreshData = useCallback(() => {
@@ -23,21 +21,28 @@ const useFetchData = (url, authToken = null) => {
             })
             .catch((error) => {
                 let errorMessage = "Error: ";
-                if (error.response.status === 404) {
-                    errorMessage += "Could not find item(s)";
-                } else if (error.response.status === 403) {
-                    errorMessage += "Forbidden";
-                } else if (error.response.status === 401) {
-                    errorMessage += "Unauthorized";
-                } else if (error.response.status === 400) {
-                    errorMessage += "Bad Request";
-                } else if (error.response.status === 500) {
-                    errorMessage += "Internal Server Error";
-                } else {
-                    errorMessage += "An error occurred";
+                let status = error?.response?.status;
+                switch (status) {
+                    case 404:
+                        errorMessage += "Could not find item(s)";
+                        break;
+                    case 403:
+                        errorMessage += "Forbidden";
+                        break;
+                    case 401:
+                        errorMessage += "Unauthorized";
+                        break;
+                    case 400:
+                        errorMessage += "Bad Request";
+                        break;
+                    case 500:
+                        errorMessage += "Internal Server Error";
+                        break;
+                    default:
+                        errorMessage += "An error occurred";
+                        break;
                 }
                 addError(errorMessage);
-                setError(errorMessage);
             })
             .finally(() => {
                 setLoading(false);
@@ -45,10 +50,12 @@ const useFetchData = (url, authToken = null) => {
     }, [url, authToken, addError]);
 
     useEffect(() => {
+        // Automatically fetch data when url or authToken changes
         refreshData();
     }, [url, authToken, refreshData]);
 
-    return { data, loading, error, refreshData };
+    return { data, loading, refreshData };
 };
+
 
 export default useFetchData;
