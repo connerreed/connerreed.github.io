@@ -1,5 +1,3 @@
-//import { useState } from "react";
-
 import axios from "axios";
 import { useError } from "./ErrorContext";
 
@@ -9,10 +7,22 @@ const useDeleteData = (url, authToken = null) => {
     const handleDelete = async (id) => {
         axios
             .delete(`${url}${id}/`, {
-                headers: authToken ? { Authorization: `Token ${authToken}` } : {},
+                headers: authToken
+                    ? { Authorization: `Token ${authToken}` }
+                    : {},
             })
-            .then(() => {
-                console.log(`Deleted item with id: ${id}`);
+            .then((response) => {
+                let status = response?.status;
+                switch(status) {
+                    case 204:
+                        console.log(`Deleted item with id: ${id}`);
+                        break;
+                    default:
+                        console.error(`On delete of item id ${id}, an unknown response status was received: ${status}`);
+                }
+                if (response?.status === 204) {
+                    console.log(`NEW Deleted item with id: ${id}`);
+                }
             })
             .catch((error) => {
                 addError("Error: Failed to delete item");
