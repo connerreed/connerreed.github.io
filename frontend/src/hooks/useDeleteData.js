@@ -20,9 +20,6 @@ const useDeleteData = (url, authToken = null) => {
                     default:
                         console.error(`On delete of item id ${id}, an unknown response status was received: ${status}`);
                 }
-                if (response?.status === 204) {
-                    console.log(`NEW Deleted item with id: ${id}`);
-                }
             })
             .catch((error) => {
                 addError("Error: Failed to delete item");
