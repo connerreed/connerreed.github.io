@@ -97,7 +97,7 @@ const PictureGallery = () => {
                             key={picture.id}
                             lg={4}
                             xs={12}
-                            className="mb-4 d-flex align-items-end"
+                            className="mb-4 d-flex align-items-end justify-content-center"
                         >
                             <Card bg="secondary">
                                 <Link
