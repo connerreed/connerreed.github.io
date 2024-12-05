@@ -29,11 +29,10 @@ const PictureGallery = () => {
         `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
     );
-    const {handleDelete: deletePicture } =
-        useDeleteData(
-            `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
-            authToken
-        );
+    const { handleDelete: deletePicture } = useDeleteData(
+        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        authToken
+    );
 
     const confirmDelete = async () => {
         await deletePicture(pictureIdToDelete);
