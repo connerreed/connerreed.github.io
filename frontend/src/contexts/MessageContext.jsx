@@ -4,6 +4,7 @@ import {
     useState,
     useCallback,
     useEffect,
+    useRef,
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "react-router-dom";
@@ -14,7 +15,9 @@ const MessageContext = createContext();
 
 export const MessageProvider = ({ children }) => {
     const [messageList, setMessageList] = useState([]);
+    const [progress, setProgress] = useState(0);
     const location = useLocation();
+    const timerRef = useRef(null);
 
     useEffect(() => {
         setMessageList([]);
@@ -24,45 +27,65 @@ export const MessageProvider = ({ children }) => {
         setMessageList([]);
     }, []);
 
+    const startTimer = () => {
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
+        setProgress(100);
+        timerRef.current = setInterval(() => {
+            setProgress((prevProgress) => {
+                if (prevProgress <= 0) {
+                    clearInterval(timerRef.current);
+                    setMessageList([]);
+                    return 0;
+                }
+                return prevProgress - 1;
+            });
+        }, 50);
+    };
+
     // Not exported to other files
-    const addMessage = (message, variant) => {
+    const addMessage = useCallback((message, variant) => {
         const id = uuidv4();
         setMessageList((prevMessageList) => [
             ...prevMessageList,
-            { id, message, variant },
+            { id, message, variant},
         ]);
-    };
+        startTimer();
+    }, []);
 
     const addError = useCallback((message) => {
         const variant = "danger";
         addMessage(message, variant);
-    }, []);
+    }, [addMessage]);
 
     const addSuccessMessage = useCallback((message) => {
         const variant = "success";
         addMessage(message, variant);
-    }, []);
+    }, [addMessage]);
 
     const dismissMessage = useCallback((id) => {
-        setMessageList((prevErrorList) => {
-            return prevErrorList.filter((error) => error.id !== id);
+        setMessageList((prevMessageList) => {
+            return prevMessageList.filter((message) => message.id !== id);
         });
     }, []);
 
     return (
         <MessageContext.Provider value={{ addError, addSuccessMessage }}>
             {messageList.length > 0 && (
-                <div className="message-container">
-                    {messageList.map((error) => (
+                <div className={`message-container`}>
+                    {messageList.map((msg) => (
                         <Alert
-                            key={error.id}
-                            variant={error.variant}
-                            onClose={() => dismissMessage(error.id)}
+                            key={msg.id}
+                            variant={msg.variant}
+                            onClose={() => dismissMessage(msg.id)}
                             dismissible
+                            className={"fade-in message"}
                         >
-                            {error.message}
+                            {msg.message}
                         </Alert>
                     ))}
+                    <div className="progress-meter" style={{ width: `${progress}%` }}></div>
                 </div>
             )}
             {children}
