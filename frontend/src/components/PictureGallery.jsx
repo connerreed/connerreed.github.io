@@ -21,16 +21,19 @@ const PictureGallery = () => {
 
     const navigate = useNavigate();
     const { authToken, userData } = useAuth();
+
+    const apiURL = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
+
     const {
         data: pictureList,
         loading,
         refreshData: refreshPictures,
     } = useFetchData(
-        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        apiURL,
         authToken
     );
     const { handleDelete: deletePicture } = useDeleteData(
-        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
+        apiURL,
         authToken
     );
 
