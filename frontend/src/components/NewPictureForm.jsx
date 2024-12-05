@@ -25,7 +25,7 @@ const NewPictureForm = () => {
             formData.append("image", file);
         });
 
-        postData(formData);
+        await postData(formData);
     };
 
     if (loading) return <Loading />;

@@ -7,10 +7,10 @@ import { useMessage } from "../contexts/MessageContext";
 const usePostData = (url) => {
     const { authToken } = useAuth();
     const [loading, setLoading] = useState(false);
-    const {addError, addSuccessMessage} = useMessage();
+    const { addError, addSuccessMessage } = useMessage();
     const navigate = useNavigate();
 
-    const postData = (formData) => {
+    const postData = async (formData) => {
         setLoading(true);
 
         axios
@@ -25,8 +25,12 @@ const usePostData = (url) => {
                 switch (status) {
                     case 201:
                         console.log("Item created successfully");
-                        addSuccessMessage("Item uploaded successfully");
+                        
+                        // Weird setup for the success message because the messages get cleared on location change
                         navigate("/pictures");
+                        setTimeout(() => {
+                            addSuccessMessage("Item(s) uploaded successfully");
+                        }, 250);
                         break;
                     default:
                         console.error(

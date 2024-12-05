@@ -5,7 +5,7 @@ import { useMessage } from "../contexts/MessageContext";
 const useFetchData = (url, authToken = null) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { addError} = useMessage();
+    const { addError } = useMessage();
 
     const refreshData = useCallback(() => {
         setLoading(true);
