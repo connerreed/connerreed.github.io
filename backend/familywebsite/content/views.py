@@ -1,5 +1,6 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from django.shortcuts import render
+from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum, MediaAlbum)
 from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSerializer, VideoSerializer,
@@ -39,9 +40,24 @@ class RecipeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 class PictureListCreateView(generics.ListCreateAPIView):
+    #TODO: Add pagination
     queryset = Picture.objects.order_by('-date_uploaded') # Newest first
     serializer_class = PictureSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        files = request.FILES.getlist('image')
+        if not files:
+            return Response({'error': 'No files were uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        picture_instances = []
+        for file in files:
+            serializer = self.get_serializer(data={'image': file, 'user': request.user.id})
+            serializer.is_valid(raise_exception=True)
+            picture_instance = serializer.save(user=self.request.user)
+            picture_instances.append(picture_instance)
+        
+        return Response(self.get_serializer(picture_instances, many=True).data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Automatically assign the authenticated user
