@@ -4,7 +4,6 @@ import { useAuth } from '../hooks/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Container } from 'react-bootstrap';
 import Loading from './Loading';
-import ErrorMessage from './ErrorMessage';
 import useFormHandler from '../hooks/useFormHandler';
 
 const Login = () => {
@@ -13,7 +12,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const { loading, error, handleSubmit } = useFormHandler(async () => {
+  const { loading, handleSubmit } = useFormHandler(async () => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}/auth/token/login/`,
       { email, password }
@@ -36,7 +35,6 @@ const Login = () => {
       <h1 className="text-center">Login</h1>
       <Container className="d-flex justify-content-center align-items-center">
         <Form className="w-50" onSubmit={onSubmit}>
-          {error && <ErrorMessage message={error} />}
           <Form.Group className="mt-3" controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control

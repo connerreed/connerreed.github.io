@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Loading from "./Loading";
-import ErrorMessage from "./ErrorMessage";
 
 const Picture = () => {
     const { id } = useParams();
@@ -32,8 +31,6 @@ const Picture = () => {
     }, [id, url]);
 
     if (loading) return <Loading />;
-
-    if (!picture) return <ErrorMessage message="Picture not found" />;
 
     return (
         <Container className="w-50 mt-5">

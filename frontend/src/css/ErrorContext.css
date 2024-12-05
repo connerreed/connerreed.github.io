@@ -2,7 +2,7 @@
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    width:max-content;
+    width: auto;
+    max-width: 50%;
     z-index: 1000;
-    text-align: center;
 }

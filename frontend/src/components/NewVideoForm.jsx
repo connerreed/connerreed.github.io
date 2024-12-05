@@ -7,7 +7,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Loading from "./Loading";
-import ErrorMessage from "./ErrorMessage";
 
 const NewVideoForm = () => {
     const [title, setTitle] = useState("");
@@ -16,7 +15,6 @@ const NewVideoForm = () => {
     const { authToken } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -47,7 +45,6 @@ const NewVideoForm = () => {
         }
 
         setLoading(true);
-        setError("");
 
         const formData = new FormData();
         formData.append("title", title);
@@ -88,7 +85,6 @@ const NewVideoForm = () => {
                     <h1>New Video Form</h1>
                 </Col>
                 <Col xs={12} md={6}>
-                    {error && <ErrorMessage message={error} />}
                     <Form onSubmit={submitForm}>
                         <Form.Group className="mb-4">
                             <Form.Label>Title</Form.Label>

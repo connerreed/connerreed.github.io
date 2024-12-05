@@ -4,13 +4,11 @@ import { useAuth } from "../hooks/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
-import ErrorMessage from "./ErrorMessage";
 
 const NewPictureForm = () => {
     const { authToken } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [newPictures, setNewPictures] = useState([]);
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -21,10 +19,9 @@ const NewPictureForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
 
         if (newPictures.length === 0) {
-            setError("No pictures selected.");
+            alert("No pictures selected.");
             setLoading(false);
             return;
         }
@@ -43,7 +40,7 @@ const NewPictureForm = () => {
             });
             navigate("/pictures");
         } catch (error) {
-            setError("Failed to upload pictures.");
+            alert("Failed to upload pictures.");
             console.error(error);
         } finally {
             setLoading(false);
@@ -57,7 +54,6 @@ const NewPictureForm = () => {
             <h1 className="text-center">New Pictures</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="w-50 mt-3" onSubmit={handleSubmit}>
-                    {error && <ErrorMessage message={error} />}
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="file"
