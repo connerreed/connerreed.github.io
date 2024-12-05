@@ -10,7 +10,7 @@ const usePostData = (url) => {
     const { addError, addSuccessMessage } = useMessage();
     const navigate = useNavigate();
 
-    const postData = async (formData) => {
+    const postData = (formData) => {
         setLoading(true);
 
         axios

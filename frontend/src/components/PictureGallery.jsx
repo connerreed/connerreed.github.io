@@ -37,8 +37,8 @@ const PictureGallery = () => {
         authToken
     );
 
-    const confirmDelete = async () => {
-        await deletePicture(pictureIdToDelete);
+    const confirmDelete = () => {
+        deletePicture(pictureIdToDelete);
         handleCloseModal();
         // wait for the delete to complete before refreshing the data
         setTimeout(() => {

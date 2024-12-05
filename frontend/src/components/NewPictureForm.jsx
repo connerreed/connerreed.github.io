@@ -12,7 +12,7 @@ const NewPictureForm = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (newPictures.length === 0) {
@@ -25,7 +25,7 @@ const NewPictureForm = () => {
             formData.append("image", file);
         });
 
-        await postData(formData);
+        postData(formData);
     };
 
     if (loading) return <Loading />;
