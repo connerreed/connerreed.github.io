@@ -26,7 +26,7 @@ const PictureGallery = () => {
         loading,
         refreshData: refreshPictures,
     } = useFetchData(
-        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/FIXME`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`,
         authToken
     );
     const { handleDelete: deletePicture } = useDeleteData(

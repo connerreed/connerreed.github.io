@@ -18,7 +18,7 @@ import NewVideoForm from "./components/NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./hooks/AuthContext";
 import { ThemeProvider, useTheme } from "./hooks/ThemeContext";
-import { ErrorProvider } from "./hooks/ErrorContext";
+import { MessageProvider } from "./hooks/MessageContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
@@ -29,7 +29,7 @@ function AppContent() {
             <div>
                 <CustomNavbar />
             </div>
-            <ErrorProvider>
+            <MessageProvider>
                 <div>
                     <Routes>
                         <Route path="/" element={<Home />} />
@@ -79,7 +79,7 @@ function AppContent() {
                         />
                     </Routes>
                 </div>
-            </ErrorProvider>
+            </MessageProvider>
         </div>
     );
 }

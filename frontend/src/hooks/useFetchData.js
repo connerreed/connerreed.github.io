@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { useError } from "./ErrorContext";
+import { useMessage } from "./MessageContext";
 
 const useFetchData = (url, authToken = null) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { addError } = useError();
+    const { addError} = useMessage();
 
     const refreshData = useCallback(() => {
         setLoading(true);
@@ -56,6 +56,5 @@ const useFetchData = (url, authToken = null) => {
 
     return { data, loading, refreshData };
 };
-
 
 export default useFetchData;

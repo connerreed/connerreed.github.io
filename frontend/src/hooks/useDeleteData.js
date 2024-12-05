@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useError } from "./ErrorContext";
+import { useMessage } from "./MessageContext";
 
 const useDeleteData = (url, authToken = null) => {
-    const { addError } = useError();
+    const { addError, addSuccessMessage } = useMessage();
 
     const handleDelete = async (id) => {
         axios
@@ -13,12 +13,15 @@ const useDeleteData = (url, authToken = null) => {
             })
             .then((response) => {
                 let status = response?.status;
-                switch(status) {
+                switch (status) {
                     case 204:
                         console.log(`Deleted item with id: ${id}`);
+                        addSuccessMessage("Item deleted successfully");
                         break;
                     default:
-                        console.error(`On delete of item id ${id}, an unknown response status was received: ${status}`);
+                        console.error(
+                            `On delete of item id ${id}, an unknown response status was received: ${status}`
+                        );
                 }
             })
             .catch((error) => {
