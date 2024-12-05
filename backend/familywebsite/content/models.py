@@ -101,6 +101,7 @@ class RecipeContentImage(models.Model):
 class Picture(models.Model):
     image = models.ImageField(upload_to='images/pictures/')
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='pictures')
+    date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def delete(self, *args, **kwargs):
         # Delete the picture from the file system

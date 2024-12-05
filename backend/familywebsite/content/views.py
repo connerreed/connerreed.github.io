@@ -39,7 +39,7 @@ class RecipeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 class PictureListCreateView(generics.ListCreateAPIView):
-    queryset = Picture.objects.all()
+    queryset = Picture.objects.order_by('-date_uploaded') # Newest first
     serializer_class = PictureSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
