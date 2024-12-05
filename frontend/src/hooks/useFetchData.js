@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { useMessage } from "./MessageContext";
+import { useMessage } from "../contexts/MessageContext";
 
 const useFetchData = (url, authToken = null) => {
     const [data, setData] = useState(null);

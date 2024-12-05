@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMessage } from "./MessageContext";
+import { useMessage } from "../contexts/MessageContext";
 
 const useDeleteData = (url, authToken = null) => {
     const { addError, addSuccessMessage } = useMessage();

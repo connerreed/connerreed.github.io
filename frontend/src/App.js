@@ -16,9 +16,9 @@ import VideoGallery from "./components/VideoGallery";
 import Video from "./components/Video";
 import NewVideoForm from "./components/NewVideoForm";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AuthProvider } from "./hooks/AuthContext";
-import { ThemeProvider, useTheme } from "./hooks/ThemeContext";
-import { MessageProvider } from "./hooks/MessageContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { MessageProvider } from "./contexts/MessageContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {

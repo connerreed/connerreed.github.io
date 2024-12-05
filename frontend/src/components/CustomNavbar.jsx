@@ -3,8 +3,7 @@ import { Navbar, Nav, Offcanvas } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {useNavigate, useLocation} from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
-//import { useAuth } from "../hooks/AuthContext";
-import { useTheme } from "../hooks/ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 function CustomNavbar() {
     const navigate = useNavigate();

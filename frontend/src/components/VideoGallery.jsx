@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import HoverVideoPlayer from "react-hover-video-player";
 import Button from "react-bootstrap/Button";
-import { useAuth } from "../hooks/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const VideoGallery = () => {
     const [loading, setLoading] = useState(true);

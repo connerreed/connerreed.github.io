@@ -1,6 +1,6 @@
 import React from "react";
-import { useAuth } from "../hooks/AuthContext";
-import { useTheme } from "../hooks/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { useNavigate } from "react-router-dom";
