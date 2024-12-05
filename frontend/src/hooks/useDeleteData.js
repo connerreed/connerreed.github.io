@@ -3,7 +3,7 @@ import { useMessage } from "../contexts/MessageContext";
 
 const useDeleteData = (url, authToken = null) => {
     const { addError, addSuccessMessage } = useMessage();
-
+    // TODO: Remove authToken from function signature and instead get it from authContext
     const handleDelete = async (id) => {
         axios
             .delete(`${url}${id}/`, {

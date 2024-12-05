@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
+import usePostData from "../hooks/usePostData";
 
 const NewPictureForm = () => {
-    const { authToken } = useAuth();
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
     const [newPictures, setNewPictures] = useState([]);
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const { postData, loading } = usePostData(`${API_BASE_URL}/api/pictures/`);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -18,11 +14,9 @@ const NewPictureForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
 
         if (newPictures.length === 0) {
             alert("No pictures selected.");
-            setLoading(false);
             return;
         }
 
@@ -31,20 +25,7 @@ const NewPictureForm = () => {
             formData.append("image", file);
         });
 
-        try {
-            await axios.post(`${API_BASE_URL}/api/pictures/`, formData, {
-                headers: {
-                    Authorization: `Token ${authToken}`,
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-            navigate("/pictures");
-        } catch (error) {
-            alert("Failed to upload pictures.");
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+        postData(formData);
     };
 
     if (loading) return <Loading />;
