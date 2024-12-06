@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("darkMode", response.data.prefers_dark_mode);
             setUserData(response.data);
         } catch (error) {
-            if (error.response && error.response.status === 401) {
+            if (error?.response?.status === 401) {
                 logout();
             } else {
                 console.error("User fetch error: ", error);

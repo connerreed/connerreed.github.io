@@ -8,7 +8,6 @@ import { useTheme } from "../contexts/ThemeContext";
 function CustomNavbar() {
     const navigate = useNavigate();
     const location = useLocation();
-    //const { authToken } = useAuth();
     const { darkMode } = useTheme();
 
     const showBackButton = !/^\/(recipes|pictures|videos|login|profile|)$/.test(

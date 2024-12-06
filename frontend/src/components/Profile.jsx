@@ -7,12 +7,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Profile = () => {
-    const { logout, userData } = useAuth();
+    const { logout, userData, authToken } = useAuth();
     const { darkMode, setDarkMode } = useTheme();
     //const [user, setUser] = useState(null);
     //const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { authToken } = useAuth();
 
     const toggleDarkMode = async () => {
         setDarkMode(!darkMode);
