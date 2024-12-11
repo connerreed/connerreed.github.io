@@ -7,10 +7,10 @@ const useFetchData = (url, authToken = null) => {
     const [loading, setLoading] = useState(false);
     const { addError } = useMessage();
 
-    const refreshData = useCallback(() => {
+    const refreshData = useCallback((pageNumber) => {
         setLoading(true);
         axios
-            .get(url, {
+            .get(url + `?page=${pageNumber}`, {
                 headers: authToken
                     ? { Authorization: `Token ${authToken}` }
                     : {},
@@ -51,7 +51,7 @@ const useFetchData = (url, authToken = null) => {
 
     useEffect(() => {
         // Automatically fetch data when url or authToken changes
-        refreshData();
+        refreshData(1);
     }, [url, authToken, refreshData]);
 
     return { data, loading, refreshData };

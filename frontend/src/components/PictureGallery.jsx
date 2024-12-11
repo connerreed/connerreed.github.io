@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -10,6 +10,8 @@ import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
 import Loading from "./Loading";
 
+import { v4 as uuidv4 } from "uuid";
+
 import ConfirmModal from "./ConfirmModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,24 +20,48 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const PictureGallery = () => {
     const [showModal, setShowModal] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
-
+    const [pictureList, setPictureList] = useState([]);
     const navigate = useNavigate();
     const { authToken, userData } = useAuth();
 
     const apiURL = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
 
     const {
-        data: pictureList,
+        data,
         loading,
         refreshData: refreshPictures,
-    } = useFetchData(
-        apiURL,
-        authToken
-    );
-    const { handleDelete: deletePicture } = useDeleteData(
-        apiURL,
-        authToken
-    );
+    } = useFetchData(apiURL, authToken);
+
+    const appendNextPage = useCallback(() => {
+        const nextPageURL = data?.next;
+        if (nextPageURL) {
+            const pageNumber = nextPageURL.split("=").pop();
+            console.log(`Fetching page ${pageNumber}`);
+            refreshPictures(pageNumber);
+        }
+    }, [data, refreshPictures]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            console.log("Scrolling");
+            const atBottomOfPage =
+                window.innerHeight + window.scrollY >=
+                document.body.offsetHeight;
+            if (atBottomOfPage) {
+                appendNextPage();
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [appendNextPage]);
+
+    useEffect(() => {
+        if (data) {
+            setPictureList((prevList) => [...prevList, ...data.results]);
+        }
+    }, [data]);
+
+    const { handleDelete: deletePicture } = useDeleteData(apiURL, authToken);
 
     const confirmDelete = () => {
         deletePicture(pictureIdToDelete);
@@ -96,7 +122,7 @@ const PictureGallery = () => {
                 {pictureList?.length > 0 &&
                     pictureList.map((picture) => (
                         <Col
-                            key={picture.id}
+                            key={uuidv4()}
                             lg={4}
                             xs={12}
                             className="mb-4 d-flex align-items-end justify-content-center"

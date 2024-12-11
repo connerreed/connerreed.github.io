@@ -6,6 +6,7 @@ from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum,
 from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSerializer, VideoSerializer,
                           CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 #User = get_user_model()
@@ -39,11 +40,17 @@ class RecipeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+class PicturePagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class PictureListCreateView(generics.ListCreateAPIView):
     #TODO: Add pagination
     queryset = Picture.objects.order_by('-date_uploaded') # Newest first
     serializer_class = PictureSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = PicturePagination
 
     def create(self, request, *args, **kwargs):
         files = request.FILES.getlist('image')
