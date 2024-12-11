@@ -10,8 +10,6 @@ import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
 import Loading from "./Loading";
 
-import { v4 as uuidv4 } from "uuid";
-
 import ConfirmModal from "./ConfirmModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +19,7 @@ const PictureGallery = () => {
     const [showModal, setShowModal] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
     const [pictureList, setPictureList] = useState([]);
+    const [idToTriggerNextFetch, setIDToTriggerNextFetch] = useState(null);
     const navigate = useNavigate();
     const { authToken, userData } = useAuth();
 
@@ -42,21 +41,40 @@ const PictureGallery = () => {
     }, [data, refreshPictures]);
 
     useEffect(() => {
-        const handleScroll = () => {
-            console.log("Scrolling");
-            const atBottomOfPage =
-                window.innerHeight + window.scrollY >=
-                document.body.offsetHeight;
-            if (atBottomOfPage) {
-                appendNextPage();
+        let observer;
+
+        const handleObservation = (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    appendNextPage();
+                    if (observer) observer.disconnect();
+                }
+            });
+        };
+
+        const setupObserver = () => {
+            if (!idToTriggerNextFetch || loading) return;
+
+            const elementToTriggerNextFetch = document.getElementById(`picture-${idToTriggerNextFetch}`);
+            if (elementToTriggerNextFetch) {
+                observer = new IntersectionObserver(handleObservation);
+                observer.observe(elementToTriggerNextFetch);
             }
         };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [appendNextPage]);
+
+        setupObserver();
+
+        return () => {
+            if (observer) observer.disconnect();
+        };
+    }, [idToTriggerNextFetch, loading, appendNextPage]);
 
     useEffect(() => {
         if (data) {
+            console.log(data.results[data.results.length / 2 - 1]?.id);
+            setIDToTriggerNextFetch(
+                data.results[data.results.length / 2 - 1]?.id
+            ); // Trigger next fetch when we reach the middle of the newly added pictures
             setPictureList((prevList) => [...prevList, ...data.results]);
         }
     }, [data]);
@@ -122,7 +140,8 @@ const PictureGallery = () => {
                 {pictureList?.length > 0 &&
                     pictureList.map((picture) => (
                         <Col
-                            key={uuidv4()}
+                            id={`picture-${picture.id}`}
+                            key={picture.id}
                             lg={4}
                             xs={12}
                             className="mb-4 d-flex align-items-end justify-content-center"
