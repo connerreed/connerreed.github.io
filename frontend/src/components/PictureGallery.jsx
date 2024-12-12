@@ -1,50 +1,30 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-//import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ElementCard from "./ElementCard";
 import { useAuth } from "../contexts/AuthContext";
 import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
-import Loading from "./Loading";
-
 import ConfirmModal from "./ConfirmModal";
-
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const PictureGallery = () => {
     const [showModal, setShowModal] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
-    // TODO: Get rid of pictureList and append data.results directly to context state
-    const [pictureList, setPictureList] = useState([]);
-    const [idToTriggerNextFetch, setIDToTriggerNextFetch] = useState(null);
     const navigate = useNavigate();
     const { authToken } = useAuth();
 
     const apiURL = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
 
     const {
-        data,
+        data: pictureList,
         loading,
-        refreshData: refreshPictures,
+        idToTriggerNextFetch,
+        initializeData,
+        appendNextPage,
     } = useFetchData(apiURL, authToken);
-
-    const refreshAllPictures = useCallback(() => {
-        setPictureList([]);
-        //refreshPictures(1);
-    }, []);
-
-    const appendNextPage = useCallback(() => {
-        const nextPageURL = data?.next;
-        if (nextPageURL) {
-            const pageNumber = nextPageURL.split("=").pop();
-            refreshPictures(pageNumber);
-        }
-    }, [data, refreshPictures]);
 
     useEffect(() => {
         let observer;
@@ -61,7 +41,9 @@ const PictureGallery = () => {
         const setupObserver = () => {
             if (!idToTriggerNextFetch || loading) return;
 
-            const elementToTriggerNextFetch = document.getElementById(`picture-${idToTriggerNextFetch}`);
+            const elementToTriggerNextFetch = document.getElementById(
+                `picture-${idToTriggerNextFetch}`
+            );
             if (elementToTriggerNextFetch) {
                 observer = new IntersectionObserver(handleObservation);
                 observer.observe(elementToTriggerNextFetch);
@@ -75,15 +57,6 @@ const PictureGallery = () => {
         };
     }, [idToTriggerNextFetch, loading, appendNextPage]);
 
-    useEffect(() => {
-        if (data) {
-            setIDToTriggerNextFetch(
-                data.results[data.results.length / 2 - 1]?.id
-            ); // Trigger next fetch when we reach the middle of the newly added pictures
-            setPictureList((prevList) => [...prevList, ...data.results]);
-        }
-    }, [data]);
-
     const { handleDelete: deletePicture } = useDeleteData(apiURL, authToken);
 
     const confirmDelete = () => {
@@ -91,7 +64,7 @@ const PictureGallery = () => {
         handleCloseModal();
         // wait for the delete to complete before refreshing the data
         setTimeout(() => {
-            refreshAllPictures();
+            initializeData();
         }, 500);
     };
 
@@ -107,6 +80,7 @@ const PictureGallery = () => {
 
     return (
         <Container>
+            {/* TODO: Add static banner across screen to hide initial picture loading? */}
             <Row className="align-items-center mb-4">
                 <Col className="d-flex justify-content-start mb-2 mb-md-0">
                     {/* Empty column to maintain spacing */}
@@ -136,8 +110,7 @@ const PictureGallery = () => {
             </Row>
             <Row>
                 {/* Content Area */}
-                {/* {loading && <Loading />} */}
-                {!loading && (!pictureList || pictureList.length === 0) && (
+                {!loading && pictureList?.length === 0 && (
                     <div className="d-flex justify-content-center">
                         <h1>No Pictures Found</h1>
                     </div>
@@ -151,49 +124,10 @@ const PictureGallery = () => {
                             xs={12}
                             className="mb-4 d-flex align-items-end justify-content-center"
                         >
-                            <ElementCard picture={picture} handleShowModal={handleShowModal}/>
-                            {/* <Card bg="secondary">
-                                <Link
-                                    to={`/pictures/${picture.id}`}
-                                    style={{ textDecoration: "none" }}
-                                >
-                                    <ElementCard 
-                                        src={picture.image}
-                                        alt={`Picture by ${picture.user.first_name} ${picture.user.last_name}`}
-                                        className="card-img-top"
-                                    />
-                                    <Card.Img
-                                        variant="top"
-                                        src={picture.image}
-                                        hidden={true}
-                                    />
-                                </Link>
-                                <Card.Body className="d-flex justify-content-between align-items-center">
-                                    <Card.Title className="mb-0">
-                                        Uploaded by:
-                                        <br />
-                                        {picture.user.first_name +
-                                            " " +
-                                            picture.user.last_name}
-                                    </Card.Title>
-                                    {userData &&
-                                        (userData.is_superuser ||
-                                            userData.id ===
-                                                picture.user.id) && (
-                                            <Button
-                                                variant="dark"
-                                                onClick={() =>
-                                                    // Add popup asking for confirmation
-                                                    handleShowModal(picture.id)
-                                                }
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faTrash}
-                                                />
-                                            </Button>
-                                        )}
-                                </Card.Body>
-                            </Card> */}
+                            <ElementCard
+                                picture={picture}
+                                handleShowModal={handleShowModal}
+                            />
                         </Col>
                     ))}
             </Row>
