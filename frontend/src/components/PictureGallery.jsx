@@ -24,38 +24,62 @@ const PictureGallery = () => {
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
+        pageSize,
     } = useFetchData(apiURL, authToken);
 
     useEffect(() => {
-        let observer;
-
+        let observers = [];
+        let isFetching = false; // Flag to prevent simultaneous fetches
+    
         const handleObservation = (entries) => {
+            if (isFetching) return; // Prevent duplicate fetches
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
+                    isFetching = true; // Lock further fetches
                     appendNextPage();
-                    if (observer) observer.disconnect();
                 }
             });
         };
-
-        const setupObserver = () => {
+    
+        const setupObservers = () => {
             if (!idToTriggerNextFetch || loading) return;
-
-            const elementToTriggerNextFetch = document.getElementById(
-                `picture-${idToTriggerNextFetch}`
-            );
-            if (elementToTriggerNextFetch) {
-                observer = new IntersectionObserver(handleObservation);
-                observer.observe(elementToTriggerNextFetch);
+    
+            const elementsToObserve = [];
+            const totalPagesLoaded = Math.ceil(pictureList.length / pageSize);
+            const startIndex = (totalPagesLoaded - 1) * pageSize; // Start of the last page
+            const endIndex = pictureList.length; // End of the full list
+    
+            const currentPage = pictureList.slice(startIndex, endIndex);
+    
+            if (currentPage.length > 0) {
+                const middleIndex = Math.floor(currentPage.length / 2);
+                const middleElementId = `picture-${currentPage[middleIndex]?.id}`;
+                const lastElementId = `picture-${currentPage[currentPage.length - 1]?.id}`;
+    
+                const middleElement = document.getElementById(middleElementId);
+                const lastElement = document.getElementById(lastElementId);
+    
+                if (middleElement) elementsToObserve.push(middleElement);
+                if (lastElement) elementsToObserve.push(lastElement);
+    
+                observers = elementsToObserve.map((element) => {
+                    const observer = new IntersectionObserver(handleObservation, {
+                        threshold: 1.0, // Trigger only when fully visible
+                    });
+                    observer.observe(element);
+                    return observer;
+                });
             }
         };
-
-        setupObserver();
-
+    
+        setupObservers();
+    
         return () => {
-            if (observer) observer.disconnect();
+            observers.forEach((observer) => observer.disconnect());
+            isFetching = false; // Reset fetching flag
         };
-    }, [idToTriggerNextFetch, loading, appendNextPage]);
+    }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
+    
 
     const { handleDelete: deletePicture } = useDeleteData(apiURL, authToken);
 

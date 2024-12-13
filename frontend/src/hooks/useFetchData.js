@@ -91,6 +91,7 @@ const useFetchData = (url, authToken = null) => {
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
+        pageSize,
     };
 };
 
