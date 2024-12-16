@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar, Nav, Offcanvas } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import {useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -13,6 +13,18 @@ function CustomNavbar() {
     const showBackButton = !/^\/(recipes|pictures|videos|login|profile|)$/.test(
         location.pathname
     );
+
+    useEffect(() => {
+        // This useEffect hook allows proper highlighting of nav elements even though they are seperate navs
+        const navElements = document.querySelectorAll(".navbar-element, #nav-profile");
+        navElements.forEach((element) => {
+            if (element.getAttribute("to") === location.pathname) {
+            element.classList.add("active");
+            } else {
+            element.classList.remove("active");
+            }
+        });
+    }, [location]);
 
     return (
         <>
