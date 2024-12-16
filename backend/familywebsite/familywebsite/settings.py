@@ -74,6 +74,15 @@ INTERNAL_IPS = [
 
 ROOT_URLCONF = 'familywebsite.urls'
 
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'connerdreed@gmail.com'  # Email sender
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+DEFAULT_FROM_EMAIL = 'connerdreed@gmail.com'
+ADMIN_EMAIL = 'connerdreed@gmail.com'  # Email where notifications will be sent
 
 
 TEMPLATES = [
