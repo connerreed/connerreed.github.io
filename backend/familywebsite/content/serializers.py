@@ -15,7 +15,7 @@ User = get_user_model()
 class UserSerializer(BaseUserSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'prefers_dark_mode', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
+        fields = ['id', 'email', 'first_name', 'last_name', 'prefers_dark_mode', 'is_approved', 'is_active', 'date_joined', 'last_login', 'is_superuser', 'groups']
 
 class RecipeContentImageSerializer(serializers.ModelSerializer):
     class Meta:
