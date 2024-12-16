@@ -5,11 +5,24 @@ from django.contrib.auth import get_user_model
 from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum, MediaAlbum)
 from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSerializer, VideoSerializer,
                           CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 #User = get_user_model()
+
+class IsApprovedUser(BasePermission):
+    '''
+    
+    Allows any user to make read-only requests (SAFE_METHODS: GET, HEAD, OPTIONS).
+    Restricts modify actions (POST, PUT, DELETE) to approved users only.
+
+    '''
+
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS: # Read only methods
+            return True
+        return request.user.is_authenticated and request.user.is_approved # Modify actions
 
 class UserThemeUpdateView(generics.RetrieveUpdateAPIView):
     queryset = get_user_model().objects.all()
@@ -46,10 +59,9 @@ class PicturePagination(PageNumberPagination):
     max_page_size = 100
 
 class PictureListCreateView(generics.ListCreateAPIView):
-    #TODO: Add pagination
     queryset = Picture.objects.order_by('-date_uploaded') # Newest first
     serializer_class = PictureSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsApprovedUser]
     pagination_class = PicturePagination
 
     def create(self, request, *args, **kwargs):

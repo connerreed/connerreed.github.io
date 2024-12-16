@@ -26,9 +26,9 @@ class CustomUserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'prefers_dark_mode')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_approved',
                                         'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login',)}),  # Removed 'date_joined'
+        (_('Important dates'), {'fields': ('last_login',)}),
     )
     
     add_fieldsets = (
@@ -38,7 +38,7 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
 
-    readonly_fields = ['last_login', 'date_joined']  # Add 'date_joined' here to make it read-only
+    readonly_fields = ['last_login', 'date_joined'] 
 
     search_fields = ['email', 'first_name', 'last_name']
 

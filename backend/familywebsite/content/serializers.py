@@ -69,6 +69,11 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         fields = ['id', 'email', 'password', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
+    def validate_email(self, value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("This email address is already in use.")
+        return value
+
 
 class PictureSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
