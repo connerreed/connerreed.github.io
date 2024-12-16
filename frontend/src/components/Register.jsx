@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ const Register = () => {
         hasSpecialChar: false,
     });
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handlePasswordChange = (e) => {
         const password = e.target.value;
@@ -81,7 +83,13 @@ const Register = () => {
                 first_name: firstName,
                 last_name: lastName,
             });
-            navigate("/login");
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_BASE_URL}/auth/token/login/`,
+                { email, password }
+            );
+            login(response.data.auth_token);
+
+            navigate("/profile");
         } catch (error) {
             handleAxiosError(error);
         }
@@ -91,7 +99,9 @@ const Register = () => {
         if (axios.isAxiosError(error)) {
             if (error.response) {
                 if (error.response.data.email) {
-                    setError("Registration failed: " + error.response.data.email);
+                    setError(
+                        "Registration failed: " + error.response.data.email
+                    );
                     return;
                 }
                 setError(
@@ -156,7 +166,9 @@ const Register = () => {
                                 ) : (
                                     <FaTimes className="text-danger" />
                                 )}{" "}
-                                <span className="ms-2">At least 8 characters long</span>
+                                <span className="ms-2">
+                                    At least 8 characters long
+                                </span>
                             </div>
                             <div className="d-flex align-items-center">
                                 {passwordValidations.hasUpperCase ? (
@@ -164,7 +176,9 @@ const Register = () => {
                                 ) : (
                                     <FaTimes className="text-danger" />
                                 )}{" "}
-                                <span className="ms-2">Contains an uppercase letter</span>
+                                <span className="ms-2">
+                                    Contains an uppercase letter
+                                </span>
                             </div>
                             <div className="d-flex align-items-center">
                                 {passwordValidations.hasLowerCase ? (
@@ -172,7 +186,9 @@ const Register = () => {
                                 ) : (
                                     <FaTimes className="text-danger" />
                                 )}{" "}
-                                <span className="ms-2">Contains a lowercase letter</span>
+                                <span className="ms-2">
+                                    Contains a lowercase letter
+                                </span>
                             </div>
                             <div className="d-flex align-items-center">
                                 {passwordValidations.hasNumber ? (
@@ -188,7 +204,9 @@ const Register = () => {
                                 ) : (
                                     <FaTimes className="text-danger" />
                                 )}{" "}
-                                <span className="ms-2">Contains a special character</span>
+                                <span className="ms-2">
+                                    Contains a special character
+                                </span>
                             </div>
                         </div>
                     </Form.Group>

@@ -66,7 +66,7 @@ const Profile = () => {
     }
     */
 
-    if (!userData) {
+    if (!userData) { // FIXME: on login this shows up briefly
         return (
             <Container className="d-flex justify-content-center align-items-center vh-100">
                 <p>Something went wrong when loading user data...</p>
