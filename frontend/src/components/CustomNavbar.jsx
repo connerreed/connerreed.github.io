@@ -14,17 +14,28 @@ function CustomNavbar() {
         location.pathname
     );
 
+    const navElements = Array.from(
+        document.getElementsByClassName("navbar-element")
+    );
+    const profileElement = document.getElementById("nav-profile");
     useEffect(() => {
         // This useEffect hook allows proper highlighting of nav elements even though they are seperate navs
-        const navElements = document.querySelectorAll(".navbar-element, #nav-profile");
-        navElements.forEach((element) => {
-            if (element.getAttribute("to") === location.pathname) {
-            element.classList.add("active");
-            } else {
-            element.classList.remove("active");
-            }
-        });
-    }, [location]);
+        // FIXME: This is a performance hit solution and should be refactored
+        const profileCurrentlyActive =
+            profileElement?.classList.contains("active");
+        const navElementActive = Array.from(navElements).some((element) =>
+            element.classList.contains("active")
+        );
+
+        if (profileCurrentlyActive && location.pathname !== "/profile") {
+            profileElement.classList.remove("active");
+        }
+        if (navElementActive && location.pathname === "/profile") {
+            navElements?.forEach((element) =>
+                element.classList.remove("active")
+            );
+        }
+    }, [location, navElements, profileElement]);
 
     return (
         <>
