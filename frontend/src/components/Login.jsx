@@ -38,7 +38,6 @@ const Login = () => {
           <Form.Group className="mt-3" controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -48,7 +47,6 @@ const Login = () => {
           <Form.Group className="mt-3" controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
-              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

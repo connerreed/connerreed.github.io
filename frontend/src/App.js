@@ -29,70 +29,70 @@ function AppContent() {
             <div>
                 <CustomNavbar />
             </div>
-            <MessageProvider>
-                <div>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
+            <div>
+                <Routes>
+                    <Route path="/" element={<Home />} />
 
-                        {/* Public Routes */}
-                        <Route path="/recipes" element={<RecipeGallery />} />
-                        <Route path="/recipes/:id" element={<Recipe />} />
-                        <Route path="/pictures" element={<PictureGallery />} />
-                        <Route path="/pictures/:id" element={<Picture />} />
-                        <Route path="/videos" element={<VideoGallery />} />
-                        <Route path="/videos/:id" element={<Video />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                    {/* Public Routes */}
+                    <Route path="/recipes" element={<RecipeGallery />} />
+                    <Route path="/recipes/:id" element={<Recipe />} />
+                    <Route path="/pictures" element={<PictureGallery />} />
+                    <Route path="/pictures/:id" element={<Picture />} />
+                    <Route path="/videos" element={<VideoGallery />} />
+                    <Route path="/videos/:id" element={<Video />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
 
-                        {/* Protected Routes */}
-                        <Route
-                            path="/recipes/new"
-                            element={
-                                <ProtectedRoute>
-                                    <NewRecipeForm />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/pictures/new"
-                            element={
-                                <ProtectedRoute>
-                                    <NewPictureForm />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/videos/new"
-                            element={
-                                <ProtectedRoute>
-                                    <NewVideoForm />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/profile"
-                            element={
-                                <ProtectedRoute>
-                                    <Profile />
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Routes>
-                </div>
-            </MessageProvider>
+                    {/* Protected Routes */}
+                    <Route
+                        path="/recipes/new"
+                        element={
+                            <ProtectedRoute>
+                                <NewRecipeForm />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/pictures/new"
+                        element={
+                            <ProtectedRoute>
+                                <NewPictureForm />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/videos/new"
+                        element={
+                            <ProtectedRoute>
+                                <NewVideoForm />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </div>
         </div>
     );
 }
 
 function App() {
     return (
-        <ThemeProvider>
-            <AuthProvider>
-                <HashRouter>
-                    <AppContent />
-                </HashRouter>
-            </AuthProvider>
-        </ThemeProvider>
+        <HashRouter>
+            <ThemeProvider>
+                <MessageProvider>
+                    <AuthProvider>
+                        <AppContent />
+                    </AuthProvider>
+                </MessageProvider>
+            </ThemeProvider>
+        </HashRouter>
     );
 }
 
