@@ -99,16 +99,39 @@ class RecipeContentImage(models.Model):
     def str(self):
         return self.recipe.title
 
+from PIL import Image
 class Picture(models.Model):
     image = models.ImageField(upload_to='images/pictures/')
+    thumbnail = models.ImageField(upload_to='images/picturethumbnails/', blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='pictures')
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
+    def generate_thumbnail(self):
+        # Extract the filename from the image field's name
+        picture_filename = os.path.basename(self.image.name)  # Extract only the file name
+        thumbnail_path = os.path.join('media/images/picturethumbnails/', picture_filename)
+
+        # Open the image and create a thumbnail
+        with Image.open(self.image) as image:  # Use `self.image.path` for full file path
+            image.thumbnail((300, 300))
+            image.save(thumbnail_path)
+
+        # Set the thumbnail path and save the model
+        self.thumbnail = thumbnail_path.replace('media/', '')  # Adjust the stored path
+
+    def save(self, *args, **kwargs):
+        # Generate a thumbnail for the picture
+        if not self.thumbnail:
+            self.generate_thumbnail()
+        super().save(*args, **kwargs)
+
     def delete(self, *args, **kwargs):
         # Delete the picture from the file system
-        if self.image:
-            if os.path.isfile(self.image.path):
-                os.remove(self.image.path)
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        if self.thumbnail:
+            if os.path.isfile(self.thumbnail.path):
+                os.remove(self.thumbnail.path)
         super().delete(*args, **kwargs)
 
 
