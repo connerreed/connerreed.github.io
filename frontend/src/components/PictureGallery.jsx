@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ElementCard from "./ElementCard";
 import { useAuth } from "../contexts/AuthContext";
-import useFetchData from "../hooks/useFetchData";
+import useFetchPagedData from "../hooks/useFetchPagedData";
 import useDeleteData from "../hooks/useDeleteData";
 import ConfirmModal from "./ConfirmModal";
 import backendURL from "../utils/backendURL";
@@ -26,12 +26,12 @@ const PictureGallery = () => {
         initializeData,
         appendNextPage,
         pageSize,
-    } = useFetchData(picturesApiEndpoint, authToken);
+    } = useFetchPagedData(picturesApiEndpoint, authToken);
 
     useEffect(() => {
         let observers = [];
         let isFetching = false; // Flag to prevent simultaneous fetches
-    
+
         const handleObservation = (entries) => {
             if (isFetching) return; // Prevent duplicate fetches
             entries.forEach((entry) => {
@@ -41,48 +41,55 @@ const PictureGallery = () => {
                 }
             });
         };
-    
+
         const setupObservers = () => {
             if (!idToTriggerNextFetch || loading) return;
-    
+
             const elementsToObserve = [];
             const totalPagesLoaded = Math.ceil(pictureList.length / pageSize);
             const startIndex = (totalPagesLoaded - 1) * pageSize; // Start of the last page
             const endIndex = pictureList.length; // End of the full list
-    
+
             const currentPage = pictureList.slice(startIndex, endIndex);
-    
+
             if (currentPage.length > 0) {
                 const middleIndex = Math.floor(currentPage.length / 2);
                 const middleElementId = `picture-${currentPage[middleIndex]?.id}`;
-                const lastElementId = `picture-${currentPage[currentPage.length - 1]?.id}`;
-    
+                const lastElementId = `picture-${
+                    currentPage[currentPage.length - 1]?.id
+                }`;
+
                 const middleElement = document.getElementById(middleElementId);
                 const lastElement = document.getElementById(lastElementId);
-    
+
                 if (middleElement) elementsToObserve.push(middleElement);
                 if (lastElement) elementsToObserve.push(lastElement);
-    
+
                 observers = elementsToObserve.map((element) => {
-                    const observer = new IntersectionObserver(handleObservation, {
-                        threshold: 1.0, // Trigger only when fully visible
-                    });
+                    const observer = new IntersectionObserver(
+                        handleObservation,
+                        {
+                            threshold: 1.0, // Trigger only when fully visible
+                        }
+                    );
                     observer.observe(element);
                     return observer;
                 });
             }
         };
-    
+
         setupObservers();
-    
+
         return () => {
             observers.forEach((observer) => observer.disconnect());
             isFetching = false; // Reset fetching flag
         };
     }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
-    
 
-    const { handleDelete: deletePicture } = useDeleteData(picturesApiEndpoint, authToken);
+    const { handleDelete: deletePicture } = useDeleteData(
+        picturesApiEndpoint,
+        authToken
+    );
 
     const confirmDelete = () => {
         deletePicture(pictureIdToDelete);
