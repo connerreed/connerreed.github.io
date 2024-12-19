@@ -40,7 +40,18 @@ const usePostData = (url) => {
                 }
             })
             .catch((error) => {
-                addError("Error: Failed to upload item");
+                const status = error?.response?.status;
+                let errorMessage = ""
+                switch (status) {
+                    case 403:
+                        errorMessage = "Error: You are not allowed to upload yet.";
+                        break;
+                    default:
+                        errorMessage = "Error: Failed to upload";
+                        break;
+                }
+                
+                addError(errorMessage);
                 console.error(error);
             })
             .finally(() => {

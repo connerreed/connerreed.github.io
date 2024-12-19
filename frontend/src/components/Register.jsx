@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
+import backendURL from "../utils/backendURL";
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -23,6 +24,8 @@ const Register = () => {
     });
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    const profileApiEndpoint = `${backendURL}/auth/users/`;
 
     const handlePasswordChange = (e) => {
         const password = e.target.value;
@@ -77,18 +80,19 @@ const Register = () => {
             return;
         }
         try {
-            await axios.post("http://127.0.0.1:8000/auth/users/", {
+            await axios.post(profileApiEndpoint, {
                 email,
                 password,
                 first_name: firstName,
                 last_name: lastName,
             });
-            const response = await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/auth/token/login/`,
-                { email, password }
-            );
-            login(response.data.auth_token);
+            const getTokenApiEndpoint = `${backendURL}/auth/token/login/`;
+            const response = await axios.post(getTokenApiEndpoint, {
+                email,
+                password,
+            });
 
+            login(response.data.auth_token);
             navigate("/profile");
         } catch (error) {
             handleAxiosError(error);

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import Loading from "./Loading";
 import usePostData from "../hooks/usePostData";
+import backendURL from "../utils/backendURL";
 
 const NewPictureForm = () => {
     const [newPictures, setNewPictures] = useState([]);
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    const { postData, loading } = usePostData(`${API_BASE_URL}/api/pictures/`);
+    const { postData, loading } = usePostData(`${backendURL}/api/pictures/`);
 
     useEffect(() => {
         window.scrollTo(0, 0);

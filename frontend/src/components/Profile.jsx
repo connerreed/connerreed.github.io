@@ -4,17 +4,20 @@ import { useTheme } from "../contexts/ThemeContext";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import backendURL from "../utils/backendURL";
 
 const Profile = () => {
     const { logout, userData, authToken } = useAuth();
     const { darkMode, setDarkMode } = useTheme();
     const navigate = useNavigate();
 
+    const profileApiEndpoint = `${backendURL}/auth/users/me/`;
+
     const toggleDarkMode = async () => {
         setDarkMode(!darkMode);
         try {
             await axios.patch(
-                `${process.env.REACT_APP_API_BASE_URL}/auth/users/me/`,
+                profileApiEndpoint,
                 { prefers_dark_mode: !darkMode },
                 {
                     headers: { Authorization: `Token ${authToken}` },
@@ -27,7 +30,6 @@ const Profile = () => {
 
     const handleLogout = () => {
         logout();
-        // Optionally, redirect to login
         navigate("/login");
     };
 

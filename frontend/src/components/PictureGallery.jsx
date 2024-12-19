@@ -9,6 +9,7 @@ import { useAuth } from "../contexts/AuthContext";
 import useFetchData from "../hooks/useFetchData";
 import useDeleteData from "../hooks/useDeleteData";
 import ConfirmModal from "./ConfirmModal";
+import backendURL from "../utils/backendURL";
 
 const PictureGallery = () => {
     const [showModal, setShowModal] = useState(false);
@@ -16,7 +17,7 @@ const PictureGallery = () => {
     const navigate = useNavigate();
     const { authToken } = useAuth();
 
-    const apiURL = `${process.env.REACT_APP_API_BASE_URL}/api/pictures/`;
+    const picturesApiEndpoint = `${backendURL}/api/pictures/`;
 
     const {
         data: pictureList,
@@ -25,7 +26,7 @@ const PictureGallery = () => {
         initializeData,
         appendNextPage,
         pageSize,
-    } = useFetchData(apiURL, authToken);
+    } = useFetchData(picturesApiEndpoint, authToken);
 
     useEffect(() => {
         let observers = [];
@@ -81,7 +82,7 @@ const PictureGallery = () => {
     }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
     
 
-    const { handleDelete: deletePicture } = useDeleteData(apiURL, authToken);
+    const { handleDelete: deletePicture } = useDeleteData(picturesApiEndpoint, authToken);
 
     const confirmDelete = () => {
         deletePicture(pictureIdToDelete);

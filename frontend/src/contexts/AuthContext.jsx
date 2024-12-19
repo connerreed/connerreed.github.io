@@ -8,6 +8,7 @@ import {
 import { useTheme } from "./ThemeContext";
 import axios from "axios";
 import { useMessage } from "./MessageContext";
+import backendURL from "../utils/backendURL";
 
 const AuthContext = createContext();
 
@@ -32,10 +33,14 @@ export const AuthProvider = ({ children }) => {
     }, [setDarkMode, addSuccessMessage]);
 
     const updateUser = useCallback(() => {
+        const profileApiEndpoint = `${backendURL}/auth/users/me/`;
         axios
-            .get(`${process.env.REACT_APP_API_BASE_URL}/auth/users/me/`, {
-                headers: { Authorization: `Token ${authToken}` },
-            })
+            .get(
+                profileApiEndpoint,
+                {
+                    headers: { Authorization: `Token ${authToken}` },
+                }
+            )
             .then((response) => {
                 setDarkMode(response?.data?.prefers_dark_mode);
                 localStorage.setItem(
@@ -45,13 +50,14 @@ export const AuthProvider = ({ children }) => {
                 setUserData(response?.data);
             })
             .catch((error) => {
+                const status = error?.response?.status;
                 let errorMessage = "";
-                if (error?.response?.status === 401) {
+                if (status === 401) {
                     logout();
                     errorMessage = "Session expired. Please login again.";
                 } else {
                     console.error("User fetch error: ", error);
-                    errorMessage = "Failed to fetch user data.";
+                    errorMessage = "Something went wrong.";
                 }
                 addError(errorMessage);
             });
