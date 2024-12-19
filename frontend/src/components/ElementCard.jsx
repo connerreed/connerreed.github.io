@@ -34,7 +34,7 @@ const ElementCard = ({ picture, handleShowModal }) => {
                         onLoad={() => setLoaded(true)}
                         onError={(e) => {
                             e.target.src =
-                                "https://placehold.co/400/212529/white";
+                                "https://placehold.co/300/212529/white";
                         }}
                     />
                 </Link>
