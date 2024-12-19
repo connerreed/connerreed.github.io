@@ -2,15 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useMessage } from "../contexts/MessageContext";
 
-const useFetchPagedData = (url, authToken = null) => {
+const useFetchPagedData = (url, authToken = null, pageSize = 12) => {
     const [data, setData] = useState(null);
     const [maxDataCount, setMaxDataCount] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
     const [idToTriggerNextFetch, setIdToTriggerNextFetch] = useState(null);
     const [loading, setLoading] = useState(false);
     const { addError } = useMessage();
-
-    const pageSize = 12;
 
     const fetchData = useCallback(
         (page) => {
@@ -66,14 +64,14 @@ const useFetchPagedData = (url, authToken = null) => {
                     setLoading(false);
                 });
         },
-        [url, authToken, addError]
+        [url, authToken, pageSize, addError]
     );
 
     const appendNextPage = useCallback(() => {
         const maxPage = Math.ceil(maxDataCount / pageSize);
         if (pageNumber > maxPage) return;
         fetchData(pageNumber);
-    }, [fetchData, pageNumber, maxDataCount]);
+    }, [fetchData, pageSize, pageNumber, maxDataCount]);
 
     const initializeData = useCallback(() => {
         setData(null);
@@ -94,7 +92,6 @@ const useFetchPagedData = (url, authToken = null) => {
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
-        pageSize,
     };
 };
 

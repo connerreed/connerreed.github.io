@@ -19,14 +19,14 @@ const PictureGallery = () => {
 
     const picturesApiEndpoint = `${backendURL}/api/pictures/`;
 
+    const pageSize = 12;
     const {
         data: pictureList,
         loading,
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
-        pageSize,
-    } = useFetchPagedData(picturesApiEndpoint, authToken);
+    } = useFetchPagedData(picturesApiEndpoint, authToken, pageSize);
 
     useEffect(() => {
         let observers = [];
