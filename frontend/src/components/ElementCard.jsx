@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 //import Placeholder from "react-bootstrap/Placeholder";
 //import Loading from "./Loading";
@@ -30,16 +30,16 @@ const ElementCard = ({ picture, handleShowModal }) => {
                 >
                     <Card.Img
                         variant="top"
-                        src={picture.image}
+                        src={picture.thumbnail}
                         onLoad={() => setLoaded(true)}
-                        //hidden={!loaded}
                         onError={(e) => {
-                            e.target.src = "https://placehold.co/400/212529/white";
+                            e.target.src =
+                                "https://placehold.co/400/212529/white";
                         }}
                     />
                 </Link>
                 {
-                //!loaded && <Loading />
+                    //!loaded && <Loading />
                 }
                 <Card.Body className="d-flex justify-content-between align-items-center">
                     <Card.Title className="mb-0">
@@ -47,6 +47,17 @@ const ElementCard = ({ picture, handleShowModal }) => {
                         <br />
                         {picture.user.first_name + " " + picture.user.last_name}
                     </Card.Title>
+                    
+                    <a
+                        href={picture.image}
+                        download={`picture_${picture.id}.jpg`}
+                        style={{ textDecoration: "none" }}
+                    >
+                        <Button variant="dark">
+                            <FontAwesomeIcon icon={faCircleDown} />
+                        </Button>
+                    </a>
+
                     {userData &&
                         (userData.is_superuser ||
                             userData.id === picture.user.id) && (

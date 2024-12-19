@@ -15,6 +15,7 @@ imageio = "*"
 django-mssql-backend = "*"
 mssql-django = "*"
 python-decouple = "*"
+wand = "*"
 
 [dev-packages]
 
