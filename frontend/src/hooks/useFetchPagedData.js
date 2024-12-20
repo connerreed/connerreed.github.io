@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import useFetchData from "./useFetchData";
+import useApiRequest from "./useApiRequest";
 
 const useFetchPagedData = (url, pageSize = 12) => {
     const [appendedData, setAppendedData] = useState([]);
     const [nextPageUrl, setNextPageUrl] = useState(null);
     const [idToTriggerNextFetch, setIdToTriggerNextFetch] = useState(null);
-    const { fetchData, currentlyLoading: loading } = useFetchData();
+    const { fetchData, currentlyLoading: loading } = useApiRequest();
     const [atMaxPage, setAtMaxPage] = useState(false);
 
     const appendNextPage = useCallback(() => {

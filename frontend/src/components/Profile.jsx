@@ -3,29 +3,21 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import backendURL from "../utils/backendURL";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Profile = () => {
-    const { logout, userData, authToken } = useAuth();
+    const { logout, userData } = useAuth();
     const { darkMode, setDarkMode } = useTheme();
     const navigate = useNavigate();
+    const { patchData } = useApiRequest();
 
     const profileApiEndpoint = `${backendURL}/auth/users/me/`;
 
     const toggleDarkMode = async () => {
         setDarkMode(!darkMode);
-        try {
-            await axios.patch(
-                profileApiEndpoint,
-                { prefers_dark_mode: !darkMode },
-                {
-                    headers: { Authorization: `Token ${authToken}` },
-                }
-            );
-        } catch (error) {
-            console.error("Failed to update dark mode preference: ", error);
-        }
+        const formData = {prefers_dark_mode: !darkMode};
+        patchData(profileApiEndpoint, formData);
     };
 
     const handleLogout = () => {

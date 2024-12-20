@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
-import useFetchData from "../hooks/useFetchData";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Picture = () => {
     const { id } = useParams();
@@ -12,7 +12,7 @@ const Picture = () => {
         data: picture,
         currentlyLoading: loading,
         fetchData,
-    } = useFetchData();
+    } = useApiRequest();
 
     useEffect(() => {
         window.scrollTo(0, 0);

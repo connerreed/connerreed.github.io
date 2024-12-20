@@ -5,17 +5,15 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ElementCard from "./ElementCard";
-import { useAuth } from "../contexts/AuthContext";
 import useFetchPagedData from "../hooks/useFetchPagedData";
-import useDeleteData from "../hooks/useDeleteData";
 import ConfirmModal from "./ConfirmModal";
 import backendURL from "../utils/backendURL";
+import useApiRequest from "../hooks/useApiRequest";
 
 const PictureGallery = () => {
     const [showModal, setShowModal] = useState(false);
     const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
     const navigate = useNavigate();
-    const { authToken } = useAuth();
 
     const picturesApiEndpoint = `${backendURL}/api/pictures/`;
 
@@ -27,6 +25,8 @@ const PictureGallery = () => {
         initializeData,
         appendNextPage,
     } = useFetchPagedData(picturesApiEndpoint, pageSize);
+
+    const { deleteData } = useApiRequest();
 
     useEffect(() => {
         if (!pictureList || pictureList.length === 0) {
@@ -92,13 +92,9 @@ const PictureGallery = () => {
         };
     }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
 
-    const { handleDelete: deletePicture } = useDeleteData(
-        picturesApiEndpoint,
-        authToken
-    );
-
     const confirmDelete = () => {
-        deletePicture(pictureIdToDelete);
+        const deleteUrl = `${picturesApiEndpoint}${pictureIdToDelete}/`;
+        deleteData(deleteUrl);
         handleCloseModal();
         // wait for the delete to complete before refreshing the data
         setTimeout(() => {
