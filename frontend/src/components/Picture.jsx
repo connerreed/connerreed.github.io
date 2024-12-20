@@ -1,38 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
+import useFetchData from "../hooks/useFetchData";
 
 const Picture = () => {
     const { id } = useParams();
-    const [picture, setPicture] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const {
+        data: picture,
+        currentlyLoading: loading,
+        fetchData,
+    } = useFetchData();
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const fetchPicture = async () => {
-            setLoading(true);
-            const pictureApiEndpoint = `${backendURL}/api/pictures/${id}/`;
-            try {
-                const pictureResponse = await fetch(
-                    pictureApiEndpoint
-                );
-                if (!pictureResponse.ok) {
-                    throw new Error(
-                        `Failed to fetch picture: ${pictureResponse.status}`
-                    );
-                }
-                const picture = await pictureResponse.json();
-                setPicture(picture);
-            } catch (error) {
-                console.error("Error fetching picture: ", error);
-            }
-            setLoading(false);
-        };
-        fetchPicture();
-    }, [id]);
+        const pictureApiEndpoint = `${backendURL}/api/pictures/${id}/`;
+        fetchData(pictureApiEndpoint);
+    }, [id, fetchData]);
 
     if (loading) return <Loading />;
 
