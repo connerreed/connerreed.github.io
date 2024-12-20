@@ -29,6 +29,12 @@ const PictureGallery = () => {
     } = useFetchPagedData(picturesApiEndpoint, pageSize);
 
     useEffect(() => {
+        if (!pictureList || pictureList.length === 0) {
+            appendNextPage();
+        }
+    }, [appendNextPage, pictureList]);
+
+    useEffect(() => {
         let observers = [];
         let isFetching = false; // Flag to prevent simultaneous fetches
 

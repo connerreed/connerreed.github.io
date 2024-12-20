@@ -3,48 +3,36 @@ import useFetchData from "./useFetchData";
 
 const useFetchPagedData = (url, pageSize = 12) => {
     const [appendedData, setAppendedData] = useState([]);
-    const [maxDataCount, setMaxDataCount] = useState(0);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [nextPageUrl, setNextPageUrl] = useState(null);
     const [idToTriggerNextFetch, setIdToTriggerNextFetch] = useState(null);
     const { fetchData, currentlyLoading: loading } = useFetchData();
-
-    const appendPage = useCallback(
-        (page) => {
-            const pageUrl = `${url}?page=${page}&page_size=${pageSize}`;
-            fetchData(pageUrl, (res) => {
-                if (page === 1) {
-                    setAppendedData(res?.results || []);
-                } else {
-                    setAppendedData((prev) => [...prev, ...(res?.results || [])]);
-                }
-                if (res?.results?.length) {
-                    const mid = Math.floor(res.results.length / 2);
-                    setIdToTriggerNextFetch(res.results[mid]?.id);
-                }
-                if (typeof res?.count === "number") {
-                    setMaxDataCount(res.count);
-                }
-            });
-        },
-        [fetchData, pageSize, url]
-    );
+    const [atMaxPage, setAtMaxPage] = useState(false);
 
     const appendNextPage = useCallback(() => {
-        const maxPage = Math.ceil(maxDataCount / pageSize);
-        if (pageNumber > maxPage) return;
-        appendPage(pageNumber);
-        setPageNumber((prev) => prev + 1);
-    }, [pageNumber, maxDataCount, pageSize, appendPage]);
+        if (atMaxPage || !nextPageUrl) return;
+        fetchData(nextPageUrl, (res) => {
+            setAppendedData((prev) => [...prev, ...(res?.results || [])]);
+            if (res?.results?.length) {
+                const mid = Math.floor(res.results.length / 2);
+                setIdToTriggerNextFetch(res.results[mid]?.id);
+            }
+            if (!res?.next) {
+                setAtMaxPage(true);
+            } else {
+                setNextPageUrl(res.next);
+            }
+        });
+    }, [fetchData, nextPageUrl, atMaxPage]);
 
     const initializeData = useCallback(() => {
         setAppendedData([]);
-        setPageNumber(1);
         setIdToTriggerNextFetch(null);
-        appendPage(1);
-        setPageNumber(2);
-    }, [appendPage]);
+        setNextPageUrl(`${url}?page=1&page_size=${pageSize}`);
+        setAtMaxPage(false);
+    }, [url, pageSize]);
 
     useEffect(() => {
+        // When url changes, reset to the first page, but do not fetch automatically
         initializeData();
     }, [url, initializeData]);
 
