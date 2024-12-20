@@ -1,93 +1,55 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { useMessage } from "../contexts/MessageContext";
+import useFetchData from "./useFetchData";
 
 const useFetchPagedData = (url, authToken = null, pageSize = 12) => {
-    const [data, setData] = useState(null);
+    const [appendedData, setAppendedData] = useState([]);
     const [maxDataCount, setMaxDataCount] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
     const [idToTriggerNextFetch, setIdToTriggerNextFetch] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const { addError } = useMessage();
+    const { fetchData, currentlyLoading: loading } = useFetchData();
 
-    const fetchData = useCallback(
+    const appendPage = useCallback(
         (page) => {
-            setLoading(true);
-            axios
-                .get(`${url}?page=${page}&page_size=${pageSize}`, {
-                    headers: authToken
-                        ? { Authorization: `Token ${authToken}` }
-                        : {},
-                })
-                .then((response) => {
-                    setData((prevData) => {
-                        if (page === 1) {
-                            setMaxDataCount(response?.data?.count);
-                            return response?.data?.results;
-                        }
-                        return [...prevData, ...response?.data?.results];
-                    });
-                    setPageNumber((prevPageNumber) => prevPageNumber + 1);
-                    setIdToTriggerNextFetch(
-                        response?.data?.results[
-                            response?.data?.results.length / 2 - 1
-                        ]?.id
-                    );
-                })
-                .catch((error) => {
-                    let errorMessage = "Error: ";
-                    let status = error?.response?.status;
-                    switch (status) {
-                        case 404:
-                            errorMessage += "Could not find item(s)";
-                            break;
-                        case 403:
-                            errorMessage += "Forbidden";
-                            break;
-                        case 401:
-                            errorMessage += "Unauthorized";
-                            break;
-                        case 400:
-                            errorMessage += "Bad Request";
-                            break;
-                        case 500:
-                            errorMessage += "Internal Server Error";
-                            break;
-                        default:
-                            errorMessage += "An error occurred";
-                            break;
-                    }
-                    addError(errorMessage);
-                })
-                .finally(() => {
-                    console.log("Fetch completed");
-                    setLoading(false);
-                });
+            const pageUrl = `${url}?page=${page}&page_size=${pageSize}`;
+            fetchData(pageUrl, (res) => {
+                if (page === 1) {
+                    setAppendedData(res?.results || []);
+                } else {
+                    setAppendedData((prev) => [...prev, ...(res?.results || [])]);
+                }
+                if (res?.results?.length) {
+                    const mid = Math.floor(res.results.length / 2);
+                    setIdToTriggerNextFetch(res.results[mid]?.id);
+                }
+                if (typeof res?.count === "number") {
+                    setMaxDataCount(res.count);
+                }
+            });
         },
-        [url, authToken, pageSize, addError]
+        [fetchData, pageSize, url]
     );
 
     const appendNextPage = useCallback(() => {
         const maxPage = Math.ceil(maxDataCount / pageSize);
         if (pageNumber > maxPage) return;
-        fetchData(pageNumber);
-    }, [fetchData, pageSize, pageNumber, maxDataCount]);
+        appendPage(pageNumber);
+        setPageNumber((prev) => prev + 1);
+    }, [pageNumber, maxDataCount, pageSize, appendPage]);
 
     const initializeData = useCallback(() => {
-        setData(null);
+        setAppendedData([]);
         setPageNumber(1);
         setIdToTriggerNextFetch(null);
-        const pageNumber = 1;
-        fetchData(pageNumber);
-    }, [fetchData]);
+        appendPage(1);
+        setPageNumber(2);
+    }, [appendPage]);
 
     useEffect(() => {
-        // Automatically fetch data when url or authToken changes
         initializeData();
     }, [url, authToken, initializeData]);
 
     return {
-        data,
+        data: appendedData,
         loading,
         idToTriggerNextFetch,
         initializeData,

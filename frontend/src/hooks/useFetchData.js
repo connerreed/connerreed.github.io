@@ -10,7 +10,7 @@ const useFetchData = () => {
     const [currentlyLoading, setCurrentlyLoading] = useState(false);
 
     const fetchData = useCallback(
-        (url) => {
+        (url, onSuccess) => {
             setCurrentlyLoading(true);
             axios
                 .get(url, {
@@ -20,7 +20,9 @@ const useFetchData = () => {
                 })
                 .then((response) => {
                     setData(response?.data);
-                    console.log("Data fetched successfully");
+                    if (onSuccess) {
+                        onSuccess(response?.data);
+                    }
                 })
                 .catch((error) => {
                     const status = error?.response?.status;
