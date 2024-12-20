@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import useFetchData from "./useFetchData";
 
-const useFetchPagedData = (url, authToken = null, pageSize = 12) => {
+const useFetchPagedData = (url, pageSize = 12) => {
     const [appendedData, setAppendedData] = useState([]);
     const [maxDataCount, setMaxDataCount] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
@@ -46,7 +46,7 @@ const useFetchPagedData = (url, authToken = null, pageSize = 12) => {
 
     useEffect(() => {
         initializeData();
-    }, [url, authToken, initializeData]);
+    }, [url, initializeData]);
 
     return {
         data: appendedData,

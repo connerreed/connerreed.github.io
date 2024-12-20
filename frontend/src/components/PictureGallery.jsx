@@ -26,7 +26,7 @@ const PictureGallery = () => {
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
-    } = useFetchPagedData(picturesApiEndpoint, authToken, pageSize);
+    } = useFetchPagedData(picturesApiEndpoint, pageSize);
 
     useEffect(() => {
         let observers = [];
