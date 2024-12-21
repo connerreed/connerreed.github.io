@@ -92,16 +92,6 @@ const PictureGallery = () => {
         };
     }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
 
-    const confirmDelete = () => {
-        const deleteUrl = `${picturesApiEndpoint}${pictureIdToDelete}/`;
-        deleteData(deleteUrl);
-        handleCloseModal();
-        // wait for the delete to complete before refreshing the data
-        setTimeout(() => {
-            initializeData();
-        }, 500);
-    };
-
     const handleShowModal = (id) => {
         setPictureIdToDelete(id);
         setShowModal(true);
@@ -170,7 +160,15 @@ const PictureGallery = () => {
                 show={showModal}
                 onClose={handleCloseModal}
                 onCancel={handleCloseModal}
-                onConfirm={confirmDelete}
+                onConfirm={() => {
+                    const deleteUrl = `${picturesApiEndpoint}${pictureIdToDelete}/`;
+                    deleteData(deleteUrl);
+                    handleCloseModal();
+                    // wait for the delete to complete before refreshing the data
+                    setTimeout(() => {
+                        initializeData();
+                    }, 500);
+                }}
             />
         </Container>
     );
