@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Container, Form, InputGroup } from "react-bootstrap";
+import { Container, Form, InputGroup, Button } from "react-bootstrap";
 import useApiRequest from "../hooks/useApiRequest";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
@@ -120,6 +120,9 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
+                    <Button className="mt-3" type="submit">
+                            Submit
+                        </Button>
                 </Form>
             </Container>
             {loading && <Loading />}
