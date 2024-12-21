@@ -99,9 +99,10 @@ class RecipeContentImage(models.Model):
     def str(self):
         return self.recipe.title
 
-from PIL import Image, ExifTags, ImageOps
+from PIL import Image
 #import subprocess
 from wand.image import Image
+from django.conf import settings
 class Picture(models.Model):
     image = models.ImageField(upload_to='images/pictures/')
     thumbnail = models.ImageField(upload_to='images/picturethumbnails/', blank=True, null=True, max_length=500)
@@ -111,41 +112,38 @@ class Picture(models.Model):
     def generate_thumbnail(self):
         # Extract the filename from the image field's name
         picture_filename = os.path.basename(self.image.name)
-        thumbnail_path = os.path.join('media/images/picturethumbnails/', picture_filename)
+        thumbnail_relative_path = os.path.join('images/picturethumbnails/', picture_filename)
+        thumbnail_absolute_path = os.path.join(settings.MEDIA_ROOT, thumbnail_relative_path)
 
         # Ensure the thumbnail directory exists
-        os.makedirs(os.path.dirname(thumbnail_path), exist_ok=True)
+        os.makedirs(os.path.dirname(thumbnail_absolute_path), exist_ok=True)
 
         # Input and Output Paths
         input_path = self.image.path
-        thumbnail_path = os.path.abspath(thumbnail_path)
 
         # Verify input file exists
         if not os.path.exists(input_path):
-            raise FileNotFoundError(f"Input image does not exist: {input_path}")
+            raise FileNotFoundError(f"Input image does not exist at path: {input_path}")
 
         # Use Wand to create the thumbnail
         try:
             with Image(filename=input_path) as img:
                 img.transform(resize='300x300')  # Resize to thumbnail dimensions
                 img.auto_orient()  # Handle EXIF orientation
-                img.save(filename=thumbnail_path)
+                img.save(filename=thumbnail_absolute_path)
         except Exception as e:
-            raise RuntimeError(f"Wand failed: {e}")
+            raise RuntimeError(f"Failed to generate thumbnail: {e}")
 
         # Set the thumbnail path and save the model
-        self.thumbnail = thumbnail_path.replace('media/', '')  # Adjust the stored path
+        self.thumbnail = thumbnail_relative_path
+        self.save(update_fields=['thumbnail'])
 
     def save(self, *args, **kwargs):
         # Perform the initial save to ensure the image is written to disk
         if not self.thumbnail:
             super().save(*args, **kwargs)  # Save initially to write the image file
 
-            # Generate the thumbnail
             self.generate_thumbnail()
-
-            # Update only the thumbnail field
-            self.save(update_fields=['thumbnail'])
         else:
             super().save(*args, **kwargs)  # Save normally for other updates
 
@@ -154,8 +152,9 @@ class Picture(models.Model):
         if self.image and os.path.isfile(self.image.path):
             os.remove(self.image.path)
         if self.thumbnail:
-            if os.path.isfile(self.thumbnail.path):
-                os.remove(self.thumbnail.path)
+            thumbnail_path = os.path.join(settings.MEDIA_ROOT, self.thumbnail.name)
+            if os.path.isfile(thumbnail_path):
+                os.remove(thumbnail_path)
         super().delete(*args, **kwargs)
 
 
