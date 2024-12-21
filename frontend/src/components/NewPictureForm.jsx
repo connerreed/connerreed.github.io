@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import Loading from "./Loading";
-import usePostData from "../hooks/usePostData";
+import useApiRequest from "../hooks/useApiRequest";
 import backendURL from "../utils/backendURL";
+import { useNavigate } from "react-router-dom";
 
 const NewPictureForm = () => {
     const [newPictures, setNewPictures] = useState([]);
-    const { postData, loading } = usePostData(`${backendURL}/api/pictures/`);
+    const { postData, currentlyLoading: loading } = useApiRequest();
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -25,7 +27,11 @@ const NewPictureForm = () => {
             formData.append("image", file);
         });
 
-        postData(formData);
+        const newPicturesApiEndpoint = `${backendURL}/api/pictures/`;
+        const onSuccess = () => {
+            navigate("/pictures");
+        }
+        postData(newPicturesApiEndpoint, formData, onSuccess);
     };
 
     if (loading) return <Loading />;

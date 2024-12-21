@@ -1,31 +1,27 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
 import Loading from "./Loading";
-import useFormHandler from "../hooks/useFormHandler";
 import backendURL from "../utils/backendURL";
+import useApiRequest from "../hooks/useApiRequest";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
-
-    const { loading, handleSubmit } = useFormHandler(async () => {
-        const getTokenApiEndpoint = `${backendURL}/auth/token/login/`;
-        const response = await axios.post(getTokenApiEndpoint, {
-            email,
-            password,
-        });
-        login(response.data.auth_token);
-        navigate("/profile");
-    });
+    const { postData, currentlyLoading: loading } = useApiRequest();
 
     const onSubmit = (e) => {
         e.preventDefault();
-        handleSubmit();
+        const tokenApiEndpoint = `${backendURL}/auth/token/login/`;
+        const formData = { email, password };
+        const onSuccess = (response) => {
+            login(response.auth_token);
+            navigate("/profile");
+        }
+        postData(tokenApiEndpoint, formData, onSuccess);
     };
 
     if (loading) {
