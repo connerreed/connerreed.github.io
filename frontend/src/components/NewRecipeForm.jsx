@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Container, Form } from "react-bootstrap";
+import { Container, Form, InputGroup } from "react-bootstrap";
 import useApiRequest from "../hooks/useApiRequest";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
@@ -69,23 +69,27 @@ const NewRecipeForm = () => {
                         <Form.Label htmlFor="meal-type-input">
                             Meal Type
                         </Form.Label>
-                        <Form.Select
-                            id="meal-type-input"
-                            name="mealType"
-                            required
-                        >
-                            {mealTypes.map((mealType) => {
-                                return (
-                                    <option
-                                        key={mealType.id}
-                                        value={mealType.id}
-                                    >
-                                        {mealType.name}
-                                    </option>
-                                );
-                            })}
-                            {/* TODO: Add new mealType option here*/}
-                        </Form.Select>
+                        <InputGroup>
+                            <InputGroup.Text>Select Meal Type</InputGroup.Text>
+                            <Form.Select
+                                id="meal-type-input"
+                                name="mealType"
+                                required
+                            >
+                                <option value=""></option>
+                                {mealTypes.map((mealType) => {
+                                    return (
+                                        <option
+                                            key={mealType.id}
+                                            value={mealType.id}
+                                        >
+                                            {mealType.name}
+                                        </option>
+                                    );
+                                })}
+                                {/* TODO: Add new mealType option here*/}
+                            </Form.Select>
+                        </InputGroup>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="thumbnail">
                         {/* TODO: Maybe add an automatically generated thumbnail based on title
