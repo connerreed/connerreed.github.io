@@ -9,6 +9,7 @@ import { useAuth } from "../contexts/AuthContext";
 //import Loading from "./Loading";
 
 const ElementCard = ({ picture, handleShowModal }) => {
+    // TODO: Each elementType needs a seperate ElementCard setup (pass in card as prop?)
     const [loaded, setLoaded] = useState(false);
     const { userData } = useAuth();
 
