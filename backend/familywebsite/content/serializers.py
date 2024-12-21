@@ -174,3 +174,7 @@ class FamilyMemberSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.picture.url)
         return None
 
+class MealTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MealType
+        fields = '__all__'

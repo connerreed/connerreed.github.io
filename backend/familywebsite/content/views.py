@@ -2,9 +2,9 @@ from rest_framework import generics, status
 from django.shortcuts import render
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum, MediaAlbum)
+from .models import (FamilyMember, Recipe, Picture, Video, Comment, RecipeAlbum, MediaAlbum, MealType)
 from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSerializer, VideoSerializer,
-                          CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer)
+                          CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer, MealTypeSerializer)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.pagination import PageNumberPagination
 
@@ -128,3 +128,8 @@ class MediaAlbumRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
     queryset = MediaAlbum.objects.all()
     serializer_class = MediaAlbumSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+class MealTypeListCreateView(generics.ListCreateAPIView):
+    queryset = MealType.objects.all()
+    serializer_class = MealTypeSerializer
+    permission_classes = [IsAuthenticated]
