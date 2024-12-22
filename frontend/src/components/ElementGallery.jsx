@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import backendURL from "../utils/backendURL";
 import useFetchPagedData from "../hooks/useFetchPagedData";
 import useApiRequest from "../hooks/useApiRequest";
-import ElementCard from "./ElementCard";
 import ConfirmModal from "./ConfirmModal";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import ElementCard from "./ElementCard";
 
 const ElementGallery = ({ elementType }) => {
     const elementsApiEndpoint = `${backendURL}/api/${elementType}s/`;
@@ -117,6 +118,32 @@ const ElementGallery = ({ elementType }) => {
         setShowModal(false);
     };
 
+    const RecipeCardBody = ({ recipe }) => {
+        return (
+            <>
+                <div className="d-flex">
+                    <Card.Title className="mb-0">{recipe.title}</Card.Title>
+                </div>
+                <Card.Text className="mb-0">
+                    Uploaded by:
+                    {recipe.user.first_name + " " + recipe.user.last_name}
+                </Card.Text>
+            </>
+        );
+    };
+
+    const PictureCardBody = ({ picture }) => {
+        return (
+            <>
+                <Card.Title className="mb-0">
+                    Uploaded by:
+                    <br />
+                    {picture.user.first_name + " " + picture.user.last_name}
+                </Card.Title>
+            </>
+        );
+    };
+
     return (
         <Container>
             {/* TODO: Add static banner across screen to hide initial picture loading? */}
@@ -127,7 +154,8 @@ const ElementGallery = ({ elementType }) => {
                 <Col className="text-center mb-2 mb-md-0">
                     <h1>
                         {elementType.charAt(0).toUpperCase() +
-                            elementType.slice(1) + "s"}
+                            elementType.slice(1) +
+                            "s"}
                     </h1>
                 </Col>
                 <Col className="d-flex justify-content-end mb-2 mb-md-0">
@@ -154,8 +182,13 @@ const ElementGallery = ({ elementType }) => {
                 {/* Content Area */}
                 {!loading && data?.length === 0 && (
                     <div className="d-flex justify-content-center">
-                        <h1>No {elementType.charAt(0).toUpperCase() +
-                            elementType.slice(1) + "s"} Found</h1>
+                        <h1>
+                            No{" "}
+                            {elementType.charAt(0).toUpperCase() +
+                                elementType.slice(1) +
+                                "s"}{" "}
+                            Found
+                        </h1>
                     </div>
                 )}
                 {data?.length > 0 &&
@@ -167,9 +200,20 @@ const ElementGallery = ({ elementType }) => {
                             xs={12}
                             className="mb-4 d-flex align-items-end justify-content-center"
                         >
-                            <ElementCard
+                            {/* <ElementCard
                                 picture={element}
                                 handleShowModal={handleShowModal}
+                            /> */}
+                            <ElementCard
+                                element={element}
+                                handleShowModal={handleShowModal}
+                                CardBody={
+                                    elementType === "picture" ? (
+                                        <PictureCardBody picture={element} />
+                                    ) : elementType === "recipe" ? (
+                                        <RecipeCardBody recipe={element} />
+                                    ) : null
+                                }
                             />
                         </Col>
                     ))}

@@ -5,11 +5,8 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
-//import Placeholder from "react-bootstrap/Placeholder";
-//import Loading from "./Loading";
 
-const ElementCard = ({ picture, handleShowModal }) => {
-    // TODO: Each elementType needs a seperate ElementCard setup (pass in card as prop?)
+const ElementCard = ({ element, handleShowModal, CardBody }) => {
     const [loaded, setLoaded] = useState(false);
     const { userData } = useAuth();
 
@@ -26,12 +23,12 @@ const ElementCard = ({ picture, handleShowModal }) => {
             )} */}
             <Card bg="secondary" hidden={!loaded}>
                 <Link
-                    to={`/pictures/${picture.id}`}
+                    to={`/pictures/${element.id}`}
                     style={{ textDecoration: "none" }}
                 >
                     <Card.Img
                         variant="top"
-                        src={picture.thumbnail}
+                        src={element.thumbnail}
                         onLoad={() => setLoaded(true)}
                         onError={(e) => {
                             e.target.src =
@@ -43,15 +40,10 @@ const ElementCard = ({ picture, handleShowModal }) => {
                     //!loaded && <Loading />
                 }
                 <Card.Body className="d-flex justify-content-between align-items-center">
-                    <Card.Title className="mb-0">
-                        Uploaded by:
-                        <br />
-                        {picture.user.first_name + " " + picture.user.last_name}
-                    </Card.Title>
-                    
+                    {CardBody}
                     <a
-                        href={picture.image}
-                        download={`picture_${picture.id}.jpg`}
+                        href={element.image}
+                        download={`picture_${element.id}.jpg`}
                         style={{ textDecoration: "none" }}
                     >
                         <Button variant="dark">
@@ -61,12 +53,12 @@ const ElementCard = ({ picture, handleShowModal }) => {
 
                     {userData &&
                         (userData.is_superuser ||
-                            userData.id === picture.user.id) && (
+                            userData.id === element.user.id) && (
                             <Button
                                 variant="dark"
                                 onClick={() =>
                                     // Add popup asking for confirmation
-                                    handleShowModal(picture.id)
+                                    handleShowModal(element.id)
                                 }
                             >
                                 <FontAwesomeIcon icon={faTrash} />

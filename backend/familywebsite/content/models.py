@@ -87,6 +87,7 @@ class Recipe(models.Model):
     mealType = models.ManyToManyField(MealType, related_name='recipes')
     featured = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to='images/recipethumbnails/')
+    date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} - {self.recipeAuthor}'
