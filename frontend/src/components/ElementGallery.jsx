@@ -1,38 +1,37 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import backendURL from "../utils/backendURL";
+import useFetchPagedData from "../hooks/useFetchPagedData";
+import useApiRequest from "../hooks/useApiRequest";
+import ConfirmModal from "./ConfirmModal";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import ElementCard from "./ElementCard";
-import useFetchPagedData from "../hooks/useFetchPagedData";
-import ConfirmModal from "./ConfirmModal";
-import backendURL from "../utils/backendURL";
-import useApiRequest from "../hooks/useApiRequest";
 
-const PictureGallery = () => {
-    const [showModal, setShowModal] = useState(false);
-    const [pictureIdToDelete, setPictureIdToDelete] = useState(null);
-    const navigate = useNavigate();
-
-    const picturesApiEndpoint = `${backendURL}/api/pictures/`;
-
+const ElementGallery = ({ elementType }) => {
+    const elementsApiEndpoint = `${backendURL}/api/${elementType}s/`;
     const pageSize = 12;
+
+    const [showModal, setShowModal] = useState(false);
+    const [elementIdToDelete, setElementIdToDelete] = useState(null);
+    const navigate = useNavigate();
     const {
-        data: pictureList,
+        data,
         loading,
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
-    } = useFetchPagedData(picturesApiEndpoint, pageSize);
-
+    } = useFetchPagedData(elementsApiEndpoint, pageSize);
     const { deleteData } = useApiRequest();
 
     useEffect(() => {
-        if (!pictureList || pictureList.length === 0) {
+        if (!data || data.length === 0) {
             appendNextPage();
         }
-    }, [appendNextPage, pictureList]);
+    }, [appendNextPage, data]);
 
     useEffect(() => {
         let observers = [];
@@ -52,16 +51,16 @@ const PictureGallery = () => {
             if (!idToTriggerNextFetch || loading) return;
 
             const elementsToObserve = [];
-            const totalPagesLoaded = Math.ceil(pictureList.length / pageSize);
+            const totalPagesLoaded = Math.ceil(data.length / pageSize);
             const startIndex = (totalPagesLoaded - 1) * pageSize; // Start of the last page
-            const endIndex = pictureList.length; // End of the full list
+            const endIndex = data.length; // End of the full list
 
-            const currentPage = pictureList.slice(startIndex, endIndex);
+            const currentPage = data.slice(startIndex, endIndex);
 
             if (currentPage.length > 0) {
                 const middleIndex = Math.floor(currentPage.length / 2);
-                const middleElementId = `picture-${currentPage[middleIndex]?.id}`;
-                const lastElementId = `picture-${
+                const middleElementId = `${elementType}-${currentPage[middleIndex]?.id}`;
+                const lastElementId = `${elementType}-${
                     currentPage[currentPage.length - 1]?.id
                 }`;
 
@@ -75,7 +74,7 @@ const PictureGallery = () => {
                     const observer = new IntersectionObserver(
                         handleObservation,
                         {
-                            threshold: 1.0, // Trigger only when fully visible
+                            threshold: 1.0, // Trigger when the element is fully in view
                         }
                     );
                     observer.observe(element);
@@ -88,18 +87,61 @@ const PictureGallery = () => {
 
         return () => {
             observers.forEach((observer) => observer.disconnect());
-            isFetching = false; // Reset fetching flag
+            isFetching = false;
         };
-    }, [idToTriggerNextFetch, loading, pictureList, appendNextPage, pageSize]);
+    }, [
+        idToTriggerNextFetch,
+        loading,
+        data,
+        appendNextPage,
+        elementType,
+        pageSize,
+    ]);
+
+    const confirmDelete = () => {
+        const deleteUrl = `${elementsApiEndpoint}${elementIdToDelete}/`;
+        deleteData(deleteUrl);
+        handleCloseModal();
+        // Wait for the delete to complete before refreshing the data
+        setTimeout(() => {
+            initializeData();
+        }, 500);
+    };
 
     const handleShowModal = (id) => {
-        setPictureIdToDelete(id);
+        setElementIdToDelete(id);
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
-        setPictureIdToDelete(null);
+        setElementIdToDelete(null);
         setShowModal(false);
+    };
+
+    const RecipeCardBody = ({ recipe }) => {
+        return (
+            <>
+                <div className="d-flex">
+                    <Card.Title className="mb-0">{recipe.title}</Card.Title>
+                </div>
+                <Card.Text className="mb-0">
+                    Uploaded by:
+                    {recipe.user.first_name + " " + recipe.user.last_name}
+                </Card.Text>
+            </>
+        );
+    };
+
+    const PictureCardBody = ({ picture }) => {
+        return (
+            <>
+                <Card.Title className="mb-0">
+                    Uploaded by:
+                    <br />
+                    {picture.user.first_name + " " + picture.user.last_name}
+                </Card.Title>
+            </>
+        );
     };
 
     return (
@@ -110,13 +152,17 @@ const PictureGallery = () => {
                     {/* Empty column to maintain spacing */}
                 </Col>
                 <Col className="text-center mb-2 mb-md-0">
-                    <h1>Pictures</h1>
+                    <h1>
+                        {elementType.charAt(0).toUpperCase() +
+                            elementType.slice(1) +
+                            "s"}
+                    </h1>
                 </Col>
                 <Col className="d-flex justify-content-end mb-2 mb-md-0">
                     <Button
                         variant="success"
                         className="text-nowrap"
-                        onClick={() => navigate("/pictures/new")}
+                        onClick={() => navigate(`/${elementType}s/new`)}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -128,29 +174,46 @@ const PictureGallery = () => {
                         >
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                         </svg>
-                        New picture
+                        New {elementType}
                     </Button>
                 </Col>
             </Row>
             <Row>
                 {/* Content Area */}
-                {!loading && pictureList?.length === 0 && (
+                {!loading && data?.length === 0 && (
                     <div className="d-flex justify-content-center">
-                        <h1>No Pictures Found</h1>
+                        <h1>
+                            No{" "}
+                            {elementType.charAt(0).toUpperCase() +
+                                elementType.slice(1) +
+                                "s"}{" "}
+                            Found
+                        </h1>
                     </div>
                 )}
-                {pictureList?.length > 0 &&
-                    pictureList.map((picture) => (
+                {data?.length > 0 &&
+                    data.map((element) => (
                         <Col
-                            id={`picture-${picture.id}`}
-                            key={picture.id}
+                            id={`${elementType}-${element.id}`}
+                            key={element.id}
                             lg={4}
                             xs={12}
                             className="mb-4 d-flex align-items-end justify-content-center"
                         >
-                            <ElementCard
-                                picture={picture}
+                            {/* <ElementCard
+                                picture={element}
                                 handleShowModal={handleShowModal}
+                            /> */}
+                            <ElementCard
+                                element={element}
+                                handleShowModal={handleShowModal}
+                                CardBody={
+                                    elementType === "picture" ? (
+                                        <PictureCardBody picture={element} />
+                                    ) : elementType === "recipe" ? (
+                                        <RecipeCardBody recipe={element} />
+                                    ) : null
+                                }
                             />
                         </Col>
                     ))}
@@ -160,18 +223,10 @@ const PictureGallery = () => {
                 show={showModal}
                 onClose={handleCloseModal}
                 onCancel={handleCloseModal}
-                onConfirm={() => {
-                    const deleteUrl = `${picturesApiEndpoint}${pictureIdToDelete}/`;
-                    deleteData(deleteUrl);
-                    handleCloseModal();
-                    // wait for the delete to complete before refreshing the data
-                    setTimeout(() => {
-                        initializeData();
-                    }, 500);
-                }}
+                onConfirm={confirmDelete}
             />
         </Container>
     );
 };
 
-export default PictureGallery;
+export default ElementGallery;

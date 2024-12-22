@@ -2,12 +2,7 @@ import os
 from rest_framework import serializers
 from .models import (FamilyMember, Recipe, RecipeContentImage, MealType, Picture, Video, Comment,
                      RecipeAlbum, MediaAlbum)
-#from django.contrib.auth import get_user_model
-#from django.contrib.auth.models import User
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
-#from .validators import validate_unique_email
-from rest_framework.exceptions import ValidationError as DRFValidationError
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -29,36 +24,62 @@ class RecipeContentImageSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    images = RecipeContentImageSerializer(many=True, read_only=True)  # Ensure images are included in the response
-    mealType = serializers.SlugRelatedField(slug_field='name', queryset=MealType.objects.all(), many=True)
+    images = serializers.ListField(
+        child=serializers.ImageField(),
+        write_only=True,
+        required=True
+    )
+    serialized_images = RecipeContentImageSerializer(
+        many=True,
+        read_only=True,
+        source="images"
+    )
+    mealType = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=MealType.objects.all(),
+        many=True
+    )
 
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'description', 'user', 'recipeAuthor', 'mealType', 'featured', 'thumbnail', 'images']
+        fields = ['id', 'title', 'description', 'user','recipeAuthor',
+                  'mealType', 'featured', 'thumbnail', 'images', 'serialized_images']
         depth = 1
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images')
+        meal_type_data = validated_data.pop('mealType', [])
+        images_data = validated_data.pop('images', [])
+
         recipe = Recipe.objects.create(**validated_data)
-        for image_data in images_data:
-            RecipeContentImage.objects.create(recipe=recipe, **image_data)
+
+        if meal_type_data:
+            recipe.mealType.set(meal_type_data)
+
+        for image in images_data:
+            RecipeContentImage.objects.create(recipe=recipe, image=image)
+            
         return recipe
 
     def update(self, instance, validated_data):
-        images_data = validated_data.pop('images')
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.user = validated_data.get('user', instance.user)
-        instance.recipeAuthor = validated_data.get('recipeAuthor', instance.recipeAuthor)
-        instance.mealType.set(validated_data.get('mealType', instance.mealType))
-        instance.featured = validated_data.get('featured', instance.featured)
-        instance.thumbnail = validated_data.get('thumbnail', instance.thumbnail)
+        meal_type_data = validated_data.pop('mealType', None)
+        images_data = validated_data.pop('images', None)
+
+        # Update Recipe fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
 
-        # Clear existing images and add new ones
-        instance.images.all().delete()
-        for image_data in images_data:
-            RecipeContentImage.objects.create(recipe=instance, **image_data)
+        # Update 'mealType' if provided
+        if meal_type_data is not None:
+            instance.mealType.set(meal_type_data)
+
+        # Update 'images' if provided
+        if images_data is not None:
+            # Clear existing images
+            instance.images.all().delete()
+            # Create new images
+            for image in images_data:
+                RecipeContentImage.objects.create(recipe=instance, image=image)
 
         return instance
 
@@ -174,3 +195,7 @@ class FamilyMemberSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.picture.url)
         return None
 
+class MealTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MealType
+        fields = '__all__'
