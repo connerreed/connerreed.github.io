@@ -206,6 +206,7 @@ const ElementGallery = ({ elementType }) => {
                             /> */}
                             <ElementCard
                                 element={element}
+                                elementType={elementType}
                                 handleShowModal={handleShowModal}
                                 CardBody={
                                     elementType === "picture" ? (

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 
-const ElementCard = ({ element, handleShowModal, CardBody }) => {
+const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
     const [loaded, setLoaded] = useState(false);
     const { userData } = useAuth();
 
@@ -46,9 +46,9 @@ const ElementCard = ({ element, handleShowModal, CardBody }) => {
                         download={`picture_${element.id}.jpg`}
                         style={{ textDecoration: "none" }}
                     >
-                        <Button variant="dark">
+                        {elementType !== "recipe" && <Button variant="dark">
                             <FontAwesomeIcon icon={faCircleDown} />
-                        </Button>
+                        </Button>}
                     </a>
 
                     {userData &&
