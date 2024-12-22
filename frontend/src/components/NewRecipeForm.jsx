@@ -60,7 +60,7 @@ const NewRecipeForm = () => {
                         <Form.Control
                             id="recipe-author-input"
                             text="text"
-                            name="author"
+                            name="recipeAuthor"
                             placeholder="Who created this recipe?"
                             required
                         />
@@ -81,7 +81,7 @@ const NewRecipeForm = () => {
                                     return (
                                         <option
                                             key={mealType.id}
-                                            value={mealType.id}
+                                            value={mealType.name}
                                         >
                                             {mealType.name}
                                         </option>
@@ -115,7 +115,7 @@ const NewRecipeForm = () => {
                             id="content-pictures-input"
                             type="file"
                             accept="image/*"
-                            name="contentPictures"
+                            name="images"
                             multiple
                             required
                         />

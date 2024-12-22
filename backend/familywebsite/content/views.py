@@ -48,6 +48,9 @@ class RecipeListCreateView(generics.ListCreateAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  # Automatically assign the authenticated user
+
 class RecipeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
