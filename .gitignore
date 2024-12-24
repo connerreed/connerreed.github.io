@@ -21,6 +21,5 @@ frontend/.env.production.local
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
-/backend/familywebsite/familywebsite/__pycache__
-/backend/familywebsite/content/__pycache__
-/backend/familywebsite/content/migrations/__pycache__
+
+**/__pycache__/
