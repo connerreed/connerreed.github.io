@@ -86,7 +86,8 @@ class Recipe(models.Model):
     recipeAuthor = models.CharField(max_length=100)
     mealType = models.ManyToManyField(MealType, related_name='recipes')
     featured = models.BooleanField(default=False)
-    thumbnail = models.ImageField(upload_to='images/recipethumbnails/')
+    thumbnail = models.ImageField(upload_to='images/recipethumbnails/full')
+    thumbnail_transformed = models.ImageField(upload_to='images/recipethumbnails/transformed/', blank=True, null=True)
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -101,6 +102,9 @@ class Recipe(models.Model):
             if os.path.isfile(self.thumbnail.path):
                 os.remove(self.thumbnail.path)
         super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 class RecipeContentImage(models.Model):
