@@ -23,7 +23,7 @@ const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
             )} */}
             <Card bg="secondary" hidden={!loaded}>
                 <Link
-                    to={`/pictures/${element.id}`}
+                    to={`/${elementType}/${element.id}`}
                     style={{ textDecoration: "none" }}
                 >
                     <Card.Img
