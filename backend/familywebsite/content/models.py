@@ -91,6 +91,16 @@ class Recipe(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.recipeAuthor}'
+    
+    def delete(self, *args, **kwargs):
+        # Makes sure to call delete() on all children images
+        for image in self.images.all():
+            image.delete()
+
+        if self.thumbnail:
+            if os.path.isfile(self.thumbnail.path):
+                os.remove(self.thumbnail.path)
+        super().delete(*args, **kwargs)
 
 
 class RecipeContentImage(models.Model):
@@ -99,6 +109,12 @@ class RecipeContentImage(models.Model):
 
     def str(self):
         return self.recipe.title
+    
+    def delete(self, *args, **kwargs):
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
 from PIL import Image
 #import subprocess
