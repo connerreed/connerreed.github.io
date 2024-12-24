@@ -39,31 +39,45 @@ const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
                 {
                     //!loaded && <Loading />
                 }
-                <Card.Body className="d-flex justify-content-between align-items-center">
+                <Card.Body>
                     {CardBody}
-                    <a
-                        href={element.image}
-                        download={`picture_${element.id}.jpg`}
-                        style={{ textDecoration: "none" }}
-                    >
-                        {elementType !== "recipe" && <Button variant="dark">
-                            <FontAwesomeIcon icon={faCircleDown} />
-                        </Button>}
-                    </a>
-
-                    {userData &&
-                        (userData.is_superuser ||
-                            userData.id === element.user.id) && (
-                            <Button
-                                variant="dark"
-                                onClick={() =>
-                                    // Add popup asking for confirmation
-                                    handleShowModal(element.id)
-                                }
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-inline">
+                            <Card.Title className="mb-0">
+                                {elementType === "recipe"
+                                    ? element.recipeAuthor
+                                    : `${element.user.first_name} ${element.user.last_name}`}
+                            </Card.Title>
+                        </div>
+                        <div className="d-inline ms-2">
+                            <a
+                                href={element.image}
+                                download={`picture_${element.id}.jpg`}
+                                style={{ textDecoration: "none" }}
                             >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                        )}
+                                {elementType !== "recipe" && (
+                                    <Button variant="dark">
+                                        <FontAwesomeIcon icon={faCircleDown} />
+                                    </Button>
+                                )}
+                            </a>
+
+                            {userData &&
+                                (userData.is_superuser ||
+                                    userData.id === element.user.id) && (
+                                    <Button
+                                        className="ms-2"
+                                        variant="dark"
+                                        onClick={() =>
+                                            // Add popup asking for confirmation
+                                            handleShowModal(element.id)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                )}
+                        </div>
+                    </div>
                 </Card.Body>
             </Card>
         </>
