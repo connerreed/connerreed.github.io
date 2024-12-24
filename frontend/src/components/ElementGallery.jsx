@@ -122,7 +122,9 @@ const ElementGallery = ({ elementType }) => {
         return (
             <>
                 {/* <div> */}
-                    <Card.Title className="mb-0">{recipe.title}</Card.Title>
+                <Card.Title className="mb-0">
+                    <h4><strong>{recipe.title}</strong></h4>
+                </Card.Title>
                 {/* </div> */}
                 {/* <Card.Text className="mb-0">
                     {recipe.user.first_name + " " + recipe.user.last_name}
