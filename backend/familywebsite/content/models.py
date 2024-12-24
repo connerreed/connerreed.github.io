@@ -9,6 +9,9 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete, post_save
 import imageio
 from .validators import validate_unique_email
+from PIL import Image
+from wand.image import Image
+from django.conf import settings
 
 
 class CustomUserManager(BaseUserManager):
@@ -86,11 +89,66 @@ class Recipe(models.Model):
     recipeAuthor = models.CharField(max_length=100)
     mealType = models.ManyToManyField(MealType, related_name='recipes')
     featured = models.BooleanField(default=False)
-    thumbnail = models.ImageField(upload_to='images/recipethumbnails/')
+    thumbnail = models.ImageField(upload_to='images/recipethumbnails/full')
+    thumbnail_transformed = models.ImageField(upload_to='images/recipethumbnails/transformed/', blank=True, null=True)
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} - {self.recipeAuthor}'
+    
+    def delete(self, *args, **kwargs):
+        # Makes sure to call delete() on all children images
+        for image in self.images.all():
+            image.delete()
+
+        if self.thumbnail:
+            if os.path.isfile(self.thumbnail.path):
+                os.remove(self.thumbnail.path)
+        if self.thumbnail_transformed:
+            if os.path.isfile(self.thumbnail_transformed.path):
+                os.remove(self.thumbnail_transformed.path)
+        super().delete(*args, **kwargs)
+
+    def generate_thumbnail(self):
+        # Extract the filename from the image field's name
+        thumbnail_filename = os.path.basename(self.thumbnail.name)
+        thumbnail_transformed_relative_path = os.path.join(
+            'images/recipethumbnails/transformed',
+            thumbnail_filename
+        )
+        thumbnail_transformed_absolute_path = os.path.join(
+            settings.MEDIA_ROOT,
+            thumbnail_transformed_relative_path
+        )
+
+        # Ensure the thumbnail directory exists
+        os.makedirs(os.path.dirname(thumbnail_transformed_absolute_path), exist_ok=True)
+
+        # Input and Output Paths
+        input_path = self.thumbnail.path
+
+        # Verify input file exists
+        if not os.path.exists(input_path):
+            raise FileNotFoundError(f"Input image does not exist at path: {input_path}")
+
+        # Use Wand to create the thumbnail
+        try:
+            with Image(filename=input_path) as img:
+                img.transform(resize='300x300')  # Resize to thumbnail dimensions
+                img.auto_orient()  # Handle EXIF orientation
+                img.save(filename=thumbnail_transformed_absolute_path)
+        except Exception as e:
+            raise RuntimeError(f"Failed to generate transformed recipe thumbnail: {e}")
+
+        # Set the thumbnail path and save the model
+        self.thumbnail_transformed = thumbnail_transformed_relative_path
+        self.save(update_fields=['thumbnail_transformed'])
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.thumbnail and not self.thumbnail_transformed:
+            self.generate_thumbnail()
 
 
 class RecipeContentImage(models.Model):
@@ -99,11 +157,13 @@ class RecipeContentImage(models.Model):
 
     def str(self):
         return self.recipe.title
+    
+    def delete(self, *args, **kwargs):
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
-from PIL import Image
-#import subprocess
-from wand.image import Image
-from django.conf import settings
 class Picture(models.Model):
     image = models.ImageField(upload_to='images/pictures/')
     thumbnail = models.ImageField(upload_to='images/picturethumbnails/', blank=True, null=True, max_length=500)

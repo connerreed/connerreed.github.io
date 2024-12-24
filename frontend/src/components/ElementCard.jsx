@@ -28,7 +28,7 @@ const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
                 >
                     <Card.Img
                         variant="top"
-                        src={element.thumbnail}
+                        src={elementType === "picture" ? element.thumbnail : element.thumbnail_transformed}
                         onLoad={() => setLoaded(true)}
                         onError={(e) => {
                             e.target.src =

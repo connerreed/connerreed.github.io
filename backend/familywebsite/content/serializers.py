@@ -43,7 +43,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ['id', 'title', 'description', 'user','recipeAuthor',
-                  'mealType', 'featured', 'thumbnail', 'images', 'serialized_images']
+                  'mealType', 'featured', 'thumbnail', 'thumbnail_transformed', 'images', 'serialized_images']
         depth = 1
 
     def create(self, validated_data):
