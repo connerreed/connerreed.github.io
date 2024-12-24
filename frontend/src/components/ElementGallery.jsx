@@ -121,13 +121,12 @@ const ElementGallery = ({ elementType }) => {
     const RecipeCardBody = ({ recipe }) => {
         return (
             <>
-                <div className="d-flex">
+                {/* <div> */}
                     <Card.Title className="mb-0">{recipe.title}</Card.Title>
-                </div>
-                <Card.Text className="mb-0">
-                    Uploaded by:
+                {/* </div> */}
+                {/* <Card.Text className="mb-0">
                     {recipe.user.first_name + " " + recipe.user.last_name}
-                </Card.Text>
+                </Card.Text> */}
             </>
         );
     };
@@ -135,11 +134,9 @@ const ElementGallery = ({ elementType }) => {
     const PictureCardBody = ({ picture }) => {
         return (
             <>
-                <Card.Title className="mb-0">
-                    Uploaded by:
-                    <br />
+                {/* <Card.Title className="mb-0">
                     {picture.user.first_name + " " + picture.user.last_name}
-                </Card.Title>
+                </Card.Title> */}
             </>
         );
     };
