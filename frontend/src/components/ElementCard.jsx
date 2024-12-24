@@ -23,12 +23,21 @@ const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
             )} */}
             <Card bg="secondary" hidden={!loaded}>
                 <Link
-                    to={`/${elementType}/${element.id}`}
-                    style={{ textDecoration: "none" }}
+                    to={
+                        elementType === "recipe"
+                            ? `/${elementType}/${element.id}`
+                            : ""
+                    }
+                    className='text-decoration-none'
+                    style={elementType === "picture" ? { cursor: "default" } : {}}
                 >
                     <Card.Img
                         variant="top"
-                        src={elementType === "picture" ? element.thumbnail : element.thumbnail_transformed}
+                        src={
+                            elementType === "picture"
+                                ? element.thumbnail
+                                : element.thumbnail_transformed
+                        }
                         onLoad={() => setLoaded(true)}
                         onError={(e) => {
                             e.target.src =
