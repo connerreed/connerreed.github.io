@@ -25,7 +25,7 @@ const ElementCard = ({ element, elementType, handleShowModal, CardBody }) => {
                 <Link
                     to={
                         elementType === "recipe"
-                            ? `/${elementType}/${element.id}`
+                            ? `/${elementType}s/${element.id}`
                             : ""
                     }
                     className='text-decoration-none'
