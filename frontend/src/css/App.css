@@ -26,7 +26,8 @@
 }
 
 .LightMode {
-  background-color: #e7e7f0;
+  /*background-color: #e7e7f0;*/
+  background-color: white;
   color: black;
 }
 
