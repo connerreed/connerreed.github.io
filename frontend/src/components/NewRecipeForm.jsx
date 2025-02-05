@@ -4,6 +4,7 @@ import useApiRequest from "../hooks/useApiRequest";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
 import { useNavigate } from "react-router-dom";
+import FileUpload from "./FileUpload";
 
 const NewRecipeForm = () => {
     const { postData, fetchData, loading } = useApiRequest();
@@ -35,7 +36,7 @@ const NewRecipeForm = () => {
             <h1 className="text-center">New Recipe</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="w-50 mt-3" onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="title">
+                    <Form.Group className="mb-3">
                         <Form.Label htmlFor="title-input">Title</Form.Label>
                         <Form.Control
                             id="title-input"
@@ -45,7 +46,7 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="description">
+                    <Form.Group className="mb-3">
                         <Form.Label>Description</Form.Label>
                         <Form.Control
                             as="textarea"
@@ -53,7 +54,7 @@ const NewRecipeForm = () => {
                             placeholder="Description"
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="recipeAuthor">
+                    <Form.Group className="mb-3">
                         <Form.Label htmlFor="recipe-author-input">
                             Recipe Author
                         </Form.Label>
@@ -65,7 +66,7 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="mealType">
+                    <Form.Group className="mb-3">
                         <Form.Label htmlFor="meal-type-input">
                             Meal Type
                         </Form.Label>
@@ -87,11 +88,11 @@ const NewRecipeForm = () => {
                                         </option>
                                     );
                                 })}
-                                {/* TODO: Add new mealType option here*/}
+                                {/* TODO: Add option to add new mealType here*/}
                             </Form.Select>
                         </InputGroup>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="thumbnail">
+                    <Form.Group className="mb-3">
                         {/* TODO: Maybe add an automatically generated thumbnail based on title
                                     also give them option to generate new thumbnail
                                     also give them option to upload their own
@@ -107,22 +108,25 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="contentPictures">
+                    <FileUpload/>
+                    <Form.Group className="mb-3">
                         <Form.Label htmlFor="content-pictures-input">
-                            Recipe Images
+                            Recipe Instruction Images
                         </Form.Label>
-                        <Form.Control
+                        {/* <Form.Control
                             id="content-pictures-input"
                             type="file"
                             accept="image/*"
                             name="images"
+                            onChange={handleAddImages}
                             multiple
                             required
-                        />
+                        /> */}
+                        {/* <FileUpload/> */}
                     </Form.Group>
                     <Button className="mt-3" type="submit">
-                            Submit
-                        </Button>
+                        Submit
+                    </Button>
                 </Form>
             </Container>
             {loading && <Loading />}
