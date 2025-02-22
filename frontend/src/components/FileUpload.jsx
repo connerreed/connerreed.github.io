@@ -94,14 +94,18 @@ const FileUpload = () => {
             </div>
 
             {files.length > 0 && (
-                <div className="file-upload-preview">
+                <ul className="file-upload-preview">
                     {files.map((file) => (
-                        <div
+                        <li
                             key={file.name}
-                            className="file-upload-item bg-secondary d-flex align-items-center"
+                            className="file-upload-item"
                         >
-                            <p>{file.name}</p>
-                            <div className="ms-auto">
+                            <img
+                                src={URL.createObjectURL(file)}
+                                alt={file.name}
+                                className="file-upload-image"
+                            />
+                            <div>
                                 <Button
                                     className="bg-danger border-0 ms-2"
                                     onClick={() => handleDeleteImage(file)}
@@ -109,9 +113,9 @@ const FileUpload = () => {
                                     <FontAwesomeIcon icon={faTrash} />
                                 </Button>
                             </div>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
             )}
         </div>
     );
