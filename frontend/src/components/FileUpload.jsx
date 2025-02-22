@@ -42,7 +42,7 @@ const FileUpload = () => {
         }
     };
 
-    // Add onDragOver to prevent the default browser behavior
+    // Added to prevent the default browser behavior
     const handleDragOver = (e) => {
         e.preventDefault();
     };
@@ -55,9 +55,11 @@ const FileUpload = () => {
 
         // Retrieve files from the DataTransfer object
         const droppedFiles = Array.from(e.dataTransfer.files);
-        if (droppedFiles.length) {
-            setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-            console.log("Dropped files:", droppedFiles);
+        const imageFiles = droppedFiles.filter((file) => file.type.startsWith("image/"));
+
+        if (imageFiles.length) {
+            setFiles((prevFiles) => [...prevFiles, ...imageFiles]);
+            console.log("Dropped files:", imageFiles);
         }
     };
 
