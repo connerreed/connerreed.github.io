@@ -1,4 +1,27 @@
 .file-upload {
     cursor: pointer;
     border: 2px dotted white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 10vh;
+    padding: 1vh;
+}
+
+.file-upload:hover {
+    border: 2px dotted var(--bs-secondary);
+}
+
+.file-upload-icon {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-upload-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
 }

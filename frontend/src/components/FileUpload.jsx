@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import "../css/FileUpload.css";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 const FileUpload = () => {
     const [files, setFiles] = useState([]);
@@ -21,7 +21,6 @@ const FileUpload = () => {
 
         e.target.value = ""; // Clear the file input value so the same files can be selected again later
     };
-    
 
     const handleDragEnter = (e) => {
         e.preventDefault();
@@ -71,6 +70,7 @@ const FileUpload = () => {
             {/* Hidden file input */}
             <input
                 type="file"
+                accept="image/*"
                 ref={fileInputRef}
                 style={{ display: "none" }}
                 onChange={handleFileChange}
@@ -85,8 +85,12 @@ const FileUpload = () => {
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
             >
-                <h5>Browse files</h5>
-                <p>Drag and drop files here</p>
+                <div className="file-upload-icon">
+                    <FontAwesomeIcon icon={faCloudArrowUp} />
+                </div>
+                <p className="file-upload-text">
+                    Add image(s)
+                </p>
             </div>
 
             {files.length > 0 && (

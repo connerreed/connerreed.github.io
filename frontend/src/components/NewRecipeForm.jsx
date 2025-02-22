@@ -108,7 +108,7 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
-                    <FileUpload/>
+                    
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="content-pictures-input">
                             Recipe Instruction Images
@@ -123,6 +123,7 @@ const NewRecipeForm = () => {
                             required
                         /> */}
                         {/* <FileUpload/> */}
+                        <FileUpload/>
                     </Form.Group>
                     <Button className="mt-3" type="submit">
                         Submit
