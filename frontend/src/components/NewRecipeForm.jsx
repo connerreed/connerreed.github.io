@@ -119,16 +119,7 @@ const NewRecipeForm = () => {
                         <Form.Label htmlFor="content-pictures-input">
                             Recipe Instruction Images
                         </Form.Label>
-                        {/* <Form.Control
-                            id="content-pictures-input"
-                            type="file"
-                            accept="image/*"
-                            name="images"
-                            onChange={handleAddImages}
-                            multiple
-                            required
-                        /> */}
-                        {/* <FileUpload/> */}
+                        
                         <FileUpload files={images} setFiles={setImages}/>
                     </Form.Group>
                     <Button className="mt-3" type="submit">
