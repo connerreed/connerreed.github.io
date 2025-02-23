@@ -5,6 +5,7 @@ import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "./FileUpload";
+import "../css/NewRecipeForm.css";
 
 const NewRecipeForm = () => {
     const { postData, fetchData, loading } = useApiRequest();
@@ -35,7 +36,7 @@ const NewRecipeForm = () => {
         <>
             <h1 className="text-center">New Recipe</h1>
             <Container className="d-flex justify-content-center align-items-center">
-                <Form className="w-50 mt-3" onSubmit={handleSubmit}>
+                <Form className="recipe-form" onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="title-input">Title</Form.Label>
                         <Form.Control

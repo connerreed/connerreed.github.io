@@ -1,0 +1,10 @@
+.recipe-form {
+    width: 50%;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .recipe-form {
+        width: 100%;
+    }
+}
