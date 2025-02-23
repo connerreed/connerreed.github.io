@@ -1,0 +1,39 @@
+.file-upload {
+    cursor: pointer;
+    border: 2px dotted white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 10vh;
+    padding: 1vh;
+}
+
+.file-upload:hover {
+    border: 2px dotted var(--bs-secondary);
+}
+
+.file-upload-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-upload-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.file-upload-item {
+    margin-top: 3vh;
+    display: flex;
+    align-items: center;
+}
+
+.file-upload-image {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover; /* this will crop the image */
+    overflow: hidden;
+}
