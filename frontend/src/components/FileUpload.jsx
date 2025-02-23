@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import "../css/FileUpload.css";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 
-const FileUpload = () => {
-    const [files, setFiles] = useState([]);
+const FileUpload = ({files, setFiles}) => {
+    //const [files, setFiles] = useState([]);
     const fileInputRef = useRef(null);
     const dragCounter = useRef(0);
 

@@ -10,6 +10,7 @@ import "../css/NewRecipeForm.css";
 const NewRecipeForm = () => {
     const { postData, fetchData, loading } = useApiRequest();
     const [mealTypes, setMealTypes] = useState([]);
+    const [images, setImages] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +27,10 @@ const NewRecipeForm = () => {
 
         const newRecipeApiEndpoint = `${backendURL}/api/recipes/`;
         const formData = new FormData(e.target);
+        // Add images from FileUpload component to the formData
+        images.forEach((image) => {
+            formData.append("images", image);
+        });
         const onSuccess = () => {
             navigate("/recipes");
         };
@@ -124,7 +129,7 @@ const NewRecipeForm = () => {
                             required
                         /> */}
                         {/* <FileUpload/> */}
-                        <FileUpload/>
+                        <FileUpload files={images} setFiles={setImages}/>
                     </Form.Group>
                     <Button className="mt-3" type="submit">
                         Submit
