@@ -8,7 +8,7 @@ import FileUpload from "./FileUpload";
 import "../css/NewRecipeForm.css";
 
 const NewRecipeForm = () => {
-    const { postData, fetchData, loading } = useApiRequest();
+    const { postData, fetchData, currentlyLoading: loading } = useApiRequest();
     const [mealTypes, setMealTypes] = useState([]);
     const [images, setImages] = useState([]);
     const navigate = useNavigate();
@@ -36,6 +36,10 @@ const NewRecipeForm = () => {
         };
         postData(newRecipeApiEndpoint, formData, onSuccess);
     };
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <>
@@ -127,7 +131,7 @@ const NewRecipeForm = () => {
                     </Button>
                 </Form>
             </Container>
-            {loading && <Loading />}
+            {/*loading && <Loading />*/}
         </>
     );
 };
