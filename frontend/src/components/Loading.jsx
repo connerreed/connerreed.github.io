@@ -9,11 +9,11 @@ import "../css/Loading.css";
 */
 const Loading = ({ blocking }) => {
     return (
-        <Container className={`loading-overlay ${blocking ? "blocking" : ""}`}>
+        <div className={`loading-overlay ${blocking ? "blocking" : ""}`}>
             <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
-        </Container>
+        </div>
     );
 };
 
