@@ -37,12 +37,9 @@ const NewRecipeForm = () => {
         postData(newRecipeApiEndpoint, formData, onSuccess);
     };
 
-    if (loading) {
-        return <Loading />;
-    }
-
     return (
         <>
+            {loading && <Loading />}
             <h1 className="text-center">New Recipe</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="recipe-form" onSubmit={handleSubmit}>

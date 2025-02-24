@@ -34,10 +34,9 @@ const NewPictureForm = () => {
         postData(newPicturesApiEndpoint, formData, onSuccess);
     };
 
-    if (loading) return <Loading />;
-
     return (
         <>
+            {loading && <Loading />}
             <h1 className="text-center">New Pictures</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="w-50 mt-3" onSubmit={handleSubmit}>
