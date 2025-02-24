@@ -20,23 +20,24 @@ const Picture = () => {
         fetchData(pictureApiEndpoint);
     }, [id, fetchData]);
 
-    if (loading) return <Loading />;
-
     return (
-        <Container className="w-50 mt-5">
-            <Card bg="secondary">
-                <Card.Img variant="top" src={picture?.image} />
-                <Card.Body>
-                    <Card.Title>
-                        Uploaded by:
-                        <br />
-                        {picture?.user.first_name +
-                            " " +
-                            picture?.user.last_name}
-                    </Card.Title>
-                </Card.Body>
-            </Card>
-        </Container>
+        <>
+            {loading && <Loading blocking />}
+            <Container className="w-50 mt-5">
+                <Card bg="secondary">
+                    <Card.Img variant="top" src={picture?.image} />
+                    <Card.Body>
+                        <Card.Title>
+                            Uploaded by:
+                            <br />
+                            {picture?.user.first_name +
+                                " " +
+                                picture?.user.last_name}
+                        </Card.Title>
+                    </Card.Body>
+                </Card>
+            </Container>
+        </>
     );
 };
 
