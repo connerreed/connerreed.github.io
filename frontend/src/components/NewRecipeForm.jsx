@@ -131,7 +131,6 @@ const NewRecipeForm = () => {
                     </Button>
                 </Form>
             </Container>
-            {/*loading && <Loading />*/}
         </>
     );
 };
