@@ -39,8 +39,7 @@ const NewRecipeForm = () => {
 
     return (
         <>
-            {/* {loading && <Loading blocking/>} */}
-            <Loading blocking/>
+            {loading && <Loading blocking/>}
             <h1 className="text-center">New Recipe</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="recipe-form" onSubmit={handleSubmit}>
