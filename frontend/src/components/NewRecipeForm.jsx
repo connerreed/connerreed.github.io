@@ -37,12 +37,9 @@ const NewRecipeForm = () => {
         postData(newRecipeApiEndpoint, formData, onSuccess);
     };
 
-    if (loading) {
-        return <Loading />;
-    }
-
     return (
         <>
+            {loading && <Loading blocking />}
             <h1 className="text-center">New Recipe</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="recipe-form" onSubmit={handleSubmit}>
@@ -118,13 +115,13 @@ const NewRecipeForm = () => {
                             required
                         />
                     </Form.Group>
-                    
+
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="content-pictures-input">
                             Recipe Instruction Images
                         </Form.Label>
-                        
-                        <FileUpload files={images} setFiles={setImages}/>
+
+                        <FileUpload files={images} setFiles={setImages} />
                     </Form.Group>
                     <Button className="mt-3" type="submit">
                         Submit

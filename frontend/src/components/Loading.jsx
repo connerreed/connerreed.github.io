@@ -1,18 +1,19 @@
-import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Spinner from 'react-bootstrap/Spinner';
+import React from "react";
+import Spinner from "react-bootstrap/Spinner";
+import "../css/Loading.css";
 
-const Loading = () => {
+/*
+    Props:
+        - Blocking: boolean / blocks events on page while loading if true
+*/
+const Loading = ({ blocking }) => {
     return (
-        <Container
-            className="d-flex justify-content-center align-items-center"
-            style={{height: '100vh'}}
-        >
+        <div className={`loading-overlay ${blocking ? "blocking" : ""}`}>
             <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
-        </Container>
+        </div>
     );
-}
+};
 
 export default Loading;

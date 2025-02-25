@@ -24,12 +24,9 @@ const Login = () => {
         postData(tokenApiEndpoint, formData, onSuccess);
     };
 
-    if (loading) {
-        return <Loading />;
-    }
-
     return (
         <>
+            {loading && <Loading blocking />}
             <h1 className="text-center">Login</h1>
             <Container className="d-flex justify-content-center align-items-center">
                 <Form className="w-50" onSubmit={onSubmit}>

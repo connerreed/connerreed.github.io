@@ -76,46 +76,49 @@ const NewVideoForm = () => {
         }
     };
 
-    if (loading) return <Loading />;
-
     return (
-        <Container>
-            <Row className="justify-content-center mt-1">
-                <Col xs={12} md={12} className="mb-4">
-                    <h1>New Video Form</h1>
-                </Col>
-                <Col xs={12} md={6}>
-                    <Form onSubmit={submitForm}>
-                        <Form.Group className="mb-4">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Please provide a title.
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-4">
-                            <Form.Label>Video File</Form.Label>
-                            <Form.Control
-                                type="file"
-                                onChange={handleFileChange}
-                                required
-                            />
-                            {fileError && (
-                                <div className="text-danger">{fileError}</div>
-                            )}
-                        </Form.Group>
-                        <Button variant="success" type="submit">
-                            Submit
-                        </Button>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
+        <>
+            {loading && <Loading />}
+            <Container>
+                <Row className="justify-content-center mt-1">
+                    <Col xs={12} md={12} className="mb-4">
+                        <h1>New Video Form</h1>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Form onSubmit={submitForm}>
+                            <Form.Group className="mb-4">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    Please provide a title.
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-4">
+                                <Form.Label>Video File</Form.Label>
+                                <Form.Control
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    required
+                                />
+                                {fileError && (
+                                    <div className="text-danger">
+                                        {fileError}
+                                    </div>
+                                )}
+                            </Form.Group>
+                            <Button variant="success" type="submit">
+                                Submit
+                            </Button>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
+        </>
     );
 };
 
