@@ -25,7 +25,7 @@ const Recipe = () => {
 
     return (
         <>
-            {loading && <Loading blocking />}
+            {loading && <Loading/>}
             <div className="d-flex justify-content-center">
                 <div className="recipe-content-container col-lg-4 col-md-6 col-sm-10">
                     <div>
