@@ -7,6 +7,7 @@ import Container from "react-bootstrap/Container";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import backendURL from "../utils/backendURL";
+import "../css/Register.css";
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -124,11 +125,11 @@ const Register = () => {
 
     return (
         <>
-            <h1 className="text-center">Register</h1>
-            <Container className="d-flex justify-content-center align-items-center">
-                <Form className="w-50" onSubmit={handleSubmit}>
+            <h1 className="form-title">Register</h1>
+            <Container className="form-container">
+                <Form onSubmit={handleSubmit}>
                     {error && <div className="alert alert-danger">{error}</div>}
-                    <Form.Group controlId="firstName" className="mt-3">
+                    <Form.Group controlId="firstName" className="form-group">
                         <Form.Label>First Name</Form.Label>
                         <Form.Control
                             type="text"
@@ -137,7 +138,7 @@ const Register = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group controlId="lastName" className="mt-3">
+                    <Form.Group controlId="lastName" className="form-group">
                         <Form.Label>Last Name</Form.Label>
                         <Form.Control
                             type="text"
@@ -146,7 +147,7 @@ const Register = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group controlId="email" className="mt-3">
+                    <Form.Group controlId="email" className="form-group">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
                             type="email"
@@ -155,7 +156,7 @@ const Register = () => {
                             required
                         />
                     </Form.Group>
-                    <Form.Group controlId="password" className="mt-3">
+                    <Form.Group controlId="password" className="form-group">
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                             type="password"
@@ -163,8 +164,8 @@ const Register = () => {
                             onChange={handlePasswordChange}
                             required
                         />
-                        <div className="mt-2 text-left">
-                            <div className="d-flex align-items-center">
+                        <div className="mt-1 text-left">
+                            <div className="form-password-validation">
                                 {passwordValidations.minLength ? (
                                     <FaCheck className="text-success" />
                                 ) : (
@@ -174,7 +175,7 @@ const Register = () => {
                                     At least 8 characters long
                                 </span>
                             </div>
-                            <div className="d-flex align-items-center">
+                            <div className="form-password-validation">
                                 {passwordValidations.hasUpperCase ? (
                                     <FaCheck className="text-success" />
                                 ) : (
@@ -184,7 +185,7 @@ const Register = () => {
                                     Contains an uppercase letter
                                 </span>
                             </div>
-                            <div className="d-flex align-items-center">
+                            <div className="form-password-validation">
                                 {passwordValidations.hasLowerCase ? (
                                     <FaCheck className="text-success" />
                                 ) : (
@@ -194,7 +195,7 @@ const Register = () => {
                                     Contains a lowercase letter
                                 </span>
                             </div>
-                            <div className="d-flex align-items-center">
+                            <div className="form-password-validation">
                                 {passwordValidations.hasNumber ? (
                                     <FaCheck className="text-success" />
                                 ) : (
@@ -202,7 +203,7 @@ const Register = () => {
                                 )}{" "}
                                 <span className="ms-2">Contains a number</span>
                             </div>
-                            <div className="d-flex align-items-center">
+                            <div className="form-password-validation">
                                 {passwordValidations.hasSpecialChar ? (
                                     <FaCheck className="text-success" />
                                 ) : (
@@ -214,7 +215,10 @@ const Register = () => {
                             </div>
                         </div>
                     </Form.Group>
-                    <Form.Group controlId="confirmPassword" className="mt-3">
+                    <Form.Group
+                        controlId="confirmPassword"
+                        className="form-group"
+                    >
                         <Form.Label>Confirm Password</Form.Label>
                         <Form.Control
                             type="password"
@@ -225,18 +229,18 @@ const Register = () => {
                     </Form.Group>
                     <Button
                         className="mt-3"
+                        variant="primary"
+                        type="submit"
+                    >
+                        Register
+                    </Button>
+                    <Button
+                        className="mt-3 ms-2"
                         variant="secondary"
                         type="button"
                         onClick={() => navigate(-1)}
                     >
                         Cancel
-                    </Button>
-                    <Button
-                        className="mt-3 ms-3"
-                        variant="primary"
-                        type="submit"
-                    >
-                        Register
                     </Button>
                 </Form>
             </Container>
