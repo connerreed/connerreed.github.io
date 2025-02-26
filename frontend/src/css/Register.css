@@ -1,0 +1,28 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-title {
+    text-align: center;
+}
+
+.form-control {
+    border: 1px solid black;
+}
+
+.form-group {
+    margin-top: 1rem;
+}
+
+form {
+    width: 50%;
+}
+
+.form-password-validation {
+    display: flex;
+    align-items: center;
+    
+}
