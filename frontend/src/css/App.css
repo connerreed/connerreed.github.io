@@ -65,3 +65,8 @@
     transform: rotate(360deg);
   }
 }
+
+.back-button-container {
+  position: absolute;
+  left: 1rem;
+}
