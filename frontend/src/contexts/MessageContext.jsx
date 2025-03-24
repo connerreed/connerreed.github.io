@@ -47,10 +47,13 @@ export const MessageProvider = ({ children }) => {
     // Not exported to other files
     const addMessage = useCallback((message, variant) => {
         const id = uuidv4();
-        setMessageList((prevMessageList) => [
-            ...prevMessageList,
-            { id, message, variant},
-        ]);
+        setMessageList((prevMessageList) => {
+            const newMessageList = [...prevMessageList, { id, message, variant }];
+            if (newMessageList.length > 3) {
+                newMessageList.shift();
+            }
+            return newMessageList;
+        });
         startTimer();
     }, []);
 
