@@ -48,7 +48,8 @@ export const MessageProvider = ({ children }) => {
     const addMessage = useCallback((message, variant) => {
         const id = uuidv4();
         setMessageList((prevMessageList) => {
-            const newMessageList = [...prevMessageList, { id, message, variant }];
+            const newMessage = { id, message, variant };
+            const newMessageList = [...prevMessageList, newMessage];
             if (newMessageList.length > 3) {
                 newMessageList.shift();
             }
