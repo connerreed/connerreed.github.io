@@ -25,7 +25,7 @@ const ElementGallery = ({ elementType }) => {
         initializeData,
         appendNextPage,
     } = useFetchPagedData(elementsApiEndpoint, pageSize);
-    const { deleteData } = useApiRequest();
+    const { postData, deleteData } = useApiRequest();
 
     useEffect(() => {
         if (!data || data.length === 0) {
@@ -118,6 +118,23 @@ const ElementGallery = ({ elementType }) => {
         setShowModal(false);
     };
 
+    const handleFileChange = (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            const formData = new FormData();
+            Array.from(files).forEach(file => {
+                formData.append('image', file);
+            });
+            const pictureAPI = `${backendURL}/api/pictures/`;
+            postData(pictureAPI, formData, () => {
+                initializeData();
+            }
+            );
+            // clear the file input
+            e.target.value = null;
+        }
+    }
+
     const RecipeCardBody = ({ recipe }) => {
         return (
             <>
@@ -158,10 +175,25 @@ const ElementGallery = ({ elementType }) => {
                     </h1>
                 </Col>
                 <Col className="d-flex justify-content-end mb-2 mb-md-0">
+                    <input 
+                        id="hidden-picture-input" 
+                        type="file" 
+                        accept="image/*" 
+                        multiple 
+                        hidden 
+                        onChange={handleFileChange} 
+                    />
                     <Button
                         variant="success"
                         className="text-nowrap"
-                        onClick={() => navigate(`/${elementType}s/new`)}
+                        onClick={() => {
+                            if (elementType === "picture") {
+                                document.getElementById("hidden-picture-input").click();
+                                return;
+                            }
+                            // If not a picture, navigate to the new element page
+                            navigate(`/${elementType}s/new`);
+                        }}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +211,8 @@ const ElementGallery = ({ elementType }) => {
             </Row>
             <Row>
                 {/* Content Area */}
-                {!loading && data?.length === 0 && (
+                {!loading && data?.length === 0 && ( 
+                    /* If no data is found */
                     <div className="d-flex justify-content-center">
                         <h1>
                             No{" "}
