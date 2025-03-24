@@ -11,6 +11,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import ElementCard from "./ElementCard";
 import Loading from "./Loading";
+import { useAuth } from "../contexts/AuthContext";
 
 const ElementGallery = ({ elementType }) => {
     const elementsApiEndpoint = `${backendURL}/api/${elementType}s/`;
@@ -31,6 +32,7 @@ const ElementGallery = ({ elementType }) => {
         postData,
         deleteData,
     } = useApiRequest();
+    const { authToken } = useAuth();
 
     useEffect(() => {
         if (!data || data.length === 0) {
@@ -196,6 +198,11 @@ const ElementGallery = ({ elementType }) => {
                             variant="success"
                             className="text-nowrap"
                             onClick={() => {
+                                if (!authToken) {
+                                    navigate("/login", { state: { callbackUrl: `/${elementType}s/new` } });
+                                    return;
+                                }
+
                                 if (elementType === "picture") {
                                     document
                                         .getElementById("hidden-picture-input")
