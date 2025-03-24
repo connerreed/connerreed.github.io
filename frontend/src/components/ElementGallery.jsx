@@ -10,6 +10,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import ElementCard from "./ElementCard";
+import Loading from "./Loading";
 
 const ElementGallery = ({ elementType }) => {
     const elementsApiEndpoint = `${backendURL}/api/${elementType}s/`;
@@ -20,12 +21,16 @@ const ElementGallery = ({ elementType }) => {
     const navigate = useNavigate();
     const {
         data,
-        loading,
+        loading: pageLoading,
         idToTriggerNextFetch,
         initializeData,
         appendNextPage,
     } = useFetchPagedData(elementsApiEndpoint, pageSize);
-    const { deleteData } = useApiRequest();
+    const {
+        currentlyLoading: requestLoading,
+        postData,
+        deleteData,
+    } = useApiRequest();
 
     useEffect(() => {
         if (!data || data.length === 0) {
@@ -48,7 +53,7 @@ const ElementGallery = ({ elementType }) => {
         };
 
         const setupObservers = () => {
-            if (!idToTriggerNextFetch || loading) return;
+            if (!idToTriggerNextFetch || pageLoading) return;
 
             const elementsToObserve = [];
             const totalPagesLoaded = Math.ceil(data.length / pageSize);
@@ -91,7 +96,7 @@ const ElementGallery = ({ elementType }) => {
         };
     }, [
         idToTriggerNextFetch,
-        loading,
+        pageLoading,
         data,
         appendNextPage,
         elementType,
@@ -118,12 +123,30 @@ const ElementGallery = ({ elementType }) => {
         setShowModal(false);
     };
 
+    const handleFileChange = (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            const formData = new FormData();
+            Array.from(files).forEach((file) => {
+                formData.append("image", file);
+            });
+            const pictureAPI = `${backendURL}/api/pictures/`;
+            postData(pictureAPI, formData, () => {
+                initializeData();
+            });
+            // clear the file input
+            e.target.value = null;
+        }
+    };
+
     const RecipeCardBody = ({ recipe }) => {
         return (
             <>
                 {/* <div> */}
                 <Card.Title className="mb-0">
-                    <h4><strong>{recipe.title}</strong></h4>
+                    <h4>
+                        <strong>{recipe.title}</strong>
+                    </h4>
                 </Card.Title>
                 {/* </div> */}
                 {/* <Card.Text className="mb-0">
@@ -144,88 +167,112 @@ const ElementGallery = ({ elementType }) => {
     };
 
     return (
-        <Container>
-            {/* TODO: Add static banner across screen to hide initial picture loading? */}
-            <Row className="align-items-center mb-4">
-                <Col className="d-flex justify-content-start mb-2 mb-md-0">
-                    {/* Empty column to maintain spacing */}
-                </Col>
-                <Col className="text-center mb-2 mb-md-0">
-                    <h1>
-                        {elementType.charAt(0).toUpperCase() +
-                            elementType.slice(1) +
-                            "s"}
-                    </h1>
-                </Col>
-                <Col className="d-flex justify-content-end mb-2 mb-md-0">
-                    <Button
-                        variant="success"
-                        className="text-nowrap"
-                        onClick={() => navigate(`/${elementType}s/new`)}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="currentColor"
-                            className="bi bi-plus"
-                            viewBox="0 0 16 16"
-                        >
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                        </svg>
-                        New {elementType}
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                {/* Content Area */}
-                {!loading && data?.length === 0 && (
-                    <div className="d-flex justify-content-center">
+        <>
+            {(requestLoading || pageLoading) && <Loading />}
+            
+            <Container>
+                {/* TODO: Add static banner across screen to hide initial picture loading? */}
+                <Row className="align-items-center mb-4">
+                    <Col className="d-flex justify-content-start mb-2 mb-md-0">
+                        {/* Empty column to maintain spacing */}
+                    </Col>
+                    <Col className="text-center mb-2 mb-md-0">
                         <h1>
-                            No{" "}
                             {elementType.charAt(0).toUpperCase() +
                                 elementType.slice(1) +
-                                "s"}{" "}
-                            Found
+                                "s"}
                         </h1>
-                    </div>
-                )}
-                {data?.length > 0 &&
-                    data.map((element) => (
-                        <Col
-                            id={`${elementType}-${element.id}`}
-                            key={element.id}
-                            lg={4}
-                            xs={12}
-                            className="mb-4 d-flex align-items-end justify-content-center"
+                    </Col>
+                    <Col className="d-flex justify-content-end mb-2 mb-md-0">
+                        <input
+                            id="hidden-picture-input"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            hidden
+                            onChange={handleFileChange}
+                        />
+                        <Button
+                            variant="success"
+                            className="text-nowrap"
+                            onClick={() => {
+                                if (elementType === "picture") {
+                                    document
+                                        .getElementById("hidden-picture-input")
+                                        .click();
+                                    return;
+                                }
+                                // If not a picture, navigate to the new element page
+                                navigate(`/${elementType}s/new`);
+                            }}
                         >
-                            {/* <ElementCard
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                className="bi bi-plus"
+                                viewBox="0 0 16 16"
+                            >
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                            </svg>
+                            New {elementType}
+                        </Button>
+                    </Col>
+                </Row>
+                <Row>
+                    {/* Content Area */}
+                    {!pageLoading && data?.length === 0 && (
+                        /* If no data is found */
+                        <div className="d-flex justify-content-center">
+                            <h1>
+                                No{" "}
+                                {elementType.charAt(0).toUpperCase() +
+                                    elementType.slice(1) +
+                                    "s"}{" "}
+                                Found
+                            </h1>
+                        </div>
+                    )}
+                    {data?.length > 0 &&
+                        data.map((element) => (
+                            <Col
+                                id={`${elementType}-${element.id}`}
+                                key={element.id}
+                                lg={4}
+                                xs={12}
+                                className="mb-4 d-flex align-items-end justify-content-center"
+                            >
+                                {/* <ElementCard
                                 picture={element}
                                 handleShowModal={handleShowModal}
                             /> */}
-                            <ElementCard
-                                element={element}
-                                elementType={elementType}
-                                handleShowModal={handleShowModal}
-                                CardBody={
-                                    elementType === "picture" ? (
-                                        <PictureCardBody picture={element} />
-                                    ) : elementType === "recipe" ? (
-                                        <RecipeCardBody recipe={element} />
-                                    ) : null
-                                }
-                            />
-                        </Col>
-                    ))}
-            </Row>
+                                <ElementCard
+                                    element={element}
+                                    elementType={elementType}
+                                    handleShowModal={handleShowModal}
+                                    CardBody={
+                                        elementType === "picture" ? (
+                                            <PictureCardBody
+                                                picture={element}
+                                            />
+                                        ) : elementType === "recipe" ? (
+                                            <RecipeCardBody recipe={element} />
+                                        ) : null
+                                    }
+                                />
+                            </Col>
+                        ))}
+                </Row>
 
-            <ConfirmModal
-                show={showModal}
-                onClose={handleCloseModal}
-                onCancel={handleCloseModal}
-                onConfirm={confirmDelete}
-            />
-        </Container>
+                <ConfirmModal
+                    show={showModal}
+                    onClose={handleCloseModal}
+                    onCancel={handleCloseModal}
+                    onConfirm={confirmDelete}
+                />
+            </Container>
+        </>
     );
 };
 
