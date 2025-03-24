@@ -7,7 +7,6 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile"; // Import Profile component
 import Picture from "./components/Picture";
-import NewPictureForm from "./components/NewPictureForm";
 import Recipe from "./components/Recipe";
 import NewRecipeForm from "./components/NewRecipeForm";
 import Video from "./components/Video";
@@ -86,14 +85,6 @@ function AppContent() {
                         element={
                             <ProtectedRoute>
                                 <NewRecipeForm />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/pictures/new"
-                        element={
-                            <ProtectedRoute>
-                                <NewPictureForm />
                             </ProtectedRoute>
                         }
                     />
