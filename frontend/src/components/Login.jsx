@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
 import Loading from "./Loading";
 import backendURL from "../utils/backendURL";
@@ -11,6 +11,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const { postData, currentlyLoading: loading } = useApiRequest();
 
     const onSubmit = (e) => {
@@ -19,7 +20,8 @@ const Login = () => {
         const formData = { email, password };
         const onSuccess = (response) => {
             login(response.auth_token);
-            navigate("/profile");
+            const callbackUrl = location.state?.callbackUrl || "/profile";
+            navigate(callbackUrl);
         }
         postData(tokenApiEndpoint, formData, onSuccess);
     };

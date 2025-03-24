@@ -1,10 +1,11 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
     const { authToken } = useAuth();
-    return authToken ? children : <Navigate to="/login" />;
+    const location = useLocation();
+    return authToken ? children : <Navigate to="/login" state={{ callbackUrl: location }} />;
 };
 
 export default ProtectedRoute;
