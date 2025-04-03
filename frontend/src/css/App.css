@@ -1,13 +1,11 @@
 .App {
-  /*text-align: center;
-  background-color: #121212;
-  color: white;
-  background-color: #e7e7f0;
-  */
   min-height: 100vh;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
   width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: var(--transition-base);
 }
 
 .App-logo {
@@ -15,20 +13,9 @@
   pointer-events: none;
 }
 
-.DarkMode {
-  background-color: #282828;
-  color: white;
-}
-
-.DarkMode .bg-secondary {
-  background-color: #3f3f3f !important;
-  color: #121212;
-}
-
-.LightMode {
-  /*background-color: #e7e7f0;*/
-  background-color: white;
-  color: black;
+.bg-secondary {
+  background-color: var(--secondary-bg) !important;
+  color: var(--text-color);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -38,22 +25,22 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--color-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: calc(var(--font-size-base) + 0.5vmin);
+  color: var(--color-white);
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--color-accent);
 }
 
 .content {
-  padding-top: 56px; /* Adjust this value if your navbar height is different */
+  padding-top: var(--space-8); /* For navbar spacing */
 }
 
 
@@ -68,5 +55,5 @@
 
 .back-button-container {
   position: absolute;
-  left: 1rem;
+  left: var(--space-4);
 }

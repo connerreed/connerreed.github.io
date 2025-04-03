@@ -1,5 +1,6 @@
 import React from "react";
 import "./css/App.css";
+import "./css/theme.css";
 import { HashRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import CustomNavbar from "./components/CustomNavbar";
 import Home from "./components/Home";
@@ -28,7 +29,7 @@ function AppContent() {
     );
 
     return (
-        <div className={`App ${darkMode ? "DarkMode" : "LightMode"}`}>
+        <div className={`App ${darkMode ? "dark-theme" : ""}`}>
             <div>
                 <CustomNavbar />
             </div>
