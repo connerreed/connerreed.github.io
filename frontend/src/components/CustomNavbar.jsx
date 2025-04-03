@@ -7,7 +7,7 @@ import { useTheme } from "../contexts/ThemeContext";
 function CustomNavbar() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { darkMode } = useTheme();
+    const { theme } = useTheme();
 
     const navElements = Array.from(
         document.getElementsByClassName("navbar-element")
@@ -35,7 +35,7 @@ function CustomNavbar() {
     return (
         <>
             <Navbar
-                variant={darkMode ? "dark" : "light"}
+                variant={theme === "dark" ? "dark" : "light"}
                 className="navbar-container"
                 expand="lg"
                 collapseOnSelect

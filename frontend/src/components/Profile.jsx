@@ -8,16 +8,17 @@ import useApiRequest from "../hooks/useApiRequest";
 
 const Profile = () => {
     const { logout, userData } = useAuth();
-    const { darkMode, setDarkMode } = useTheme();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const { patchData } = useApiRequest();
 
     const profileApiEndpoint = `${backendURL}/auth/users/me/`;
 
-    const toggleDarkMode = async () => {
-        setDarkMode(!darkMode);
+    const toggleDarkMode = () => {
+        const darkMode = theme === "dark";
         const formData = {prefers_dark_mode: !darkMode};
         patchData(profileApiEndpoint, formData);
+        toggleTheme();
     };
 
     const handleLogout = () => {

@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.getItem("authToken")
     );
     const [userData, setUserData] = useState(null);
-    const { setDarkMode } = useTheme();
+    const { theme, toggleTheme } = useTheme();
     const setToken = (token) => {
         setAuthToken(token);
         localStorage.setItem("authToken", token);
@@ -27,10 +27,12 @@ export const AuthProvider = ({ children }) => {
     const logout = useCallback(() => {
         setAuthToken(null);
         localStorage.removeItem("authToken");
-        setDarkMode(false);
+        if (theme === "dark") {
+            toggleTheme();
+        }
         setUserData(null);
         addSuccessMessage("Logged out successfully.");
-    }, [setDarkMode, addSuccessMessage]);
+    }, [theme, toggleTheme, addSuccessMessage]);
 
     const updateUser = useCallback(() => {
         const profileApiEndpoint = `${backendURL}/auth/users/me/`;
@@ -42,11 +44,10 @@ export const AuthProvider = ({ children }) => {
                 }
             )
             .then((response) => {
-                setDarkMode(response?.data?.prefers_dark_mode);
-                localStorage.setItem(
-                    "darkMode",
-                    response?.data?.prefers_dark_mode
-                );
+                const prefersDarkMode = response?.data?.prefers_dark_mode;
+                if ((prefersDarkMode && theme === "light") || (!prefersDarkMode && theme === "dark")) {
+                    toggleTheme();
+                }
                 setUserData(response?.data);
             })
             .catch((error) => {
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }) => {
                 }
                 addError(errorMessage);
             });
-    }, [authToken, setDarkMode, logout, addError]);
+    }, [authToken, theme, toggleTheme, logout, addError]);
 
     useEffect(() => {
         if (authToken) {
