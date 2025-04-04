@@ -48,6 +48,8 @@ function CustomNavbar() {
                     id="offcanvasNavbar"
                     aria-labelledby="offcanvasNavbarLabel"
                     placement="start"
+                    className={theme === "dark" ? "dark-theme" : ""}
+                    data-bs-theme={theme === "dark" ? "dark" : "light"}
                 >
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title id="offcanvasNavbarLabel">
