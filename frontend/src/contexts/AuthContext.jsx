@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [authToken, setAuthToken] = useState(
         localStorage.getItem("authToken")
     );
+    const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState(null);
     const { theme, toggleTheme } = useTheme();
     const setToken = (token) => {
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
     }, [theme, toggleTheme, addSuccessMessage]);
 
     const updateUser = useCallback(() => {
+        setLoading(true);
         const profileApiEndpoint = `${backendURL}/auth/users/me/`;
         axios
             .get(
@@ -61,6 +63,9 @@ export const AuthProvider = ({ children }) => {
                     errorMessage = "Something went wrong.";
                 }
                 addError(errorMessage);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, [authToken, theme, toggleTheme, logout, addError]);
 
@@ -72,7 +77,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ authToken, login: setToken, logout, userData, updateUser }}
+            value={{ authToken, login: setToken, logout, userData, updateUser, loading }}
         >
             {children}
         </AuthContext.Provider>
