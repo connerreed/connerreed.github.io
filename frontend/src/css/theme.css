@@ -1,0 +1,101 @@
+/* Base Theme Variables */
+:root {
+    /* Color System */
+    --color-primary: #4a6fa5;
+    --color-secondary: #6c757d;
+    --color-accent: #47a3f3;
+    --color-success: #28a745;
+    --color-warning: #ffc107;
+    --color-danger: #dc3545;
+    --color-info: #17a2b8;
+  
+    /* Neutral Colors */
+    --color-white: #ffffff;
+    --color-gray-100: #f8f9fa;
+    --color-gray-200: #e9ecef;
+    --color-gray-300: #dee2e6;
+    --color-gray-400: #ced4da;
+    --color-gray-500: #adb5bd;
+    --color-gray-600: #6c757d;
+    --color-gray-700: #495057;
+    --color-gray-800: #343a40;
+    --color-gray-900: #212529;
+    --color-black: #000000;
+  
+    /* Semantic Variables */
+    --bg-color: var(--color-white);
+    --text-color: var(--color-gray-900);
+    --secondary-bg: var(--color-gray-100);
+    --border-color: var(--color-gray-300);
+    
+    /* Typography */
+    --font-family-base: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family-headings: var(--font-family-base);
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+    --line-height-base: 1.5;
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+  
+    /* Spacing */
+    --spacing-unit: 0.25rem;
+    --space-1: calc(var(--spacing-unit) * 1); /* 0.25rem */
+    --space-2: calc(var(--spacing-unit) * 2); /* 0.5rem */
+    --space-3: calc(var(--spacing-unit) * 3); /* 0.75rem */
+    --space-4: calc(var(--spacing-unit) * 4); /* 1rem */
+    --space-6: calc(var(--spacing-unit) * 6); /* 1.5rem */
+    --space-8: calc(var(--spacing-unit) * 8); /* 2rem */
+    
+    /* Borders & Shadows */
+    --border-radius-sm: 0.25rem;
+    --border-radius: 0.375rem;
+    --border-radius-lg: 0.5rem;
+    --border-width: 1px;
+    --box-shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    
+    /* Transitions */
+    --transition-base: all 200ms ease-in-out;
+  }
+  
+  .dark-theme {
+    /* Semantic Variables - Dark Mode */
+    --bg-color: var(--color-gray-900);
+    --text-color: var(--color-gray-100);
+    --secondary-bg: var(--color-gray-800);
+    --border-color: var(--color-gray-700);
+    
+    /* Adjust component colors for dark mode */
+    --color-primary: #6c8ebe;
+    --color-success: #48c774;
+    --color-warning: #ffe08a;
+    --color-danger: #f14668;
+  }
+  
+  /* Base Styles */
+  .body-default {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    margin: 0;
+    padding: 0;
+    transition: var(--transition-base);
+  }
+  
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --transition-base: none;
+    }
+  }
+  
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }

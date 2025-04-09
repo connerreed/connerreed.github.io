@@ -16,8 +16,9 @@ export const AuthProvider = ({ children }) => {
     const [authToken, setAuthToken] = useState(
         localStorage.getItem("authToken")
     );
+    const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState(null);
-    const { setDarkMode } = useTheme();
+    const { theme, toggleTheme } = useTheme();
     const setToken = (token) => {
         setAuthToken(token);
         localStorage.setItem("authToken", token);
@@ -27,12 +28,15 @@ export const AuthProvider = ({ children }) => {
     const logout = useCallback(() => {
         setAuthToken(null);
         localStorage.removeItem("authToken");
-        setDarkMode(false);
+        if (theme === "dark") {
+            toggleTheme();
+        }
         setUserData(null);
         addSuccessMessage("Logged out successfully.");
-    }, [setDarkMode, addSuccessMessage]);
+    }, [theme, toggleTheme, addSuccessMessage]);
 
     const updateUser = useCallback(() => {
+        setLoading(true);
         const profileApiEndpoint = `${backendURL}/auth/users/me/`;
         axios
             .get(
@@ -42,11 +46,10 @@ export const AuthProvider = ({ children }) => {
                 }
             )
             .then((response) => {
-                setDarkMode(response?.data?.prefers_dark_mode);
-                localStorage.setItem(
-                    "darkMode",
-                    response?.data?.prefers_dark_mode
-                );
+                const prefersDarkMode = response?.data?.prefers_dark_mode;
+                if ((prefersDarkMode && theme === "light") || (!prefersDarkMode && theme === "dark")) {
+                    toggleTheme();
+                }
                 setUserData(response?.data);
             })
             .catch((error) => {
@@ -60,8 +63,11 @@ export const AuthProvider = ({ children }) => {
                     errorMessage = "Something went wrong.";
                 }
                 addError(errorMessage);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-    }, [authToken, setDarkMode, logout, addError]);
+    }, [authToken, theme, toggleTheme, logout, addError]);
 
     useEffect(() => {
         if (authToken) {
@@ -71,7 +77,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ authToken, login: setToken, logout, userData, updateUser }}
+            value={{ authToken, login: setToken, logout, userData, updateUser, loading }}
         >
             {children}
         </AuthContext.Provider>

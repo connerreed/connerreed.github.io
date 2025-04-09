@@ -1,4 +1,5 @@
 import React from "react";
+import "./css/theme.css";
 import "./css/App.css";
 import { HashRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import CustomNavbar from "./components/CustomNavbar";
@@ -20,7 +21,7 @@ import ElementGallery from "./components/ElementGallery";
 import { Button } from "react-bootstrap";
 
 function AppContent() {
-    const { darkMode } = useTheme();
+    const { theme } = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
     const showBackButton = !/^\/(recipes|pictures|videos|login|profile|)$/.test(
@@ -28,7 +29,7 @@ function AppContent() {
     );
 
     return (
-        <div className={`App ${darkMode ? "DarkMode" : "LightMode"}`}>
+        <div className={`App ${theme === "dark" ? "dark-theme" : ""}`}>
             <div>
                 <CustomNavbar />
             </div>

@@ -7,7 +7,7 @@ import { useTheme } from "../contexts/ThemeContext";
 function CustomNavbar() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { darkMode } = useTheme();
+    const { theme } = useTheme();
 
     const navElements = Array.from(
         document.getElementsByClassName("navbar-element")
@@ -35,7 +35,7 @@ function CustomNavbar() {
     return (
         <>
             <Navbar
-                variant={darkMode ? "dark" : "light"}
+                variant={theme === "dark" ? "dark" : "light"}
                 className="navbar-container"
                 expand="lg"
                 collapseOnSelect
@@ -48,6 +48,8 @@ function CustomNavbar() {
                     id="offcanvasNavbar"
                     aria-labelledby="offcanvasNavbarLabel"
                     placement="start"
+                    className={theme === "dark" ? "dark-theme" : ""}
+                    data-bs-theme={theme === "dark" ? "dark" : "light"}
                 >
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title id="offcanvasNavbarLabel">
