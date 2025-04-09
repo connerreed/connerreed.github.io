@@ -31,13 +31,21 @@ const Profile = () => {
         <>
             {authTokenLoading && <Loading />}
             {!authTokenLoading && (
-                <div>
-                    <h1>
-                        {userData?.first_name} {userData?.last_name}
-                    </h1>
-                    <p>Email: {userData?.email}</p>
-                    <Button onClick={handleLogout}>Logout</Button>
-                    <Button onClick={toggleDarkMode}>Toggle Dark Mode</Button>
+                <div className="container">
+                    <div className="d-flex flex-column align-items-center col-12">
+                        <div>
+                            {userData?.first_name && userData?.last_name && (
+                                <h1>
+                                    {userData?.first_name} {userData?.last_name}
+                                </h1>
+                            )}
+                            {userData?.email && <p>Email: {userData.email}</p>}
+                            <Button onClick={handleLogout}>Logout</Button>
+                            <Button className="ms-2" onClick={toggleDarkMode}>
+                                Toggle Dark Mode
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             )}
         </>
