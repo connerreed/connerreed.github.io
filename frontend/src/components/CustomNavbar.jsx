@@ -3,12 +3,13 @@ import { Navbar, Nav, Offcanvas } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function CustomNavbar() {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme } = useTheme();
-
+    const { userData } = useAuth();
     const navElements = Array.from(
         document.getElementsByClassName("navbar-element")
     );
@@ -91,7 +92,7 @@ function CustomNavbar() {
                 </Navbar.Offcanvas>
                 <Nav className="profile-container">
                     <LinkContainer to="/profile" id="nav-profile">
-                        <Nav.Link>
+                        <Nav.Link className="d-flex align-items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="16"
@@ -106,6 +107,9 @@ function CustomNavbar() {
                                     d="M8 9a6 6 0 0 0-6 6v1h12v-1a6 6 0 0 0-6-6z"
                                 />
                             </svg>
+                            <span className="ms-1">
+                                {userData?.first_name} {userData?.last_name}
+                            </span>
                         </Nav.Link>
                     </LinkContainer>
                 </Nav>
