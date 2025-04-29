@@ -30,7 +30,11 @@ class CustomUserManager(BaseUserManager):
          return self.create_user(email, password, **extra_fields)
      
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-     email = models.EmailField(unique=True
+     email = models.EmailField(unique=True,
+                               error_messages={
+                                   'unique': 'An account with this email address already exists.',
+                                   'invalid': 'Please enter a valid email address.',
+                               }
                                #, validators=[validate_unique_email]
                                )
      first_name = models.CharField(max_length=30, blank=True)

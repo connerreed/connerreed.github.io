@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,6 +7,8 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 import backendURL from "../utils/backendURL";
 import "../css/Register.css";
+import useApiRequest from "../hooks/useApiRequest";
+import Loading from "./Loading";
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -27,6 +28,7 @@ const Register = () => {
     const { login } = useAuth();
 
     const profileApiEndpoint = `${backendURL}/auth/users/`;
+    const { postData, currentlyLoading: loading } = useApiRequest();
 
     const handlePasswordChange = (e) => {
         const password = e.target.value;
@@ -80,51 +82,51 @@ const Register = () => {
             setError("Password does not meet all the requirements.");
             return;
         }
-        try {
-            await axios.post(profileApiEndpoint, {
+        const registerFormData = {
+            email,
+            password,
+            first_name: firstName,
+            last_name: lastName,
+        };
+        const onRegistrationSuccess = () => {
+            const endpointForRetrievingToken = `${backendURL}/auth/token/login/`;
+            const tokenFormData = {
                 email,
                 password,
-                first_name: firstName,
-                last_name: lastName,
-            });
-            const getTokenApiEndpoint = `${backendURL}/auth/token/login/`;
-            const response = await axios.post(getTokenApiEndpoint, {
-                email,
-                password,
-            });
+            };
+            const onTokenSuccess = (response) => {
+                login(response.auth_token);
+                //navigate("/profile");
+                navigate("/");
+            };
+            postData(endpointForRetrievingToken, tokenFormData, onTokenSuccess);
+        };
 
-            login(response.data.auth_token);
-            navigate("/profile");
-        } catch (error) {
-            handleAxiosError(error);
-        }
-    };
-
-    const handleAxiosError = (error) => {
-        if (axios.isAxiosError(error)) {
-            if (error.response) {
-                if (error.response.data.email) {
-                    setError(
-                        "Registration failed: " + error.response.data.email
-                    );
-                    return;
-                }
-                setError(
-                    "Registration failed: " +
-                        (JSON.stringify(error.response.data) || "Invalid data")
-                );
-            } else if (error.request) {
-                setError("Registration failed: No response from server");
-            } else {
-                setError("Registration failed: " + error.message);
+        const onRegistrationError = (error) => {
+            // Returns error message to be used in the UI (passed to postData hook)
+            const status = error?.response?.status;
+            let errorMessage = "Error: ";
+            switch(status) {
+                case 400:
+                    if (error?.response?.data?.email) {
+                        errorMessage += error.response.data.email[0]; // Email already exists, and this is the error message
+                    }
+                    else {
+                        errorMessage += "Bad Request";
+                    }
+                    break;
+                default:
+                    errorMessage += "An error has occurred";
+                    break;
             }
-        } else {
-            setError("Registration failed: An unexpected error occurred");
-        }
+            return errorMessage;
+        };
+        postData(profileApiEndpoint, registerFormData, onRegistrationSuccess, onRegistrationError);
     };
 
     return (
         <>
+            {loading && <Loading blocking />}
             <h1 className="form-title">Register</h1>
             <Container className="form-container">
                 <Form onSubmit={handleSubmit}>
@@ -227,11 +229,7 @@ const Register = () => {
                             required
                         />
                     </Form.Group>
-                    <Button
-                        className="mt-3"
-                        variant="primary"
-                        type="submit"
-                    >
+                    <Button className="mt-3" variant="primary" type="submit">
                         Register
                     </Button>
                     <Button

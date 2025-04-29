@@ -56,8 +56,16 @@ const useApiRequest = () => {
         [authToken, addError]
     );
 
+    /*
+        params: {
+            url: string, location to send request
+            formData: object, data to send in request
+            onSuccess: function, function to call on success
+            onError: function, function to call on error (should return a string error message to display)
+        }
+    */
     const postData = useCallback(
-        (url, formData, onSuccess) => {
+        (url, formData, onSuccess, onError) => {
             setCurrentlyLoading(true);
             axios
                 .post(url, formData, {
@@ -90,6 +98,14 @@ const useApiRequest = () => {
                 })
                 .catch((error) => {
                     const status = error?.response?.status;
+                    if (onError) {
+                        const getErrorMessage = onError;
+                        const errorMessage = getErrorMessage(error);
+                        if (errorMessage) {
+                            addError(errorMessage);
+                        }
+                        return;
+                    }
                     let errorMessage = "Error: ";
                     switch (status) {
                         case 403:
@@ -101,6 +117,7 @@ const useApiRequest = () => {
                             break;
                     }
                     addError(errorMessage);
+                    
                     console.error(error);
                 })
                 .finally(() => {
