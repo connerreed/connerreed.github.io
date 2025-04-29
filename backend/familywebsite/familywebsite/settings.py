@@ -33,8 +33,9 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'localhost:3000',
-    '192.168.86.38',
+    '192.168.86.38', # Home PC IP
     '100.70.28.228', # Cottage row PC IP
+    '100.70.28.253', # Cottage row PC IP
 ]
 
 
@@ -206,6 +207,7 @@ AUTHENTICATION_BACKENDS = (
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'http://192.168.86.38:3000',
+    'http://192.168.86.38:3000', # Home PC IP
     'http://100.70.28.228:3000', # Cottage row PC IP
+    'http://100.70.28.253:3000', # Cottage row PC IP
 ]
