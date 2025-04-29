@@ -101,7 +101,27 @@ const Register = () => {
             };
             postData(endpointForRetrievingToken, tokenFormData, onTokenSuccess);
         };
-        postData(profileApiEndpoint, registerFormData, onRegistrationSuccess);
+
+        const onRegistrationError = (error) => {
+            // Returns error message to be used in the UI (passed to postData hook)
+            const status = error?.response?.status;
+            let errorMessage = "Error: ";
+            switch(status) {
+                case 400:
+                    if (error?.response?.data?.email) {
+                        errorMessage += error.response.data.email[0]; // Email already exists, and this is the error message
+                    }
+                    else {
+                        errorMessage += "Bad Request";
+                    }
+                    break;
+                default:
+                    errorMessage += "An error has occurred";
+                    break;
+            }
+            return errorMessage;
+        };
+        postData(profileApiEndpoint, registerFormData, onRegistrationSuccess, onRegistrationError);
     };
 
     return (
