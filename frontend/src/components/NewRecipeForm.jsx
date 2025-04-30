@@ -11,6 +11,7 @@ const NewRecipeForm = () => {
     const { postData, fetchData, currentlyLoading: loading } = useApiRequest();
     const [mealTypes, setMealTypes] = useState([]);
     const [images, setImages] = useState([]);
+    const [thumbnail, setThumbnail] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,6 +37,12 @@ const NewRecipeForm = () => {
         };
         postData(newRecipeApiEndpoint, formData, onSuccess);
     };
+
+    const handleGenerateThumbnail = () => {
+        setThumbnail(null);
+        const thumbnailFileInput = document.getElementById("thumbnail-input");
+        thumbnailFileInput.value = null;
+    }
 
     return (
         <>
@@ -107,13 +114,35 @@ const NewRecipeForm = () => {
                         <Form.Label htmlFor="thumbnail-input">
                             Thumbnail
                         </Form.Label>
-                        <Form.Control
-                            id="thumbnail-input"
-                            type="file"
-                            accept="image/*"
-                            name="thumbnail"
-                            required
-                        />
+                        <div className="thumbnail-input-container">
+                            <Form.Control
+                                id="thumbnail-input"
+                                type="file"
+                                accept="image/*"
+                                name="thumbnail"
+                                required
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                        setThumbnail(file);
+                                    }
+
+                                    // Set the file to the input value to allow form submission
+                                    //e.target.filename = file;
+                                }}
+                            />
+                            <p className="thumbnail-input-text">OR</p>
+                            <Button className="thumbnail-generate-button" onClick={handleGenerateThumbnail}>Generate</Button>
+                        </div>
+                        {thumbnail && (
+                            <ul>
+                                <img
+                                    src={URL.createObjectURL(thumbnail)}
+                                    alt="Thumbnail"
+                                    className="thumbnail-preview"
+                                />
+                            </ul>
+                        )}
                     </Form.Group>
 
                     <Form.Group className="mb-3">
