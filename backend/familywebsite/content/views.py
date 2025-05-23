@@ -201,8 +201,15 @@ def google_api_search(request):
     
     query = request.GET.get('q', '')
     num = int(request.GET.get('num', 20))  # Default to 20 images if not specified
+    page = int(request.GET.get('page', 1))  # Default to page 1 if not specified
     if not query:
         return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    cache_key = f"google_image_search_{query}"
+    cached_results = cache.get(cache_key)
+    if cached_results:
+        print(f"Cache hit for query: {query}")
+        return JsonResponse({'images': cached_results[:num]}, status=status.HTTP_200_OK)
 
     url = "https://www.googleapis.com/customsearch/v1"
     API_KEY = "AIzaSyBl3f-UW5Zr-qhK5ZZsNvZQzv8q4xJawFM"
@@ -210,31 +217,28 @@ def google_api_search(request):
     results = []
     start_index = 1
     max_per_request = 10  # Google API allows max 10 images per request
+    total_to_fetch = num if num > 50 else 50
 
-    while len(results) < num:
+    while len(results) < total_to_fetch:
         params = {
             "q": query,
             "key": API_KEY,
             "cx": SEARCH_ENGINE_ID,
             "searchType": "image",
-            "num": min(max_per_request, num - len(results)),
+            "num": min(max_per_request, total_to_fetch - len(results)),
             "start": start_index
         }
-        print(f"Requesting: {url} with params: {params}")
         response = requests.get(url, params=params)
-        #print(f"Response status: {response.status_code}")
         if response.status_code != 200:
-            print(f"Non-200 response: {response.text}")
             break
         data = response.json()
-        #print(f"Response JSON: {data}")
         items = data.get("items", [])
-        print(f"Items found: {len(items)}")
         results.extend([item["link"] for item in items])
-        print(f"Total results so far: {len(results)}")
         if not items or "queries" not in data or "nextPage" not in data["queries"]:
-            print("No more items or nextPage in queries.")
             break
         start_index = data["queries"]["nextPage"][0].get("startIndex", start_index + len(items))
+
+    # Cache the results (all 50 or less if not enough found)
+    cache.set(cache_key, results, timeout=60*60)  # Cache for 1 hour
 
     return JsonResponse({'images': results[:num]}, status=status.HTTP_200_OK)

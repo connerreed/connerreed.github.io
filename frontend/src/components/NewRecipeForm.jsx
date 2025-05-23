@@ -12,7 +12,8 @@ const NewRecipeForm = () => {
     const { postData, fetchData, currentlyLoading: loading } = useApiRequest();
     const [mealTypes, setMealTypes] = useState([]);
     const [images, setImages] = useState([]);
-    const [thumbnail, setThumbnail] = useState(null);
+    const [selectedThumbnail, setSelectedThumbnail] = useState(null);
+    const [thumbnailSelectionList, setThumbnailSelectionList] = useState([]);
     const navigate = useNavigate();
     const {addError} = useMessage();
     useEffect(() => {
@@ -34,7 +35,7 @@ const NewRecipeForm = () => {
         images.forEach((image) => {
             formData.append("images", image);
         });
-        formData.append("thumbnail", thumbnail);
+        formData.append("thumbnail", selectedThumbnail);
         const onSuccess = () => {
             navigate("/recipes");
         };
@@ -42,13 +43,27 @@ const NewRecipeForm = () => {
     };
 
     const handleGenerateThumbnail = () => {
+        const maxItems = 5;
+        if (selectedThumbnail && thumbnailSelectionList?.length > 0) {
+            if (selectedThumbnail === thumbnailSelectionList[maxItems - 1]) {
+                // TODO: Fetch more images
+            } else {
+                const index = thumbnailSelectionList.findIndex((image) => image === selectedThumbnail);
+                if (index !== -1) {
+                    setSelectedThumbnail(thumbnailSelectionList[index + 1]);
+                } else {
+                    setSelectedThumbnail(thumbnailSelectionList[0]);
+                }
+            }
+            return;
+        }
         const recipeTitle = document.getElementById("title-input").value;
         if (!recipeTitle) {
             //alert("Please enter a title for the recipe before generating a thumbnail.");
             addError("Please enter a title for the recipe before generating a thumbnail.");
             return;
         }
-        setThumbnail(null);
+        setSelectedThumbnail(null);
         const thumbnailFileInput = document.getElementById("thumbnail-input");
         thumbnailFileInput.value = null;
         const onSuccess = (data) => {
@@ -57,9 +72,11 @@ const NewRecipeForm = () => {
                 addError("Error: No thumbnail generated. Please try again.");
                 return;
             }
-            setThumbnail(data);
+            setSelectedThumbnail(data.images[0]);
+            console.log(selectedThumbnail);
+            setThumbnailSelectionList(data.images);
         }
-        const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=5`;
+        const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=${maxItems}`;
         fetchData(generateThumbnailApiEndpoint, onSuccess);
     }
 
@@ -142,7 +159,7 @@ const NewRecipeForm = () => {
                                 onChange={(e) => {
                                     const file = e.target.files[0];
                                     if (file) {
-                                        setThumbnail(file);
+                                        setSelectedThumbnail(file);
                                     }
 
                                 }}
@@ -150,10 +167,10 @@ const NewRecipeForm = () => {
                             <p className="thumbnail-input-text">OR</p>
                             <Button className="thumbnail-generate-button" onClick={handleGenerateThumbnail}>Generate</Button>
                         </div>
-                        {thumbnail && (
+                        {selectedThumbnail && (
                             <ul>
                                 <img
-                                    src={URL.createObjectURL(thumbnail)}
+                                    src={selectedThumbnail}
                                     alt="Thumbnail"
                                     className="thumbnail-preview"
                                 />
