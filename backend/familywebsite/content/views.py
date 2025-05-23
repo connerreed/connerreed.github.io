@@ -7,6 +7,11 @@ from .serializers import (FamilyMemberSerializer, RecipeSerializer, PictureSeria
                           CommentSerializer, RecipeAlbumSerializer, MediaAlbumSerializer, UserSerializer, MealTypeSerializer)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.pagination import PageNumberPagination
+import urllib.parse
+import requests
+from bs4 import BeautifulSoup
+from django.core.cache import cache
+from django.http import JsonResponse
 
 # Create your views here.
 #User = get_user_model()
@@ -137,3 +142,99 @@ class MealTypeListCreateView(generics.ListCreateAPIView):
     queryset = MealType.objects.all()
     serializer_class = MealTypeSerializer
     permission_classes = [IsAuthenticated]
+'''
+def generate_recipe_thumbnail(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
+    search_query = request.GET.get('q', '')
+
+    if not search_query:
+        return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    cache_key = f"image_search_{search_query}"
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return JsonResponse({'images': cached_result}, status=status.HTTP_200_OK)
+
+    try:
+        # Prepare the search URL
+        encoded_query = urllib.parse.quote_plus(search_query)
+        url = f"https://www.google.com/search?q={encoded_query}&tbm=isch"
+
+        # Set headers to mimic a browser
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        # Make the request to Google Images
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an error for bad responses
+
+        # Parse the response content to find image URLs
+        soup = BeautifulSoup(response.text, 'html5lib')
+        images = soup.find_all('img')
+        print(f"Found {len(images)} images")
+
+        # Extract image URLs (filter out placeholder images)
+        image_urls = []
+        for img in images:
+            src = img.get('src')
+            #if src and src.startswith('http') and not src.startswith('data:'):
+            if src and not src.startswith('data:image/gif'):
+                image_urls.append(src)
+        print(f"Extracted {len(image_urls)} valid image URLs")
+
+        result = {'images': image_urls[:20]}  # Limit to the first 20 images
+        # Cache the result for 1 hour (3600 seconds)
+        #FIXME: cache.set(cache_key, result, timeout=60*60)  # Cache the result for 1 hour
+        
+        # Return the first 20 image URLs as a response
+        return JsonResponse({'images': image_urls[:20]}, status=status.HTTP_200_OK)
+    except requests.RequestException as e:
+        return JsonResponse({'error': f"Request failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+'''
+def google_api_search(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    query = request.GET.get('q', '')
+    num = int(request.GET.get('num', 20))  # Default to 20 images if not specified
+    if not query:
+        return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    url = "https://www.googleapis.com/customsearch/v1"
+    API_KEY = "AIzaSyBl3f-UW5Zr-qhK5ZZsNvZQzv8q4xJawFM"
+    SEARCH_ENGINE_ID = "325e0a0a4d286459c"
+    results = []
+    start_index = 1
+    max_per_request = 10  # Google API allows max 10 images per request
+
+    while len(results) < num:
+        params = {
+            "q": query,
+            "key": API_KEY,
+            "cx": SEARCH_ENGINE_ID,
+            "searchType": "image",
+            "num": min(max_per_request, num - len(results)),
+            "start": start_index
+        }
+        print(f"Requesting: {url} with params: {params}")
+        response = requests.get(url, params=params)
+        #print(f"Response status: {response.status_code}")
+        if response.status_code != 200:
+            print(f"Non-200 response: {response.text}")
+            break
+        data = response.json()
+        #print(f"Response JSON: {data}")
+        items = data.get("items", [])
+        print(f"Items found: {len(items)}")
+        results.extend([item["link"] for item in items])
+        print(f"Total results so far: {len(results)}")
+        if not items or "queries" not in data or "nextPage" not in data["queries"]:
+            print("No more items or nextPage in queries.")
+            break
+        start_index = data["queries"]["nextPage"][0].get("startIndex", start_index + len(items))
+
+    return JsonResponse({'images': results[:num]}, status=status.HTTP_200_OK)

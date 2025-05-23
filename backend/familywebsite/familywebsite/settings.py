@@ -36,6 +36,8 @@ ALLOWED_HOSTS = [
     '192.168.86.38', # Home PC IP
     '100.70.28.228', # Cottage row PC IP
     '100.70.28.253', # Cottage row PC IP
+    '192.168.86.22', # Home PC IP
+    '192.168.86.44', # Home PC IP
 ]
 
 
@@ -210,4 +212,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://192.168.86.38:3000', # Home PC IP
     'http://100.70.28.228:3000', # Cottage row PC IP
     'http://100.70.28.253:3000', # Cottage row PC IP
+    'http://192.168.86.22:3000', # Home PC IP
+    'http://192.168.86.44:3000', # Home PC IP
 ]

@@ -6,6 +6,7 @@ import backendURL from "../utils/backendURL";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "./FileUpload";
 import "../css/NewRecipeForm.css";
+import { useMessage } from "../contexts/MessageContext";
 
 const NewRecipeForm = () => {
     const { postData, fetchData, currentlyLoading: loading } = useApiRequest();
@@ -13,7 +14,7 @@ const NewRecipeForm = () => {
     const [images, setImages] = useState([]);
     const [thumbnail, setThumbnail] = useState(null);
     const navigate = useNavigate();
-
+    const {addError} = useMessage();
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -26,22 +27,40 @@ const NewRecipeForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const newRecipeApiEndpoint = `${backendURL}/api/recipes/`;
+        const postRecipeApiEndpoint = `${backendURL}/api/recipes/`;
         const formData = new FormData(e.target);
+        formData.delete('thumbnail');
         // Add images from FileUpload component to the formData
         images.forEach((image) => {
             formData.append("images", image);
         });
+        formData.append("thumbnail", thumbnail);
         const onSuccess = () => {
             navigate("/recipes");
         };
-        postData(newRecipeApiEndpoint, formData, onSuccess);
+        postData(postRecipeApiEndpoint, formData, onSuccess);
     };
 
     const handleGenerateThumbnail = () => {
+        const recipeTitle = document.getElementById("title-input").value;
+        if (!recipeTitle) {
+            //alert("Please enter a title for the recipe before generating a thumbnail.");
+            addError("Please enter a title for the recipe before generating a thumbnail.");
+            return;
+        }
         setThumbnail(null);
         const thumbnailFileInput = document.getElementById("thumbnail-input");
         thumbnailFileInput.value = null;
+        const onSuccess = (data) => {
+            if (data?.images?.length === 0) {
+                console.error("Generate Thumbnail Error: No image returned from server.");
+                addError("Error: No thumbnail generated. Please try again.");
+                return;
+            }
+            setThumbnail(data);
+        }
+        const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=5`;
+        fetchData(generateThumbnailApiEndpoint, onSuccess);
     }
 
     return (
@@ -120,15 +139,12 @@ const NewRecipeForm = () => {
                                 type="file"
                                 accept="image/*"
                                 name="thumbnail"
-                                required
                                 onChange={(e) => {
                                     const file = e.target.files[0];
                                     if (file) {
                                         setThumbnail(file);
                                     }
 
-                                    // Set the file to the input value to allow form submission
-                                    //e.target.filename = file;
                                 }}
                             />
                             <p className="thumbnail-input-text">OR</p>
