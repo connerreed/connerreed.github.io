@@ -14,6 +14,7 @@ const NewRecipeForm = () => {
     const [images, setImages] = useState([]);
     const [selectedThumbnail, setSelectedThumbnail] = useState(null);
     const [thumbnailSelectionList, setThumbnailSelectionList] = useState([]);
+    const [page, setPage] = useState(1);
     const navigate = useNavigate();
     const {addError} = useMessage();
     useEffect(() => {
@@ -44,9 +45,30 @@ const NewRecipeForm = () => {
 
     const handleGenerateThumbnail = () => {
         const maxItems = 5;
+        const recipeTitle = document.getElementById("title-input").value;
+        if (!recipeTitle) {
+            //alert("Please enter a title for the recipe before generating a thumbnail.");
+            addError("Please enter a title for the recipe before generating a thumbnail.");
+            return;
+        }
+        const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=${maxItems}`;
+        const onSuccess = (data) => {
+            if (data?.images?.length === 0) {
+                console.error("Generate Thumbnail Error: No image returned from server.");
+                addError("Error: No thumbnail generated. Please try again.");
+                return;
+            }
+            setSelectedThumbnail(data.images[0]);
+            console.log(selectedThumbnail);
+            setThumbnailSelectionList(data.images);
+            setPage((prevPage) => prevPage + 1);
+        }
+
         if (selectedThumbnail && thumbnailSelectionList?.length > 0) {
             if (selectedThumbnail === thumbnailSelectionList[maxItems - 1]) {
                 // TODO: Fetch more images
+                const getNextPageEndpoint = `${generateThumbnailApiEndpoint}&page=${page}`;
+                fetchData(getNextPageEndpoint, onSuccess);
             } else {
                 const index = thumbnailSelectionList.findIndex((image) => image === selectedThumbnail);
                 if (index !== -1) {
@@ -57,26 +79,9 @@ const NewRecipeForm = () => {
             }
             return;
         }
-        const recipeTitle = document.getElementById("title-input").value;
-        if (!recipeTitle) {
-            //alert("Please enter a title for the recipe before generating a thumbnail.");
-            addError("Please enter a title for the recipe before generating a thumbnail.");
-            return;
-        }
         setSelectedThumbnail(null);
         const thumbnailFileInput = document.getElementById("thumbnail-input");
         thumbnailFileInput.value = null;
-        const onSuccess = (data) => {
-            if (data?.images?.length === 0) {
-                console.error("Generate Thumbnail Error: No image returned from server.");
-                addError("Error: No thumbnail generated. Please try again.");
-                return;
-            }
-            setSelectedThumbnail(data.images[0]);
-            console.log(selectedThumbnail);
-            setThumbnailSelectionList(data.images);
-        }
-        const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=${maxItems}`;
         fetchData(generateThumbnailApiEndpoint, onSuccess);
     }
 

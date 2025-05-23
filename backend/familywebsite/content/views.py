@@ -210,7 +210,9 @@ def google_api_search(request):
     cached_results = cache.get(cache_key)
     if cached_results:
         print(f"Cache hit for query: {query}")
-        return JsonResponse({'images': cached_results[:num]}, status=status.HTTP_200_OK)
+        start_index = num * (page - 1)
+        end_index = start_index + num
+        return JsonResponse({'images': cached_results[start_index:end_index]}, status=status.HTTP_200_OK)
 
     url = "https://www.googleapis.com/customsearch/v1"
     API_KEY = os.environ.get('Google_Search_Engine_API_Key')
