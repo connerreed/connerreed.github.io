@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.core.cache import cache
 from django.http import JsonResponse
+import os
 
 # Create your views here.
 #User = get_user_model()
@@ -212,8 +213,8 @@ def google_api_search(request):
         return JsonResponse({'images': cached_results[:num]}, status=status.HTTP_200_OK)
 
     url = "https://www.googleapis.com/customsearch/v1"
-    API_KEY = "AIzaSyBl3f-UW5Zr-qhK5ZZsNvZQzv8q4xJawFM"
-    SEARCH_ENGINE_ID = "325e0a0a4d286459c"
+    API_KEY = os.environ.get('Google_Search_Engine_API_Key')
+    SEARCH_ENGINE_ID = os.environ.get('Google_Search_Engine_ID')
     results = []
     start_index = 1
     max_per_request = 10  # Google API allows max 10 images per request
