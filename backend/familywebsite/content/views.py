@@ -143,59 +143,7 @@ class MealTypeListCreateView(generics.ListCreateAPIView):
     queryset = MealType.objects.all()
     serializer_class = MealTypeSerializer
     permission_classes = [IsAuthenticated]
-'''
-def generate_recipe_thumbnail(request):
-    if request.method != 'GET':
-        return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
-    search_query = request.GET.get('q', '')
 
-    if not search_query:
-        return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    cache_key = f"image_search_{search_query}"
-    cached_result = cache.get(cache_key)
-    if cached_result:
-        return JsonResponse({'images': cached_result}, status=status.HTTP_200_OK)
-
-    try:
-        # Prepare the search URL
-        encoded_query = urllib.parse.quote_plus(search_query)
-        url = f"https://www.google.com/search?q={encoded_query}&tbm=isch"
-
-        # Set headers to mimic a browser
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
-
-        # Make the request to Google Images
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an error for bad responses
-
-        # Parse the response content to find image URLs
-        soup = BeautifulSoup(response.text, 'html5lib')
-        images = soup.find_all('img')
-        print(f"Found {len(images)} images")
-
-        # Extract image URLs (filter out placeholder images)
-        image_urls = []
-        for img in images:
-            src = img.get('src')
-            #if src and src.startswith('http') and not src.startswith('data:'):
-            if src and not src.startswith('data:image/gif'):
-                image_urls.append(src)
-        print(f"Extracted {len(image_urls)} valid image URLs")
-
-        result = {'images': image_urls[:20]}  # Limit to the first 20 images
-        # Cache the result for 1 hour (3600 seconds)
-        #FIXME: cache.set(cache_key, result, timeout=60*60)  # Cache the result for 1 hour
-        
-        # Return the first 20 image URLs as a response
-        return JsonResponse({'images': image_urls[:20]}, status=status.HTTP_200_OK)
-    except requests.RequestException as e:
-        return JsonResponse({'error': f"Request failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-'''
 def google_api_search(request):
     if request.method != 'GET':
         return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -205,6 +153,11 @@ def google_api_search(request):
     page = int(request.GET.get('page', 1))  # Default to page 1 if not specified
     if not query:
         return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
+    if num < 1:
+        return JsonResponse({'error': 'Invalid num parameter'}, status=status.HTTP_400_BAD_REQUEST)
+    if page < 1:
+        return JsonResponse({'error': 'Invalid page parameter'}, status=status.HTTP_400_BAD_REQUEST)
+
 
     cache_key = f"google_image_search_{query}"
     cached_results = cache.get(cache_key)
