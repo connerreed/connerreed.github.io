@@ -26,7 +26,7 @@ const NewRecipeForm = () => {
         });
     }, [fetchData]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const postRecipeApiEndpoint = `${backendURL}/api/recipes/`;
@@ -36,7 +36,16 @@ const NewRecipeForm = () => {
         images.forEach((image) => {
             formData.append("images", image);
         });
-        formData.append("thumbnail", selectedThumbnail);
+        console.log("Fetching thumbnail from:", selectedThumbnail);
+        const response = await fetch(selectedThumbnail);
+        if (!response.ok) {
+            addError("Error: Thumbnail not found.");
+            console.error("Thumbnail fetch error:", response.statusText);
+            return;
+        }
+        console.log("Converting thumbnail to blob");
+        const thumbnailBlob = await response.blob();
+        formData.append("thumbnail", thumbnailBlob, `${selectedThumbnail.name}.jpg`.replace(/^.*[\\/]/, ""));
         const onSuccess = () => {
             navigate("/recipes");
         };
@@ -47,7 +56,6 @@ const NewRecipeForm = () => {
         const maxItems = 5;
         const recipeTitle = document.getElementById("title-input").value;
         if (!recipeTitle) {
-            //alert("Please enter a title for the recipe before generating a thumbnail.");
             addError("Please enter a title for the recipe before generating a thumbnail.");
             return;
         }
@@ -164,7 +172,9 @@ const NewRecipeForm = () => {
                                 onChange={(e) => {
                                     const file = e.target.files[0];
                                     if (file) {
-                                        setSelectedThumbnail(file);
+                                        setPage(1);
+                                        setThumbnailSelectionList([]);
+                                        setSelectedThumbnail(URL.createObjectURL(file));
                                     }
 
                                 }}

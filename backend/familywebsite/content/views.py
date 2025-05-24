@@ -159,7 +159,7 @@ def google_api_search(request):
         return JsonResponse({'error': 'Invalid page parameter'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-    cache_key = f"google_image_search_{query}"
+    cache_key = f"google_image_search_{query}".replace(' ', '%20')
     cached_results = cache.get(cache_key)
     start_index = num * (page - 1)
     end_index = start_index + num
