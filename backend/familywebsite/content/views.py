@@ -208,28 +208,54 @@ def google_api_search(request):
 
     cache_key = f"google_image_search_{query}"
     cached_results = cache.get(cache_key)
-    if cached_results:
-        print(f"Cache hit for query: {query}")
-        start_index = num * (page - 1)
-        end_index = start_index + num
-        return JsonResponse({'images': cached_results[start_index:end_index]}, status=status.HTTP_200_OK)
+    start_index = num * (page - 1)
+    end_index = start_index + num
 
-    url = "https://www.googleapis.com/customsearch/v1"
     API_KEY = os.environ.get('Google_Search_Engine_API_Key')
     SEARCH_ENGINE_ID = os.environ.get('Google_Search_Engine_ID')
-    results = []
-    start_index = 1
+    url = "https://www.googleapis.com/customsearch/v1"
     max_per_request = 10  # Google API allows max 10 images per request
-    total_to_fetch = num if num > 50 else 50
+    batch_size = 50
 
-    while len(results) < total_to_fetch:
+    if cached_results:
+        # If end_index exceeds cache, fetch more and extend cache
+        while end_index > len(cached_results):
+            fetch_start = len(cached_results) + 1
+            results = []
+            while len(results) < batch_size:
+                params = {
+                    "q": query,
+                    "key": API_KEY,
+                    "cx": SEARCH_ENGINE_ID,
+                    "searchType": "image",
+                    "num": min(max_per_request, batch_size - len(results)),
+                    "start": fetch_start + len(results)
+                }
+                response = requests.get(url, params=params)
+                if response.status_code != 200:
+                    break
+                data = response.json()
+                items = data.get("items", [])
+                results.extend([item["link"] for item in items])
+                if not items or "queries" not in data or "nextPage" not in data["queries"]:
+                    break
+            if not results:
+                break
+            cached_results.extend(results)
+            cache.set(cache_key, cached_results, timeout=60*60)
+        return JsonResponse({'images': cached_results[start_index:end_index]}, status=status.HTTP_200_OK)
+
+    # No cache, fetch initial batch
+    results = []
+    fetch_start = 1
+    while len(results) < batch_size:
         params = {
             "q": query,
             "key": API_KEY,
             "cx": SEARCH_ENGINE_ID,
             "searchType": "image",
-            "num": min(max_per_request, total_to_fetch - len(results)),
-            "start": start_index
+            "num": min(max_per_request, batch_size - len(results)),
+            "start": fetch_start + len(results)
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:
@@ -239,9 +265,5 @@ def google_api_search(request):
         results.extend([item["link"] for item in items])
         if not items or "queries" not in data or "nextPage" not in data["queries"]:
             break
-        start_index = data["queries"]["nextPage"][0].get("startIndex", start_index + len(items))
-
-    # Cache the results (all 50 or less if not enough found)
-    cache.set(cache_key, results, timeout=60*60)  # Cache for 1 hour
-
-    return JsonResponse({'images': results[:num]}, status=status.HTTP_200_OK)
+    cache.set(cache_key, results, timeout=60*60)
+    return JsonResponse({'images': results[start_index:end_index]}, status=status.HTTP_200_OK)
