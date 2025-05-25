@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from django.core.cache import cache
 from django.http import JsonResponse
 import os
+from django.http import HttpResponse
 
 # Create your views here.
 #User = get_user_model()
@@ -220,3 +221,34 @@ def google_api_search(request):
             break
     cache.set(cache_key, results, timeout=60*60)
     return JsonResponse({'images': results[start_index:end_index]}, status=status.HTTP_200_OK)
+
+def download_external_file(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
+    url = request.GET.get('url', '')
+    if not url:
+        return JsonResponse({'error': 'No URL provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # download the image file using src url as address
+    headers = {
+        'User-Agent': (
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/113.0.0.0 Safari/537.36'
+        )
+    }
+    try:
+        response = requests.get(url, headers=headers)
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    if response.status_code != 200:
+        return JsonResponse({'error': 'Failed to download file'}, status=response.status_code)
+    content_type = response.headers.get('Content-Type', '')
+    if 'image' not in content_type:
+        return JsonResponse({'error': 'URL does not point to an image'}, status=status.HTTP_400_BAD_REQUEST)
+    file_name = os.path.basename(urllib.parse.urlparse(url).path)
+
+    return HttpResponse(
+        response.content,
+        content_type=content_type
+    )
