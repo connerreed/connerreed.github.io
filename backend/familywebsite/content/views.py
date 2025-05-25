@@ -246,7 +246,6 @@ def download_external_file(request):
     content_type = response.headers.get('Content-Type', '')
     if 'image' not in content_type:
         return JsonResponse({'error': 'URL does not point to an image'}, status=status.HTTP_400_BAD_REQUEST)
-    file_name = os.path.basename(urllib.parse.urlparse(url).path)
 
     return HttpResponse(
         response.content,
