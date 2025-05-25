@@ -16,7 +16,7 @@ const NewRecipeForm = () => {
     const [thumbnailSelectionList, setThumbnailSelectionList] = useState([]);
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
-    const {addError} = useMessage();
+    const { addError } = useMessage();
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -31,46 +31,59 @@ const NewRecipeForm = () => {
 
         const postRecipeApiEndpoint = `${backendURL}/api/recipes/`;
         const formData = new FormData(e.target);
-        formData.delete('thumbnail');
+        formData.delete("thumbnail");
         // Add images from FileUpload component to the formData
         images.forEach((image) => {
             formData.append("images", image);
         });
-        console.log("Fetching thumbnail from:", selectedThumbnail);
-        const response = await fetch(selectedThumbnail);
-        if (!response.ok) {
-            addError("Error: Thumbnail not found.");
-            console.error("Thumbnail fetch error:", response.statusText);
-            return;
-        }
-        console.log("Converting thumbnail to blob");
-        const thumbnailBlob = await response.blob();
-        formData.append("thumbnail", thumbnailBlob, `${selectedThumbnail.name}.jpg`.replace(/^.*[\\/]/, ""));
-        const onSuccess = () => {
-            navigate("/recipes");
+
+        const onFetchThumbnailFileSuccess = (data) => {
+            const thumbnailFile = data;
+            if (!thumbnailFile) {
+                addError("Error: Thumbnail not found.");
+                console.error("Thumbnail fetch error: No file returned");
+                return;
+            }
+            formData.append(
+                "thumbnail",
+                thumbnailFile,
+                formData.get("title") + ".jpg"
+            );
+
+            const onPostSuccess = () => {
+                navigate("/recipes");
+            };
+            postData(postRecipeApiEndpoint, formData, onPostSuccess);
         };
-        postData(postRecipeApiEndpoint, formData, onSuccess);
+        fetchData(
+            `${backendURL}/api/download-image/?url=${selectedThumbnail}`,
+            onFetchThumbnailFileSuccess,
+            "blob",
+        );
     };
 
     const handleGenerateThumbnail = () => {
         const maxItems = 5;
         const recipeTitle = document.getElementById("title-input").value;
         if (!recipeTitle) {
-            addError("Please enter a title for the recipe before generating a thumbnail.");
+            addError(
+                "Please enter a title for the recipe before generating a thumbnail."
+            );
             return;
         }
         const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=${maxItems}`;
         const onSuccess = (data) => {
             if (data?.images?.length === 0) {
-                console.error("Generate Thumbnail Error: No image returned from server.");
+                console.error(
+                    "Generate Thumbnail Error: No image returned from server."
+                );
                 addError("Error: No thumbnail generated. Please try again.");
                 return;
             }
             setSelectedThumbnail(data.images[0]);
-            console.log(selectedThumbnail);
             setThumbnailSelectionList(data.images);
             setPage((prevPage) => prevPage + 1);
-        }
+        };
 
         if (selectedThumbnail && thumbnailSelectionList?.length > 0) {
             if (selectedThumbnail === thumbnailSelectionList[maxItems - 1]) {
@@ -78,7 +91,9 @@ const NewRecipeForm = () => {
                 const getNextPageEndpoint = `${generateThumbnailApiEndpoint}&page=${page}`;
                 fetchData(getNextPageEndpoint, onSuccess);
             } else {
-                const index = thumbnailSelectionList.findIndex((image) => image === selectedThumbnail);
+                const index = thumbnailSelectionList.findIndex(
+                    (image) => image === selectedThumbnail
+                );
                 if (index !== -1) {
                     setSelectedThumbnail(thumbnailSelectionList[index + 1]);
                 } else {
@@ -91,7 +106,7 @@ const NewRecipeForm = () => {
         const thumbnailFileInput = document.getElementById("thumbnail-input");
         thumbnailFileInput.value = null;
         fetchData(generateThumbnailApiEndpoint, onSuccess);
-    }
+    };
 
     return (
         <>
@@ -174,13 +189,19 @@ const NewRecipeForm = () => {
                                     if (file) {
                                         setPage(1);
                                         setThumbnailSelectionList([]);
-                                        setSelectedThumbnail(URL.createObjectURL(file));
+                                        setSelectedThumbnail(
+                                            URL.createObjectURL(file)
+                                        );
                                     }
-
                                 }}
                             />
                             <p className="thumbnail-input-text">OR</p>
-                            <Button className="thumbnail-generate-button" onClick={handleGenerateThumbnail}>Generate</Button>
+                            <Button
+                                className="thumbnail-generate-button"
+                                onClick={handleGenerateThumbnail}
+                            >
+                                Generate
+                            </Button>
                         </div>
                         {selectedThumbnail && (
                             <ul>

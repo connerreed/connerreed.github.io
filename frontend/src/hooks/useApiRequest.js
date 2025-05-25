@@ -10,13 +10,14 @@ const useApiRequest = () => {
     const [currentlyLoading, setCurrentlyLoading] = useState(false);
 
     const fetchData = useCallback(
-        (url, onSuccess) => {
+        (url, onSuccess, responseType = 'json') => {
             setCurrentlyLoading(true);
             axios
                 .get(url, {
                     headers: authToken
                         ? { Authorization: `Token ${authToken}` }
                         : {},
+                    responseType
                 })
                 .then((response) => {
                     setData(response?.data);
