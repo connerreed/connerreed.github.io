@@ -238,7 +238,7 @@ def download_external_file(request):
         )
     }
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=5)
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     if response.status_code != 200:
