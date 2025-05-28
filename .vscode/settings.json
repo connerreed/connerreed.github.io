@@ -1,1 +1,4 @@
-{}
+{
+    "jest.jestCommandLine": "npx jest",
+    "jest.rootPath": "frontend"
+}
