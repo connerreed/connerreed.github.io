@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Container, Form, InputGroup, Button } from "react-bootstrap";
 import useApiRequest from "../hooks/useApiRequest";
 import Loading from "./Loading";
@@ -17,6 +17,8 @@ const NewRecipeForm = () => {
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
     const { addError } = useMessage();
+    const hiddenInputRef = useRef();
+
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -25,6 +27,20 @@ const NewRecipeForm = () => {
             setMealTypes(data);
         });
     }, [fetchData]);
+
+    // Form validation
+    useEffect(() => {
+        if (images.length > 0) {
+            hiddenInputRef.current.setCustomValidity("");
+            hiddenInputRef.current.value = "images uploaded";
+        } else {
+            hiddenInputRef.current.setCustomValidity(
+                "Please upload at least one image for the recipe."
+            );
+            hiddenInputRef.current.value = "";
+        }
+        console.log("Images changed:", images);
+    }, [images]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -55,10 +71,16 @@ const NewRecipeForm = () => {
             };
             postData(postRecipeApiEndpoint, formData, onPostSuccess);
         };
+
+        const getThumbnailErrorMessage = (error) => {
+            return "Error: Failed to download thumbnail. Please try a different one.";
+        };
+
         fetchData(
             `${backendURL}/api/download-image/?url=${selectedThumbnail}`,
             onFetchThumbnailFileSuccess,
             "blob",
+            getThumbnailErrorMessage
         );
     };
 
@@ -72,7 +94,7 @@ const NewRecipeForm = () => {
             return;
         }
         const generateThumbnailApiEndpoint = `${backendURL}/api/recipes/generate-thumbnail/?q=${recipeTitle}&num=${maxItems}`;
-        const onSuccess = (data) => {
+        const onGenerateThumbnailSuccess = (data) => {
             if (data?.images?.length === 0) {
                 console.error(
                     "Generate Thumbnail Error: No image returned from server."
@@ -85,11 +107,25 @@ const NewRecipeForm = () => {
             setPage((prevPage) => prevPage + 1);
         };
 
+        const getGenerateThumbnailErrorMessage = (error) => {
+            const status = error?.response?.status;
+            switch (status) {
+                case 400:
+                    return "Error: Please check your input.";
+                case 403:
+                    return "Error: Cannot generate thumbnail for this recipe. Please try a different title.";
+                case 500:
+                    return `Error: ${error?.response?.data?.error || "Server error. Please try again later."}`;
+                default:
+                    return `Error: ${error?.response?.data?.error || "Failed to generate thumbnail."}`;
+            }
+        };
+
         if (selectedThumbnail && thumbnailSelectionList?.length > 0) {
             if (selectedThumbnail === thumbnailSelectionList[maxItems - 1]) {
-                // TODO: Fetch more images
+                // We've cycled through all thumbnails. Fetch more images
                 const getNextPageEndpoint = `${generateThumbnailApiEndpoint}&page=${page}`;
-                fetchData(getNextPageEndpoint, onSuccess);
+                fetchData(getNextPageEndpoint, onGenerateThumbnailSuccess, "json", getGenerateThumbnailErrorMessage);
             } else {
                 const index = thumbnailSelectionList.findIndex(
                     (image) => image === selectedThumbnail
@@ -105,7 +141,7 @@ const NewRecipeForm = () => {
         setSelectedThumbnail(null);
         const thumbnailFileInput = document.getElementById("thumbnail-input");
         thumbnailFileInput.value = null;
-        fetchData(generateThumbnailApiEndpoint, onSuccess);
+        fetchData(generateThumbnailApiEndpoint, onGenerateThumbnailSuccess, "json", getGenerateThumbnailErrorMessage);
     };
 
     return (
@@ -122,6 +158,12 @@ const NewRecipeForm = () => {
                             name="title"
                             placeholder="Title"
                             required
+                            onChange = {(e) => {
+                                // Reset thumbnail selection when title changes
+                                setSelectedThumbnail(null);
+                                setThumbnailSelectionList([]);
+                                setPage(1);
+                            }}
                         />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -207,7 +249,7 @@ const NewRecipeForm = () => {
                             <ul>
                                 <img
                                     src={selectedThumbnail}
-                                    alt="Thumbnail"
+                                    alt="Recipe Thumbnail"
                                     className="thumbnail-preview"
                                 />
                             </ul>
@@ -220,6 +262,21 @@ const NewRecipeForm = () => {
                         </Form.Label>
 
                         <FileUpload files={images} setFiles={setImages} />
+                        <input
+                            ref={hiddenInputRef}
+                            required
+                            style={{
+                                opacity: 0,
+                                position: "absolute",
+                                pointerEvents: "none",
+                                height: 0,
+                                width: 0,
+                                marginLeft: "10%",
+                            }}
+                            tabIndex={-1}
+                            aria-hidden="true"
+                            defaultValue={"testing"}
+                        />
                     </Form.Group>
                     <Button className="mt-3" type="submit">
                         Submit

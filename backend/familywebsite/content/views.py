@@ -145,6 +145,8 @@ class MealTypeListCreateView(generics.ListCreateAPIView):
     serializer_class = MealTypeSerializer
     permission_classes = [IsAuthenticated]
 
+import re
+
 def google_api_search(request):
     if request.method != 'GET':
         return JsonResponse({'error': 'GET request required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -153,12 +155,25 @@ def google_api_search(request):
     num = int(request.GET.get('num', 20))  # Default to 20 images if not specified
     page = int(request.GET.get('page', 1))  # Default to page 1 if not specified
     if not query:
-        return JsonResponse({'error': 'No search query provided'}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'error': 'No recipe title provided'}, status=status.HTTP_400_BAD_REQUEST)
     if num < 1:
         return JsonResponse({'error': 'Invalid num parameter'}, status=status.HTTP_400_BAD_REQUEST)
     if page < 1:
         return JsonResponse({'error': 'Invalid page parameter'}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Check if query exists in blacklist (import from banned_queries.txt)
+
+    def contains_prohibited_words(query):
+        with open(r'C:\Users\conne\Documents\GitHub\FamilyWebsite\backend\familywebsite\content\banned_queries.txt', 'r') as f:
+            prohibited_words = f.read().splitlines()
+        query = query.lower()
+        for word in prohibited_words:
+            if re.search(r'\b' + re.escape(word) + r'\b', query):
+                return True
+        return False
+
+    if contains_prohibited_words(query):
+        return JsonResponse({'error': 'Query is banned'}, status=status.HTTP_403_FORBIDDEN)
 
     cache_key = f"google_image_search_{query}".replace(' ', '%20')
     cached_results = cache.get(cache_key)
@@ -167,6 +182,7 @@ def google_api_search(request):
 
     API_KEY = os.environ.get('Google_Search_Engine_API_Key')
     SEARCH_ENGINE_ID = os.environ.get('Google_Search_Engine_ID')
+    #SEARCH_ENGINE_ID = '91b06eb59e9f147d8'
     url = "https://www.googleapis.com/customsearch/v1"
     max_per_request = 10  # Google API allows max 10 images per request
     batch_size = 50
@@ -183,7 +199,7 @@ def google_api_search(request):
                     "cx": SEARCH_ENGINE_ID,
                     "searchType": "image",
                     "num": min(max_per_request, batch_size - len(results)),
-                    "start": fetch_start + len(results)
+                    "start": fetch_start + len(results),
                 }
                 response = requests.get(url, params=params)
                 if response.status_code != 200:
@@ -209,7 +225,7 @@ def google_api_search(request):
             "cx": SEARCH_ENGINE_ID,
             "searchType": "image",
             "num": min(max_per_request, batch_size - len(results)),
-            "start": fetch_start + len(results)
+            "start": fetch_start + len(results),
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:
