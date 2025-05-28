@@ -32,8 +32,8 @@
 }
 
 .file-upload-image {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 250px;
+    max-height: 250px;
     object-fit: cover; /* this will crop the image */
     overflow: hidden;
 }

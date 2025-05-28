@@ -113,7 +113,7 @@ class Recipe(models.Model):
                 os.remove(self.thumbnail_transformed.path)
         super().delete(*args, **kwargs)
 
-    def generate_thumbnail(self):
+    def generate_thumbnail_transformed(self):
         # Extract the filename from the image field's name
         thumbnail_filename = os.path.basename(self.thumbnail.name)
         thumbnail_transformed_relative_path = os.path.join(
@@ -152,7 +152,7 @@ class Recipe(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.thumbnail and not self.thumbnail_transformed:
-            self.generate_thumbnail()
+            self.generate_thumbnail_transformed()
 
 
 class RecipeContentImage(models.Model):

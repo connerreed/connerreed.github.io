@@ -18,4 +18,6 @@ urlpatterns = [
     path('mediaalbums/<int:pk>/', views.MediaAlbumRetrieveUpdateDestroyView.as_view(), name='mediaalbum-retrieve-update-destroy'),
     path('meal-types/', views.MealTypeListCreateView.as_view(), name='mealtype-list-create'),
     path('user/theme/', views.UserThemeUpdateView.as_view(), name='user-theme-update'),
+    path('recipes/generate-thumbnail/', views.google_api_search, name='generate-recipe-thumbnail'),
+    path('download-image/', views.download_external_file, name='download-image'),
 ]

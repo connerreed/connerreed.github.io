@@ -9,3 +9,27 @@
         width: 100%;
     }
 }
+
+.thumbnail-preview {
+    margin-top: 1rem;
+    max-width: 250px;
+    max-height: 250px;
+    object-fit: cover; /* this will crop the image */
+    overflow: hidden;
+}
+
+.thumbnail-input-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.thumbnail-input-text {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 0;
+}
+
+.thumbnail-generate-button {
+    border: none;
+}

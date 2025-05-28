@@ -9,14 +9,46 @@ const useApiRequest = () => {
     const [data, setData] = useState(null);
     const [currentlyLoading, setCurrentlyLoading] = useState(false);
 
+    const getDefaultErrorMessage = (error) => {
+        const status = error?.response?.status;
+        let errorMessage = "Error: ";
+
+        switch (status) {
+            case 404:
+                errorMessage += "Could not find item(s)";
+                break;
+            case 403:
+                errorMessage += "Forbidden";
+                break;
+            case 401:
+                errorMessage += "Unauthorized";
+                break;
+            case 400:
+                errorMessage += "Bad Request";
+                break;
+            case 500:
+                errorMessage += "Internal Server Error";
+                break;
+            default:
+                errorMessage += "An error has occurred";
+                break;
+        }
+        return errorMessage;
+    };
     const fetchData = useCallback(
-        (url, onSuccess) => {
+        (
+            url,
+            onSuccess,
+            responseType = "json",
+            getErrorMessage = getDefaultErrorMessage
+        ) => {
             setCurrentlyLoading(true);
             axios
                 .get(url, {
                     headers: authToken
                         ? { Authorization: `Token ${authToken}` }
                         : {},
+                    responseType,
                 })
                 .then((response) => {
                     setData(response?.data);
@@ -25,29 +57,11 @@ const useApiRequest = () => {
                     }
                 })
                 .catch((error) => {
-                    const status = error?.response?.status;
-                    let errorMessage = "Error: ";
-                    switch (status) {
-                        case 404:
-                            errorMessage += "Could not find item(s)";
-                            break;
-                        case 403:
-                            errorMessage += "Forbidden";
-                            break;
-                        case 401:
-                            errorMessage += "Unauthorized";
-                            break;
-                        case 400:
-                            errorMessage += "Bad Request";
-                            break;
-                        case 500:
-                            errorMessage += "Internal Server Error";
-                            break;
-                        default:
-                            errorMessage += "An error has occurred";
-                            break;
+                    const errorMessage = getErrorMessage(error);
+                    if (errorMessage) {
+                        addError(errorMessage);
                     }
-                    addError(errorMessage);
+                    console.error(error);
                 })
                 .finally(() => {
                     setCurrentlyLoading(false);
@@ -117,7 +131,7 @@ const useApiRequest = () => {
                             break;
                     }
                     addError(errorMessage);
-                    
+
                     console.error(error);
                 })
                 .finally(() => {
@@ -181,47 +195,63 @@ const useApiRequest = () => {
         [addError, addSuccessMessage, authToken]
     );
 
-    const deleteData = useCallback((url, onSuccess) => {
-        setCurrentlyLoading(true);
-        axios
-            .delete(url, {
-                headers: authToken
-                    ? { Authorization: `Token ${authToken}` }
-                    : {},
-            }).then((response) => {
-                const status = response?.status;
-                switch (status) {
-                    case 204:
-                        addSuccessMessage("Item deleted successfully");
-                        break;
-                    default:
-                        console.error("An unknown response status was received: ", status);
-                        break;
-                }
-                if (onSuccess) {
-                    onSuccess();
-                }
-            }).catch((error) => {
-                const status = error?.response?.status;
-                let errorMessage = "Error: ";
-                switch(status) {
-                    case 403:
-                        errorMessage += "Forbidden";
-                        break;
-                    case 404:
-                        errorMessage += "Not found";
-                        break;
-                    default:
-                        errorMessage += "Failed to delete";
-                        break;
-                }
-                addError(errorMessage);
-            }).finally(() => {
-                setCurrentlyLoading(false);
-            });
-    }, [addError, addSuccessMessage, authToken]);
+    const deleteData = useCallback(
+        (url, onSuccess) => {
+            setCurrentlyLoading(true);
+            axios
+                .delete(url, {
+                    headers: authToken
+                        ? { Authorization: `Token ${authToken}` }
+                        : {},
+                })
+                .then((response) => {
+                    const status = response?.status;
+                    switch (status) {
+                        case 204:
+                            addSuccessMessage("Item deleted successfully");
+                            break;
+                        default:
+                            console.error(
+                                "An unknown response status was received: ",
+                                status
+                            );
+                            break;
+                    }
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                })
+                .catch((error) => {
+                    const status = error?.response?.status;
+                    let errorMessage = "Error: ";
+                    switch (status) {
+                        case 403:
+                            errorMessage += "Forbidden";
+                            break;
+                        case 404:
+                            errorMessage += "Not found";
+                            break;
+                        default:
+                            errorMessage += "Failed to delete";
+                            break;
+                    }
+                    addError(errorMessage);
+                })
+                .finally(() => {
+                    setCurrentlyLoading(false);
+                });
+        },
+        [addError, addSuccessMessage, authToken]
+    );
 
-    return { data, currentlyLoading, fetchData, postData, patchData, deleteData };
+    return {
+        data,
+        currentlyLoading,
+        fetchData,
+        postData,
+        patchData,
+        deleteData,
+    };
 };
 
 export default useApiRequest;
