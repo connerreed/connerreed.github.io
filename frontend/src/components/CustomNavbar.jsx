@@ -41,7 +41,7 @@ function CustomNavbar() {
                 expand="lg"
                 collapseOnSelect
             >
-                <Navbar.Toggle aria-controls="offcanvasNavbar" />
+                <Navbar.Toggle aria-controls="offcanvasNavbar" data-testid="navbar-toggler"/>
                 <Navbar.Brand onClick={() => navigate("/")}>
                     <h1 className="navbar-title">Reed Family</h1>
                 </Navbar.Brand>
@@ -52,7 +52,7 @@ function CustomNavbar() {
                     className={theme === "dark" ? "dark-theme" : ""}
                     data-bs-theme={theme === "dark" ? "dark" : "light"}
                 >
-                    <Offcanvas.Header closeButton>
+                    <Offcanvas.Header closeButton data-testid="navbar-header">
                         <Offcanvas.Title id="offcanvasNavbarLabel">
                             Menu
                         </Offcanvas.Title>
