@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backendURL from "../utils/backendURL";
 import useFetchPagedData from "../hooks/useFetchPagedData";
@@ -172,7 +172,7 @@ const ElementGallery = ({ elementType }) => {
         <>
             {(requestLoading || pageLoading) && <Loading />}
             
-            <Container>
+            <Container data-testid="element-gallery">
                 {/* TODO: Add static banner across screen to hide initial picture loading? */}
                 <Row className="align-items-center mb-4">
                     <Col className="d-flex justify-content-start mb-2 mb-md-0">
@@ -195,6 +195,7 @@ const ElementGallery = ({ elementType }) => {
                             onChange={handleFileChange}
                         />
                         <Button
+                            data-testid="new-element-button"
                             variant="success"
                             className="text-nowrap"
                             onClick={() => {
@@ -209,7 +210,7 @@ const ElementGallery = ({ elementType }) => {
                                         .click();
                                     return;
                                 }
-                                // If not a picture, navigate to the new element page
+                                // If not a picture, navigate to the element form
                                 navigate(`/${elementType}s/new`);
                             }}
                         >
@@ -244,6 +245,7 @@ const ElementGallery = ({ elementType }) => {
                     {data?.length > 0 &&
                         data.map((element) => (
                             <Col
+                                data-testid={`${elementType}-${element.id}`}
                                 id={`${elementType}-${element.id}`}
                                 key={element.id}
                                 lg={4}
