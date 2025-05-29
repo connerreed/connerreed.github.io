@@ -81,4 +81,23 @@ describe("CustomNavbar Component", () => {
             "/profile"
         );
     });
+
+    it("toggles offcanvas navbar", () => {
+        const { getByTestId } = render(
+            <MemoryRouter>
+                <CustomNavbar />
+            </MemoryRouter>
+        );
+        expect(getByTestId("navbar-toggler")).toBeInTheDocument();
+        fireEvent.click(getByTestId("navbar-toggler"));
+        setTimeout(() => {
+            expect(getByTestId("navbar-header")).toBeInTheDocument();
+        }, 500);
+        const offcanvasCloseButton =
+            getByTestId("navbar-header").querySelector("button");
+        fireEvent.click(offcanvasCloseButton);
+        setTimeout(() => {
+            expect(getByTestId("navbar-header")).not.toBeInTheDocument();
+        }, 500);
+    });
 });
